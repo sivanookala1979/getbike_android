@@ -1,7 +1,9 @@
-package com.vave.getbike;
+package com.vave.getbike.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.vave.getbike.R;
 
 public class LoginActivity extends AppCompatActivity {
 
