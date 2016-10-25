@@ -24,8 +24,10 @@ public class LoginSyncher extends BaseSyncher {
                 id = (Integer) result.get("id");
             }
         } catch (Exception e) {
-
+            handleException(e);
         }
         return id;
     }
+
+
 }

@@ -15,6 +15,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 
+import javax.naming.Context;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -145,4 +146,7 @@ public class HTTPUtils {
         return jsonObject;
     }
 
+	public static boolean isOnline(Object context) {
+		return true;
+	}
 }

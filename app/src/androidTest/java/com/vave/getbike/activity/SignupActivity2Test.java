@@ -1,6 +1,7 @@
 package com.vave.getbike.activity;
 
 
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -29,13 +30,18 @@ public class SignupActivity2Test {
 
     @Test
     public void signupActivity2Test() {
-        // Type text and then press the button.
         onView(withId(R.id.name))
-                .perform(typeText("HELLO"), closeSoftKeyboard());
-        onView(withId(R.id.signup)).perform(click());
+                .perform(typeText("Siva Nookala"), closeSoftKeyboard());
+        onView(withId(R.id.email))
+                .perform(typeText("siva.nookala@gmail.com"), closeSoftKeyboard());
+        onView(withId(R.id.mobile))
+                .perform(typeText("9949287789"), closeSoftKeyboard());
 
+        onView(withId(R.id.male))
+                .perform(click());
+        onView(withId(R.id.signup)).perform(click());
         // Check that the text was changed.
-        onView(withId(R.id.resultUserId)).check(matches(withText("I am clicked")));
+        onView(withId(R.id.resultUserId)).check(matches(withText("2417")));
     }
 
 }
