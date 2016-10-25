@@ -1,1 +1,1 @@
-include ':app', ':synchers'
+include ':app'
