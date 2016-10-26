@@ -1,6 +1,4 @@
-package com.example;
-
-import com.vave.getbike.syncher.LoginSyncher;
+package com.vave.getbike.syncher;
 
 import org.junit.After;
 import org.junit.Before;

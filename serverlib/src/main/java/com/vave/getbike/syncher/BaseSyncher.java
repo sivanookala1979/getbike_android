@@ -13,7 +13,17 @@ public class BaseSyncher {
 
     public static String BASE_URL = "http://192.168.10.18:9000";
 
-    protected void handleException(Exception e) {
+    public static String accessToken = null;
+
+    public static String getAccessToken() {
+        return accessToken;
+    }
+
+    public static void setAccessToken(String accessToken) {
+        BaseSyncher.accessToken = accessToken;
+    }
+
+    protected static void handleException(Exception e) {
         exceptionHandler.handleException(e);
     }
 }
