@@ -24,6 +24,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         resultUserId = (TextView) findViewById(R.id.resultUserId);
         Button login = (Button) findViewById(R.id.login);
         login.setOnClickListener(this);
+        Button location = (Button) findViewById(R.id.location);
+        location.setOnClickListener(this);
     }
 
     @Override
@@ -52,6 +54,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.login:
                 Intent intent = new Intent(this, RequestRideActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.location:
+                startActivity(new Intent(this, LocationActivity.class));
+                break;
         }
     }
 

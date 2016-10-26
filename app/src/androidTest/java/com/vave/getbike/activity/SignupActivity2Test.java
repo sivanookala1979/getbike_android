@@ -1,5 +1,6 @@
 package com.vave.getbike.activity;
 
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -51,6 +52,15 @@ public class SignupActivity2Test {
         onView(withId(R.id.getBikeResult)).check(matches(isPositive()));
     }
 
+
+    @Test
+    public void locationTESTHappyFlow() {
+
+        onView(withId(R.id.location)).perform(click());
+        onView(withId(R.id.start_updates_button)).perform(click());
+        SystemClock.sleep(20000);
+        onView(withId(R.id.start_updates_button)).perform(click());
+    }
     @Before
     public void setUp() {
         BaseSyncher.testSetup();
