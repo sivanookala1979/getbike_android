@@ -27,7 +27,7 @@ public class RideSyncherTest {
     @Before
     public void setUp() {
         sut = new RideSyncher();
-        BaseSyncher.setAccessToken("dad127c9-95dd-4e0d-8712-8e45a61de15a");
+        BaseSyncher.testSetup();
     }
 
     @After

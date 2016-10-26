@@ -1,5 +1,6 @@
 package com.vave.getbike.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,6 +22,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         Button signup = (Button) findViewById(R.id.signup);
         signup.setOnClickListener(this);
         resultUserId = (TextView) findViewById(R.id.resultUserId);
+        Button login = (Button) findViewById(R.id.login);
+        login.setOnClickListener(this);
     }
 
     @Override
@@ -46,6 +49,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 asyncTask.setShowProgress(false);
                 asyncTask.execute();
                 break;
+            case R.id.login:
+                Intent intent = new Intent(this, RequestRideActivity.class);
+                startActivity(intent);
         }
     }
 

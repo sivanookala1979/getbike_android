@@ -26,4 +26,8 @@ public class BaseSyncher {
     protected static void handleException(Exception e) {
         exceptionHandler.handleException(e);
     }
+
+    public static void testSetup(){
+        BaseSyncher.setAccessToken("2ed64abf-d92b-44a1-8c93-dae129422538");
+    }
 }
