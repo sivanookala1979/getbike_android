@@ -7,9 +7,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
+import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
+
+import java.util.Date;
 
 public class RequestRideActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,6 +46,10 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                         if (rideID != null) {
                             getBikeResult.setText(rideID + "");
                         }
+                        RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
+                        dataSource.setUpdataSource();
+                        dataSource.insert(181L, new Date(), 21.45, 82.54);
+                        dataSource.close();
                     }
                 };
                 asyncTask.setShowProgress(false);
