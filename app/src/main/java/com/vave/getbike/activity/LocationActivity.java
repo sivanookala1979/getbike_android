@@ -1,12 +1,12 @@
 /**
  * Copyright 2014 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +34,13 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.vave.getbike.R;
+import com.vave.getbike.adapter.LocationAdapter;
+import com.vave.getbike.model.RideLocation;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Getting Location Updates.
@@ -54,20 +59,17 @@ import java.util.Date;
 public class LocationActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
-    protected static final String TAG = "location-updates-sample";
-
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
      * than this value.
      */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
+    protected static final String TAG = "location-updates-sample";
     // Keys for storing activity state in the Bundle.
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
@@ -94,6 +96,8 @@ public class LocationActivity extends ActionBarActivity implements
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
+    protected ListView listView;
+    protected LocationAdapter adapter;
 
     // Labels.
     protected String mLatitudeLabel;
@@ -110,6 +114,9 @@ public class LocationActivity extends ActionBarActivity implements
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
+    protected Date mLastUpdateTimeAsDate;
+
+    List<RideLocation> locations = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +137,10 @@ public class LocationActivity extends ActionBarActivity implements
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
+
+        listView = (ListView) findViewById(R.id.locationsList);
+        adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
+        listView.setAdapter(adapter);
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -267,16 +278,24 @@ public class LocationActivity extends ActionBarActivity implements
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
-        if(mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
-                    mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
-                    mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
-                    mLastUpdateTime));
-        }
-        else
-        {
+        if (mCurrentLocation != null) {
+            String latitude = String.format("%s: %f", mLatitudeLabel,
+                    mCurrentLocation.getLatitude());
+            mLatitudeTextView.setText(latitude);
+            String longitude = String.format("%s: %f", mLongitudeLabel,
+                    mCurrentLocation.getLongitude());
+            mLongitudeTextView.setText(longitude);
+            String locationTime = String.format("%s: %s", mLastUpdateTimeLabel,
+                    mLastUpdateTime);
+            mLastUpdateTimeTextView.setText(locationTime);
+            RideLocation rideLocation = new RideLocation();
+            rideLocation.setRideId(200L);
+            rideLocation.setLatitude(mCurrentLocation.getLatitude());
+            rideLocation.setLongitude(mCurrentLocation.getLongitude());
+            rideLocation.setLocationTime(mLastUpdateTimeAsDate);
+            locations.add(0, rideLocation);
+            adapter.notifyDataSetChanged();
+        } else {
             mLatitudeTextView.setText("Latitude");
             mLongitudeTextView.setText("Longitude");
         }
@@ -325,7 +344,7 @@ public class LocationActivity extends ActionBarActivity implements
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
-        
+
         super.onStop();
     }
 
@@ -348,7 +367,8 @@ public class LocationActivity extends ActionBarActivity implements
         // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+            mLastUpdateTimeAsDate = new Date();
+            mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
             updateUI();
         }
 
@@ -386,7 +406,6 @@ public class LocationActivity extends ActionBarActivity implements
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
-
 
     /**
      * Stores activity data in the Bundle.
