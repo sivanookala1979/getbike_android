@@ -11,8 +11,8 @@ public class BaseSyncher {
 
     public static ExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 
-    //public static String BASE_URL = "http://192.168.10.18:9000";
-    public static String BASE_URL = "http://videos.meritcampus.com:9000";
+    public static String BASE_URL = "http://192.168.10.18:9000";
+    //public static String BASE_URL = "http://videos.meritcampus.com:9000";
 
     public static String accessToken = null;
 

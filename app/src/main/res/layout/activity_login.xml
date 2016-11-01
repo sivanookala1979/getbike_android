@@ -12,7 +12,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/mobile"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="32dp"
@@ -22,26 +22,26 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/editText"
+        android:id="@+id/received_otp"
+        android:layout_below="@+id/mobile"
+        android:layout_alignStart="@+id/mobile"
         android:hint="Enter OTP"
-        android:layout_alignEnd="@+id/editText" />
+        android:layout_alignEnd="@+id/mobile" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send OTP"
-        android:id="@+id/button"
-        android:layout_alignBottom="@+id/editText"
-        android:layout_toEndOf="@+id/editText" />
+        android:id="@+id/send_otp"
+        android:layout_alignBottom="@+id/mobile"
+        android:layout_toEndOf="@+id/mobile" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:id="@+id/button2"
-        android:layout_below="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
-        android:layout_alignEnd="@+id/button" />
+        android:id="@+id/login"
+        android:layout_below="@+id/received_otp"
+        android:layout_alignStart="@+id/received_otp"
+        android:layout_alignEnd="@+id/send_otp" />
 </RelativeLayout>

@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.syncher.LoginSyncher;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,28 +36,36 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.signup:
                 GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
-                    Integer userID = null;
+                    CallStatus callStatus = null;
 
                     @Override
                     public void process() {
                         LoginSyncher sut = new LoginSyncher();
-                        userID = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), 'M');
+                        callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), 'M');
                     }
 
                     @Override
                     public void afterPostExecute() {
-                        if (userID != null) {
-                            resultUserId.setText(userID + "");
+                        if (callStatus.isSuccess()) {
+                            resultUserId.setText("Success");
+                        } else if (callStatus.getErrorCode() == 9901) {
+                            ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
                         }
                     }
                 };
                 asyncTask.setShowProgress(false);
                 asyncTask.execute();
                 break;
-            case R.id.requestRide:
+            case R.id.login: {
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+            }
+            break;
+            case R.id.requestRide: {
                 Intent intent = new Intent(this, RequestRideActivity.class);
                 startActivity(intent);
-                break;
+            }
+            break;
 
         }
     }
