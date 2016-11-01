@@ -13,6 +13,10 @@ import com.vave.getbike.android.IContentValues;
 import com.vave.getbike.android.ICursor;
 import com.vave.getbike.android.IDatabaseHelper;
 import com.vave.getbike.android.ISQLiteDatabase;
+import com.vave.getbike.exception.GetBikeException;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author cerone
@@ -22,6 +26,7 @@ public abstract class BaseDataSource {
 
     private final IDatabaseHelper dbHelper;
     public ISQLiteDatabase database;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     public BaseDataSource(Context context) {
         dbHelper = AndroidStubsFactory.createDatabaseHelper(context);
@@ -89,5 +94,20 @@ public abstract class BaseDataSource {
     public void setUpdataSource() {
         open();
         createIfNotPresent();
+    }
+
+    public String to_s(Date date) {
+        return simpleDateFormat.format(date);
+
+    }
+
+    public Date to_d(String string) {
+        try {
+            return simpleDateFormat.parse(string);
+
+        } catch (Exception ex) {
+            throw new GetBikeException(ex);
+
+        }
     }
 }

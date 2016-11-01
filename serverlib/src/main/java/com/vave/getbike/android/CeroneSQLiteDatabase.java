@@ -75,6 +75,9 @@ public class CeroneSQLiteDatabase implements ISQLiteDatabase {
                 for (String column : allColumns) {
                     row.put(column, resultSet.getString(column));
                 }
+                if (resultSet.getString("id") != null) {
+                    row.put("id", resultSet.getLong("id"));
+                }
                 result.addRow(row);
             }
             statement.close();

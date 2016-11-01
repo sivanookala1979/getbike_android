@@ -47,20 +47,24 @@ public class SignupActivity2Test {
     @Test
     public void loginTESTHappyFlow() {
 
-        onView(withId(R.id.login)).perform(click());
+        onView(withId(R.id.requestRide)).perform(click());
         onView(withId(R.id.requestRide)).perform(click());
         onView(withId(R.id.getBikeResult)).check(matches(isPositive()));
     }
 
-
     @Test
     public void locationTESTHappyFlow() {
+        onView(withId(R.id.requestRide)).perform(click());
+        onView(withId(R.id.requestRide)).perform(click());
+        onView(withId(R.id.getBikeResult)).check(matches(isPositive()));
 
-        onView(withId(R.id.location)).perform(click());
+        onView(withId(R.id.startRide)).perform(click());
         onView(withId(R.id.start_updates_button)).perform(click());
         SystemClock.sleep(20000);
-        onView(withId(R.id.start_updates_button)).perform(click());
+        onView(withId(R.id.stop_updates_button)).perform(click());
+        SystemClock.sleep(20000);
     }
+
     @Before
     public void setUp() {
         BaseSyncher.testSetup();

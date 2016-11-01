@@ -8,10 +8,12 @@ import java.util.Date;
 
 public class RideLocation {
 
+    Long id;
     Long rideId;
     Date locationTime;
     Double latitude;
     Double longitude;
+    Boolean posted;
 
     public Long getRideId() {
         return rideId;
@@ -43,5 +45,21 @@ public class RideLocation {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Boolean getPosted() {
+        return posted;
+    }
+
+    public void setPosted(Boolean posted) {
+        this.posted = posted;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

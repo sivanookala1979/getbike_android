@@ -35,7 +35,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.vave.getbike.R;
 import com.vave.getbike.adapter.LocationAdapter;
+import com.vave.getbike.datasource.RideLocationDataSource;
+import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.RideLocation;
+import com.vave.getbike.syncher.BaseSyncher;
+import com.vave.getbike.syncher.RideLocationSyncher;
+import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -44,20 +49,20 @@ import java.util.List;
 
 /**
  * Getting Location Updates.
- *
+ * <p>
  * Demonstrates how to use the Fused Location Provider API to get updates about a device's
  * location. The Fused Location Provider is part of the Google Play services location APIs.
- *
+ * <p>
  * For a simpler example that shows the use of Google Play services to fetch the last known location
  * of a device, see
  * https://github.com/googlesamples/android-play-location/tree/master/BasicLocation.
- *
+ * <p>
  * This sample uses Google Play services, but it does not require authentication. For a sample that
  * uses Google Play services for authentication, see
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
 public class LocationActivity extends ActionBarActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+        ConnectionCallbacks, OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -74,22 +79,18 @@ public class LocationActivity extends ActionBarActivity implements
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-
     /**
      * Provides the entry point to Google Play services.
      */
     protected GoogleApiClient mGoogleApiClient;
-
     /**
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
     protected LocationRequest mLocationRequest;
-
     /**
      * Represents a geographical location.
      */
     protected Location mCurrentLocation;
-
     // UI Widgets.
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
@@ -98,31 +99,28 @@ public class LocationActivity extends ActionBarActivity implements
     protected TextView mLongitudeTextView;
     protected ListView listView;
     protected LocationAdapter adapter;
-
     // Labels.
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
     protected String mLastUpdateTimeLabel;
-
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
      */
     protected Boolean mRequestingLocationUpdates;
-
     /**
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
     protected Date mLastUpdateTimeAsDate;
-
     List<RideLocation> locations = new ArrayList<>();
+    private long rideId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
-
+        rideId = getIntent().getLongExtra("rideId", 0L);
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
@@ -137,6 +135,7 @@ public class LocationActivity extends ActionBarActivity implements
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
+        mStopUpdatesButton.setOnClickListener(this);
 
         listView = (ListView) findViewById(R.id.locationsList);
         adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
@@ -247,6 +246,7 @@ public class LocationActivity extends ActionBarActivity implements
             setButtonsEnabledState();
             stopLocationUpdates();
         }
+
     }
 
     /**
@@ -288,12 +288,11 @@ public class LocationActivity extends ActionBarActivity implements
             String locationTime = String.format("%s: %s", mLastUpdateTimeLabel,
                     mLastUpdateTime);
             mLastUpdateTimeTextView.setText(locationTime);
-            RideLocation rideLocation = new RideLocation();
-            rideLocation.setRideId(200L);
-            rideLocation.setLatitude(mCurrentLocation.getLatitude());
-            rideLocation.setLongitude(mCurrentLocation.getLongitude());
-            rideLocation.setLocationTime(mLastUpdateTimeAsDate);
-            locations.add(0, rideLocation);
+            RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
+            dataSource.setUpdataSource();
+            dataSource.insert(rideId, mLastUpdateTimeAsDate, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
+            locations = dataSource.getRideLocations(rideId);
+            dataSource.close();
             adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
             listView.setAdapter(adapter);
         } else {
@@ -417,5 +416,37 @@ public class LocationActivity extends ActionBarActivity implements
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.stop_updates_button:
+                stopUpdatesButtonHandler(v);
+                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+
+                    @Override
+                    public void process() {
+
+                        //// TODO: 01/11/16 : This needs to be removed.
+                        BaseSyncher.testSetup();
+                        RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
+                        dataSource.setUpdataSource();
+                        RideLocationSyncher locationSyncher = new RideLocationSyncher();
+                        locationSyncher.setDataSource(dataSource);
+                        //// TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
+                        locationSyncher.acceptRide(rideId);
+                        locationSyncher.storePendingLocations(rideId);
+                        dataSource.close();
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                    }
+                };
+                asyncTask.setShowProgress(false);
+                asyncTask.execute();
+                break;
+        }
     }
 }

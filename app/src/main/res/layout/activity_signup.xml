@@ -91,11 +91,11 @@
         android:id="@+id/login" />
 
     <Button
-        android:text="Location"
+        android:text="Get Bike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/resultUserId"
         android:layout_alignEnd="@+id/signup"
         android:layout_marginTop="16dp"
-        android:id="@+id/location" />
+        android:id="@+id/requestRide" />
 </RelativeLayout>

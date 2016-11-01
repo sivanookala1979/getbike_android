@@ -11,8 +11,8 @@ import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.syncher.LoginSyncher;
 
-
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
+
     TextView resultUserId;
 
     @Override
@@ -24,8 +24,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         resultUserId = (TextView) findViewById(R.id.resultUserId);
         Button login = (Button) findViewById(R.id.login);
         login.setOnClickListener(this);
-        Button location = (Button) findViewById(R.id.location);
-        location.setOnClickListener(this);
+        Button requestRide = (Button) findViewById(R.id.requestRide);
+        requestRide.setOnClickListener(this);
+
     }
 
     @Override
@@ -44,20 +45,18 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void afterPostExecute() {
                         if (userID != null) {
-                            resultUserId.setText(userID+"");
+                            resultUserId.setText(userID + "");
                         }
                     }
                 };
                 asyncTask.setShowProgress(false);
                 asyncTask.execute();
                 break;
-            case R.id.login:
+            case R.id.requestRide:
                 Intent intent = new Intent(this, RequestRideActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.location:
-                startActivity(new Intent(this, LocationActivity.class));
-                break;
+
         }
     }
 

@@ -16,7 +16,6 @@ public class CeroneDatabaseHelper implements IDatabaseHelper {
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
     }
 
     @Override

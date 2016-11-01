@@ -33,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     }
 
     public static String createTable(String tableName, String... columnNames) {
-        String result = "create table if not exists " + tableName + "(";
+        String result = "create table if not exists " + tableName + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,";
         for (int index = 0; index < columnNames.length; index++) {
             String columnName = columnNames[index];
             result += columnName + (index != columnNames.length - 1 ? " TEXT, " : " TEXT");
