@@ -1,6 +1,7 @@
 package com.vave.getbike.adapter;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,15 +46,15 @@ public class LocationAdapter extends ArrayAdapter<RideLocation> {
             TextView tt3 = (TextView) v.findViewById(R.id.longitude);
 
             if (tt1 != null) {
-                tt1.setText(p.getLocationTime()+"");
+                tt1.setText(DateUtils.formatDateTime(getContext(), p.getLocationTime().getTime(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE ));
             }
 
             if (tt2 != null) {
-                tt2.setText(p.getLatitude()+"");
+                tt2.setText(p.getLatitude() + "");
             }
 
             if (tt3 != null) {
-                tt3.setText(p.getLongitude()+"");
+                tt3.setText(p.getLongitude() + "");
             }
         }
 

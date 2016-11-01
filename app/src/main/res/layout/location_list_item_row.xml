@@ -14,10 +14,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:height="40sp"
+            android:height="25sp"
             android:text="Location Time"
             android:textColor="#0000FF"
             android:textStyle="bold"
+            android:textSize="12dp"
             android:typeface="monospace" />
 
         <TextView
@@ -25,10 +26,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:height="40sp"
+            android:height="25sp"
             android:text="@string/latitude_label"
             android:textColor="#0000FF"
             android:textStyle="bold"
+            android:textSize="12dp"
             android:typeface="monospace" />
 
         <TextView
@@ -36,11 +38,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:height="40sp"
+            android:height="25sp"
             android:gravity="right"
             android:text="@string/longitude_label"
             android:textColor="#0000FF"
             android:textStyle="bold"
+            android:textSize="12dp"
             android:typeface="monospace" />
     </TableRow>
 

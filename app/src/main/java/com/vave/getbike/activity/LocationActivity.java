@@ -294,7 +294,8 @@ public class LocationActivity extends ActionBarActivity implements
             rideLocation.setLongitude(mCurrentLocation.getLongitude());
             rideLocation.setLocationTime(mLastUpdateTimeAsDate);
             locations.add(0, rideLocation);
-            adapter.notifyDataSetChanged();
+            adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
+            listView.setAdapter(adapter);
         } else {
             mLatitudeTextView.setText("Latitude");
             mLongitudeTextView.setText("Longitude");
@@ -386,7 +387,8 @@ public class LocationActivity extends ActionBarActivity implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        mLastUpdateTimeAsDate = new Date();
+        mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
         updateUI();
         Toast.makeText(this, getResources().getString(R.string.location_updated_message),
                 Toast.LENGTH_SHORT).show();
