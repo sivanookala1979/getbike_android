@@ -55,4 +55,26 @@ public class LoginSyncher extends BaseSyncher {
         }.handle();
         return result.getValue();
     }
+
+    public boolean loginWithOtp(final String mobileNumber, final String otpNumber) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+        new JsonPostHandler("/loginWithOtp") {
+
+            @Override
+            protected void prepareRequest() {
+                put("phoneNumber", mobileNumber);
+                put("otp", otpNumber);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValue(true);
+                    System.out.println(jsonResult.get("authToken"));
+                    BaseSyncher.setAccessToken((String)jsonResult.get("authToken"));
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
 }

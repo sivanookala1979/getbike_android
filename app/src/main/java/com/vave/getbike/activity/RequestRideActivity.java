@@ -39,8 +39,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void process() {
                         RideSyncher sut = new RideSyncher();
-                        //// TODO: 01/11/16 : This needs to be removed.
-                        BaseSyncher.testSetup();
                         Ride ride = sut.requestRide(12.22, 87.221);
                         rideID = ride.getRideId();
                     }

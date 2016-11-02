@@ -427,14 +427,11 @@ public class LocationActivity extends ActionBarActivity implements
 
                     @Override
                     public void process() {
-
-                        //// TODO: 01/11/16 : This needs to be removed.
-                        BaseSyncher.testSetup();
                         RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
                         dataSource.setUpdataSource();
                         RideLocationSyncher locationSyncher = new RideLocationSyncher();
                         locationSyncher.setDataSource(dataSource);
-                        //// TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
+                        // TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
                         locationSyncher.acceptRide(rideId);
                         locationSyncher.storePendingLocations(rideId);
                         dataSource.close();
