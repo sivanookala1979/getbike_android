@@ -34,7 +34,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.requestRide:
                 rideID = null;
-                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+                new GetBikeAsyncTask(RequestRideActivity.this) {
 
                     @Override
                     public void process() {
@@ -49,10 +49,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                             getBikeResult.setText(rideID + "");
                         }
                     }
-                };
-                asyncTask.setShowProgress(false);
-                asyncTask.execute();
-
+                }.execute();
                 break;
 
             case R.id.startRide:

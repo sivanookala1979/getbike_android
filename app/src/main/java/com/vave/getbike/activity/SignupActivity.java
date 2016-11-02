@@ -35,7 +35,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signup:
-                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+                new GetBikeAsyncTask(SignupActivity.this) {
                     CallStatus callStatus = null;
 
                     @Override
@@ -52,9 +52,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                             ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
                         }
                     }
-                };
-                asyncTask.setShowProgress(false);
-                asyncTask.execute();
+                }.execute();
                 break;
             case R.id.login: {
                 Intent intent = new Intent(this, LoginActivity.class);

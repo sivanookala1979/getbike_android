@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.send_otp: {
                 final String mobileNumber = ((TextView) findViewById(R.id.mobile)).getText() + "";
-                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+                new GetBikeAsyncTask(LoginActivity.this) {
                     boolean result = false;
 
                     @Override
@@ -43,15 +43,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void afterPostExecute() {
 
                     }
-                };
-                asyncTask.setShowProgress(false);
-                asyncTask.execute();
+                }.execute();
             }
             break;
             case R.id.login: {
                 final String mobileNumber = ((TextView) findViewById(R.id.mobile)).getText() + "";
                 final String otp = ((TextView) findViewById(R.id.received_otp)).getText() + "";
-                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+                new GetBikeAsyncTask(LoginActivity.this) {
                     boolean result = false;
 
                     @Override
@@ -68,11 +66,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             ToastHelper.redToast(getApplicationContext(), "Failed to login.");
                         }
-
                     }
-                };
-                asyncTask.setShowProgress(false);
-                asyncTask.execute();
+                }.execute();
+
             }
             break;
         }

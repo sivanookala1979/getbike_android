@@ -38,9 +38,7 @@ import com.vave.getbike.adapter.LocationAdapter;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.RideLocation;
-import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideLocationSyncher;
-import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -423,7 +421,7 @@ public class LocationActivity extends ActionBarActivity implements
         switch (v.getId()) {
             case R.id.stop_updates_button:
                 stopUpdatesButtonHandler(v);
-                GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(getApplicationContext()) {
+                new GetBikeAsyncTask(LocationActivity.this) {
 
                     @Override
                     public void process() {
@@ -440,9 +438,7 @@ public class LocationActivity extends ActionBarActivity implements
                     @Override
                     public void afterPostExecute() {
                     }
-                };
-                asyncTask.setShowProgress(false);
-                asyncTask.execute();
+                }.execute();
                 break;
         }
     }
