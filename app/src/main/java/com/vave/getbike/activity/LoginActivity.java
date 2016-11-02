@@ -14,6 +14,19 @@ import com.vave.getbike.syncher.LoginSyncher;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static LoginActivity inst;
+    TextView receivedOtp;
+
+    public static LoginActivity instance() {
+        return inst;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        inst = this;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Button login = (Button) findViewById(R.id.login);
         login.setOnClickListener(this);
+        receivedOtp = (TextView) findViewById(R.id.received_otp);
     }
 
     @Override
@@ -72,5 +86,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             break;
         }
+    }
+
+    public void updateOtp(String receivedOtp) {
+        this.receivedOtp.setText(receivedOtp);
     }
 }
