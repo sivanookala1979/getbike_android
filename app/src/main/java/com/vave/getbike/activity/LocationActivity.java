@@ -37,11 +37,13 @@ import com.vave.getbike.R;
 import com.vave.getbike.adapter.LocationAdapter;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.RideLocationSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,9 +95,11 @@ public class LocationActivity extends ActionBarActivity implements
     // UI Widgets.
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
+    protected Button mCloseRideButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
+    protected TextView mTotalDistanceTextView;
     protected ListView listView;
     protected LocationAdapter adapter;
     // Labels.
@@ -123,9 +127,11 @@ public class LocationActivity extends ActionBarActivity implements
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
+        mCloseRideButton = (Button) findViewById(R.id.closeRide);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+        mTotalDistanceTextView = (TextView) findViewById(R.id.totalDistance);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
@@ -135,6 +141,7 @@ public class LocationActivity extends ActionBarActivity implements
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
         mStopUpdatesButton.setOnClickListener(this);
+        mCloseRideButton.setOnClickListener(this);
 
         listView = (ListView) findViewById(R.id.locationsList);
         adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
@@ -439,6 +446,27 @@ public class LocationActivity extends ActionBarActivity implements
 
                     @Override
                     public void afterPostExecute() {
+                    }
+                }.execute();
+                break;
+            case R.id.closeRide:
+                mTotalDistanceTextView.setText("Calculating Distance");
+                new GetBikeAsyncTask(LocationActivity.this) {
+                    Ride closedRide = null;
+
+                    @Override
+                    public void process() {
+                        RideSyncher sut = new RideSyncher();
+                        closedRide = sut.closeRide(rideId);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                        if (closedRide != null) {
+                            DecimalFormat decimalFormat = new DecimalFormat();
+                            mTotalDistanceTextView.setText(decimalFormat.format(closedRide.getOrderDistance()));
+                        }
+
                     }
                 }.execute();
                 break;

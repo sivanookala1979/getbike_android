@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.SMSListener;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.syncher.LoginSyncher;
 
@@ -16,6 +17,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static LoginActivity inst;
     TextView receivedOtp;
+    SMSListener smsListener;
 
     public static LoginActivity instance() {
         return inst;
@@ -90,5 +92,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void updateOtp(String receivedOtp) {
         this.receivedOtp.setText(receivedOtp);
+        if (smsListener != null) {
+            smsListener.smsReceived();
+        }
+    }
+
+    public void setSmsListener(SMSListener smsListener) {
+        this.smsListener = smsListener;
     }
 }

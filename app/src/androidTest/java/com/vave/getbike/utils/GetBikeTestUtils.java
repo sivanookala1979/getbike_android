@@ -21,7 +21,7 @@ public class GetBikeTestUtils {
                 TextView textView = (TextView) item;
                 boolean result = false;
                 if (textView.getText() != null) {
-                    if (Integer.parseInt(textView.getText() + "") > 0) {
+                    if (Double.parseDouble(textView.getText() + "") > 0) {
                         result = true;
                     }
                 }

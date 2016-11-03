@@ -1,15 +1,20 @@
 package com.vave.getbike.activity;
 
 import android.os.SystemClock;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingPolicies;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.vave.getbike.R;
+import com.vave.getbike.utils.SMSIdlingResource;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -27,15 +32,18 @@ import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
 public class LoginActivityTest {
 
     @Rule
-    public ActivityTestRule<SignupActivity> mActivityTestRule = new ActivityTestRule<>(SignupActivity.class);
+    public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void loginTESTHappyFlow() {
-        onView(withId(R.id.login)).perform(click());
+        SMSIdlingResource smsIdlingResource = new SMSIdlingResource(mActivityTestRule.getActivity());
+        IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS);
+        Espresso.registerIdlingResources(smsIdlingResource);
+
         onView(withId(R.id.mobile))
                 .perform(typeText("9949287789"), closeSoftKeyboard());
         onView(withId(R.id.send_otp)).perform(click());
-        SystemClock.sleep(40000);
+        smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
         onView(withId(R.id.requestRide)).perform(click());
@@ -44,7 +52,9 @@ public class LoginActivityTest {
         onView(withId(R.id.start_updates_button)).perform(click());
         SystemClock.sleep(20000);
         onView(withId(R.id.stop_updates_button)).perform(click());
-        SystemClock.sleep(20000);
+        onView(withId(R.id.closeRide)).perform(click());
+        onView(withId(R.id.totalDistance)).check(matches(isPositive()));
+        SystemClock.sleep(10000);
 
     }
 

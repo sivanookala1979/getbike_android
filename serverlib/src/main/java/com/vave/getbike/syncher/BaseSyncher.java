@@ -11,8 +11,8 @@ public class BaseSyncher {
 
     public static ExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 
-    public static String BASE_URL = "http://192.168.10.18:9000";
-    //public static String BASE_URL = "http://videos.meritcampus.com:9000";
+    //public static String BASE_URL = "http://192.168.10.18:9000";
+    public static String BASE_URL = "http://videos.meritcampus.com:9000";
 
     public static String accessToken = null;
 
@@ -28,8 +28,8 @@ public class BaseSyncher {
         exceptionHandler.handleException(e);
     }
 
-    public static void testSetup(){
-        BaseSyncher.setAccessToken("baf2b8bc-1562-466b-be53-2ad44817e969");
-        //BaseSyncher.setAccessToken("3584e6e4-a461-4660-a3d0-719a9f121b0c");
+    public static void testSetup() {
+        //BaseSyncher.setAccessToken("baf2b8bc-1562-466b-be53-2ad44817e969");
+        BaseSyncher.setAccessToken("3584e6e4-a461-4660-a3d0-719a9f121b0c");
     }
 }
