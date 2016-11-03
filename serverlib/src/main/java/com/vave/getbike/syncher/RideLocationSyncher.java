@@ -18,20 +18,6 @@ public class RideLocationSyncher extends BaseSyncher {
 
     RideLocationDataSource dataSource;
 
-    public boolean acceptRide(long rideId) {
-        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
-        result.setValue(false);
-        new JsonGetHandler("/acceptRide?rideId=" + rideId) {
-
-            @Override
-            protected void processResult(JSONObject jsonResult) throws Exception {
-                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-                    result.setValue(true);
-                }
-            }
-        }.handle();
-        return result.getValue();
-    }
 
     public boolean storePendingLocations(long rideId) {
         boolean result = false;

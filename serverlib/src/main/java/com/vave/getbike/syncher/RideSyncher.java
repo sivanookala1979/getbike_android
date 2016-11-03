@@ -23,4 +23,19 @@ public class RideSyncher extends BaseSyncher {
         }.handle();
         return result.getValue();
     }
+
+    public boolean acceptRide(long rideId) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/acceptRide?rideId=" + rideId) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
 }

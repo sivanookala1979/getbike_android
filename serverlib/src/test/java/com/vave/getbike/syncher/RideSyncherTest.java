@@ -24,6 +24,14 @@ public class RideSyncherTest {
         assertTrue(ride.getRideId() > 0);
     }
 
+    @Test
+    public void acceptRideTESTHappyFlow() {
+        RideSyncher rideSyncher = new RideSyncher();
+        Ride ride = rideSyncher.requestRide(24.56, 24.57);
+        boolean actual = sut.acceptRide(ride.getRideId());
+        assertTrue(actual);
+    }
+
     @Before
     public void setUp() {
         sut = new RideSyncher();

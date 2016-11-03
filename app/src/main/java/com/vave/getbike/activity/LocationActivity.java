@@ -39,6 +39,7 @@ import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.RideLocationSyncher;
+import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -429,8 +430,9 @@ public class LocationActivity extends ActionBarActivity implements
                         dataSource.setUpdataSource();
                         RideLocationSyncher locationSyncher = new RideLocationSyncher();
                         locationSyncher.setDataSource(dataSource);
+                        RideSyncher rideSyncher = new RideSyncher();
                         // TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
-                        locationSyncher.acceptRide(rideId);
+                        rideSyncher.acceptRide(rideId);
                         locationSyncher.storePendingLocations(rideId);
                         dataSource.close();
                     }
