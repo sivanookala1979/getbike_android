@@ -5,10 +5,13 @@ package com.vave.getbike.model;
  */
 
 public class Ride {
+
     Long rideId;
     String riderName;
     Long riderId;
     String riderPhoneNumber;
+    Double orderAmount;
+    Double orderDistance;
 
     public String getRiderName() {
         return riderName;
@@ -41,5 +44,21 @@ public class Ride {
 
     public void setRideId(Long rideId) {
         this.rideId = rideId;
+    }
+
+    public Double getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(Double orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+
+    public Double getOrderDistance() {
+        return orderDistance;
+    }
+
+    public void setOrderDistance(Double orderDistance) {
+        this.orderDistance = orderDistance;
     }
 }

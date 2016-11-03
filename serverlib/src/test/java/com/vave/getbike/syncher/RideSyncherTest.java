@@ -1,10 +1,13 @@
 package com.vave.getbike.syncher;
 
+import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Date;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,10 +29,29 @@ public class RideSyncherTest {
 
     @Test
     public void acceptRideTESTHappyFlow() {
-        RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride = sut.requestRide(24.56, 24.57);
         boolean actual = sut.acceptRide(ride.getRideId());
         assertTrue(actual);
+    }
+
+    @Test
+    public void closeRideTESTHappyFlow() {
+        // Setup
+        Ride ride = sut.requestRide(24.56, 24.57);
+        sut.acceptRide(ride.getRideId());
+        RideLocationDataSource dataSource = new RideLocationDataSource(null);
+        dataSource.setUpdataSource();
+        dataSource.clearAll();
+        dataSource.insert(ride.getRideId(), new Date(), 21.98, 28.65, false);
+        dataSource.insert(ride.getRideId(), new Date(), 21.986, 28.655, false);
+        RideLocationSyncher locationSyncher = new RideLocationSyncher();
+        locationSyncher.setDataSource(dataSource);
+        locationSyncher.storePendingLocations(ride.getRideId());
+        // Exercise SUT
+        Ride actual = sut.closeRide(ride.getRideId());
+        // Verify
+        assertNotNull(actual);
+        assertTrue(actual.getOrderDistance() > 0);
     }
 
     @Before
