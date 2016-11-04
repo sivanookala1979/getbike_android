@@ -60,6 +60,7 @@
             />
     </LinearLayout>
 
+
     <TextView
         android:id="@+id/latitude_text"
         android:layout_width="wrap_content"
@@ -84,6 +85,7 @@
         android:layout_marginStart="@dimen/small_margin"
         android:textSize="@dimen/default_text_size"/>
 
+
     <TextView
         android:id="@+id/totalDistance"
         android:layout_width="wrap_content"
@@ -95,8 +97,21 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
 
-    <ListView
-        android:id="@+id/locationsList"
+    <TextView
+        android:id="@+id/locationCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginStart="@dimen/small_margin"
+        android:text="Count"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

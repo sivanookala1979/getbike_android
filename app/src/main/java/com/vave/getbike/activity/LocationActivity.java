@@ -19,6 +19,7 @@ package com.vave.getbike.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,12 +28,17 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
-import com.vave.getbike.adapter.LocationAdapter;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.ToastHelper;
@@ -62,7 +68,7 @@ import java.util.List;
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
 public class LocationActivity extends ActionBarActivity implements
-        android.location.LocationListener, View.OnClickListener {
+        android.location.LocationListener, View.OnClickListener, OnMapReadyCallback {
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -99,8 +105,10 @@ public class LocationActivity extends ActionBarActivity implements
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
     protected TextView mTotalDistanceTextView;
-    protected ListView listView;
-    protected LocationAdapter adapter;
+    protected TextView mLocationCountTextView;
+
+    //    protected ListView listView;
+    //protected LocationAdapter adapter;
     // Labels.
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
@@ -117,6 +125,7 @@ public class LocationActivity extends ActionBarActivity implements
     protected Date mLastUpdateTimeAsDate;
     List<RideLocation> locations = new ArrayList<>();
     LocationManager locationManager;
+    private GoogleMap mMap;
     private long rideId;
 
     @Override
@@ -132,6 +141,7 @@ public class LocationActivity extends ActionBarActivity implements
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mTotalDistanceTextView = (TextView) findViewById(R.id.totalDistance);
+        mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
@@ -143,9 +153,9 @@ public class LocationActivity extends ActionBarActivity implements
         mStopUpdatesButton.setOnClickListener(this);
         mCloseRideButton.setOnClickListener(this);
 
-        listView = (ListView) findViewById(R.id.locationsList);
-        adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
-        listView.setAdapter(adapter);
+//        listView = (ListView) findViewById(R.id.locationsList);
+//        adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
+//        listView.setAdapter(adapter);
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -153,6 +163,9 @@ public class LocationActivity extends ActionBarActivity implements
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleApiClient();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     /**
@@ -280,7 +293,7 @@ public class LocationActivity extends ActionBarActivity implements
 //                mGoogleApiClient, mLocationRequest, this);
         try {
             locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 2000, 2, this);
+                    LocationManager.GPS_PROVIDER, 3000, 2, this);
         } catch (SecurityException ex) {
             ex.printStackTrace();
             ToastHelper.redToast(getApplicationContext(), "Could not request location updates");
@@ -321,8 +334,27 @@ public class LocationActivity extends ActionBarActivity implements
             dataSource.insert(rideId, mLastUpdateTimeAsDate, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
             locations = dataSource.getRideLocations(rideId);
             dataSource.close();
-            adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
-            listView.setAdapter(adapter);
+
+            if (mMap != null) {
+                PolylineOptions polylineOptions = new PolylineOptions();
+                LatLng[] latLngs = new LatLng[locations.size()];
+                int i = 0;
+                for (RideLocation location : locations) {
+                    latLngs[i] = new LatLng(location.getLatitude(), location.getLongitude());
+                    i++;
+                }
+
+                mMap.addPolyline(polylineOptions
+                        .add(latLngs)
+                        .width(5)
+                        .color(Color.RED));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+                mMap.animateCamera(cameraUpdate);
+
+            }
+            mLocationCountTextView.setText("  Count " + locations.size());
+//            adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
+//            listView.setAdapter(adapter);
         } else {
             mLatitudeTextView.setText("Latitude");
             mLongitudeTextView.setText("Longitude");
@@ -470,5 +502,13 @@ public class LocationActivity extends ActionBarActivity implements
                 }.execute();
                 break;
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(14.902696, 79.993980), 18);
+        mMap.animateCamera(cameraUpdate);
+
     }
 }
