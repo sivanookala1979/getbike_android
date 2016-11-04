@@ -16,8 +16,13 @@
 
 package com.vave.getbike.activity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,17 +31,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.vave.getbike.R;
 import com.vave.getbike.adapter.LocationAdapter;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.RideLocationSyncher;
@@ -63,7 +62,7 @@ import java.util.List;
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
 public class LocationActivity extends ActionBarActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener, LocationListener, View.OnClickListener {
+        android.location.LocationListener, View.OnClickListener {
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -83,11 +82,11 @@ public class LocationActivity extends ActionBarActivity implements
     /**
      * Provides the entry point to Google Play services.
      */
-    protected GoogleApiClient mGoogleApiClient;
+    // protected GoogleApiClient mGoogleApiClient;
     /**
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
-    protected LocationRequest mLocationRequest;
+    //protected LocationRequest mLocationRequest;
     /**
      * Represents a geographical location.
      */
@@ -117,6 +116,7 @@ public class LocationActivity extends ActionBarActivity implements
     protected String mLastUpdateTime;
     protected Date mLastUpdateTimeAsDate;
     List<RideLocation> locations = new ArrayList<>();
+    LocationManager locationManager;
     private long rideId;
 
     @Override
@@ -193,12 +193,27 @@ public class LocationActivity extends ActionBarActivity implements
      */
     protected synchronized void buildGoogleApiClient() {
         Log.i(TAG, "Building GoogleApiClient");
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        createLocationRequest();
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API)
+//                .build();
+        locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        try {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                onLocationChanged(location);
+                ToastHelper.blueToast(getApplicationContext(), "Last location is " + location.getLatitude() + " " + location.getLongitude() + " " + location.getProvider());
+
+            } else {
+                ToastHelper.blueToast(getApplicationContext(), "Location could not be found.");
+            }
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+        }
+
+        //createLocationRequest();
     }
 
     /**
@@ -214,21 +229,21 @@ public class LocationActivity extends ActionBarActivity implements
      * These settings are appropriate for mapping applications that show real-time location
      * updates.
      */
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-
-        // Sets the desired interval for active location updates. This interval is
-        // inexact. You may not receive updates at all if no location sources are available, or
-        // you may receive them slower than requested. You may also receive updates faster than
-        // requested if other applications are requesting location at a faster interval.
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
+//    protected void createLocationRequest() {
+//        mLocationRequest = new LocationRequest();
+//
+//        // Sets the desired interval for active location updates. This interval is
+//        // inexact. You may not receive updates at all if no location sources are available, or
+//        // you may receive them slower than requested. You may also receive updates faster than
+//        // requested if other applications are requesting location at a faster interval.
+//        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+//
+//        // Sets the fastest rate for active location updates. This interval is exact, and your
+//        // application will never receive updates faster than this value.
+//        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+//
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//    }
 
     /**
      * Handles the Start Updates button and requests start of location updates. Does nothing if
@@ -261,8 +276,15 @@ public class LocationActivity extends ActionBarActivity implements
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+//        LocationServices.FusedLocationApi.requestLocationUpdates(
+//                mGoogleApiClient, mLocationRequest, this);
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 2000, 2, this);
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+            ToastHelper.redToast(getApplicationContext(), "Could not request location updates");
+        }
     }
 
     /**
@@ -317,74 +339,51 @@ public class LocationActivity extends ActionBarActivity implements
 
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Within {@code onPause()}, we pause location updates, but leave the
-        // connection to GoogleApiClient intact.  Here, we resume receiving
-        // location updates if the user has requested them.
-
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
+        // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-
-        super.onStop();
+        locationManager.removeUpdates(this);
     }
 
     /**
      * Runs when a GoogleApiClient object successfully connects.
      */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "Connected to GoogleApiClient");
-
-        // If the initial location was never previously requested, we use
-        // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
-        // its value in the Bundle and check for it in onCreate(). We
-        // do not request it again unless the user specifically requests location updates by pressing
-        // the Start Updates button.
-        //
-        // Because we cache the value of the initial location in the Bundle, it means that if the
-        // user launches the activity,
-        // moves to a new location, and then changes the device orientation, the original location
-        // is displayed as the activity is re-created.
-        if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTimeAsDate = new Date();
-            mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
-            updateUI();
-        }
-
-        // If the user presses the Start Updates button before GoogleApiClient connects, we set
-        // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
-        // the value of mRequestingLocationUpdates and if it is true, we start location updates.
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
+//    @Override
+//    public void onConnected(Bundle connectionHint) {
+//        Log.i(TAG, "Connected to GoogleApiClient");
+//
+//        // If the initial location was never previously requested, we use
+//        // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
+//        // its value in the Bundle and check for it in onCreate(). We
+//        // do not request it again unless the user specifically requests location updates by pressing
+//        // the Start Updates button.
+//        //
+//        // Because we cache the value of the initial location in the Bundle, it means that if the
+//        // user launches the activity,
+//        // moves to a new location, and then changes the device orientation, the original location
+//        // is displayed as the activity is re-created.
+//        if (mCurrentLocation == null) {
+//            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//            mLastUpdateTimeAsDate = new Date();
+//            mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
+//            updateUI();
+//        }
+//
+//        // If the user presses the Start Updates button before GoogleApiClient connects, we set
+//        // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
+//        // the value of mRequestingLocationUpdates and if it is true, we start location updates.
+//        if (mRequestingLocationUpdates) {
+//            startLocationUpdates();
+//        }
+//    }
 
     /**
      * Callback that fires when the location changes.
@@ -400,18 +399,18 @@ public class LocationActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
-        mGoogleApiClient.connect();
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     /**
