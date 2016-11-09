@@ -45,6 +45,15 @@ public class LoginSyncherTest {
         assertTrue(actual);
     }
 
+    @Test
+    public void storeGcmCodeTESTHappyFlow() {
+        BaseSyncher.testSetup();
+        String gcmCode = "cdcszGene8c:APA91bHQYHdw6Y1rM0JfWrtb_P36-OtE9_wYQb2hDxfPhZhDLYM9DKZipd2fT6QQnV1BUnkJUTZqbuuvotukeixEiMblhLCjQhVgeg9O91PrMxkBYJrnsCdJe3NpeAHGFGpzKbhuSvWz";
+        boolean actual = sut.storeGcmCode(gcmCode);
+        assertTrue(actual);
+
+    }
+
     @Before
     public void setUp() {
         sut = new LoginSyncher();

@@ -3,10 +3,13 @@ package com.vave.getbike.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.SMSListener;
@@ -70,8 +73,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void process() {
-                        LoginSyncher loginSyncher = new LoginSyncher();
+                        final LoginSyncher loginSyncher = new LoginSyncher();
                         result = loginSyncher.loginWithOtp(mobileNumber, otp);
+                        if (result) {
+
+                            try {
+                                InstanceID instanceID = InstanceID.getInstance(LoginActivity.this);
+                                String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                                Log.i("TAG", "GCM Registration Token: " + token);
+                                loginSyncher.storeGcmCode(token);
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
                     }
 
                     @Override

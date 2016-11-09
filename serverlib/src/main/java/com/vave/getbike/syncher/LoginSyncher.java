@@ -77,4 +77,19 @@ public class LoginSyncher extends BaseSyncher {
         }.handle();
         return result.getValue();
     }
+
+    public boolean storeGcmCode(String gcmCode) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/storeGcmCode?gcmCode=" + gcmCode) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
 }
