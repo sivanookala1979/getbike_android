@@ -24,14 +24,14 @@ public class RideLocationSyncerTest {
     public void storePendingLocationsTESTHappyFlow() {
         RideSyncher rideSyncher = new RideSyncher();
         Ride ride = rideSyncher.requestRide(24.56, 24.57);
-        rideSyncher.acceptRide(ride.getRideId());
+        rideSyncher.acceptRide(ride.getId());
         RideLocationDataSource dataSource = new RideLocationDataSource(null);
         dataSource.setUpdataSource();
         dataSource.clearAll();
-        dataSource.insert(ride.getRideId(), new Date(), 21.98, 28.65, false);
-        dataSource.insert(ride.getRideId(), new Date(), 21.986, 28.655, false);
+        dataSource.insert(ride.getId(), new Date(), 21.98, 28.65, false);
+        dataSource.insert(ride.getId(), new Date(), 21.986, 28.655, false);
         sut.setDataSource(dataSource);
-        boolean actual = sut.storePendingLocations(ride.getRideId());
+        boolean actual = sut.storePendingLocations(ride.getId());
         assertTrue(actual);
         dataSource.close();
     }

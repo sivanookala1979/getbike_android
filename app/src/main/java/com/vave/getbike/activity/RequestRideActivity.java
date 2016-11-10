@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;
-import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 public class RequestRideActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,7 +39,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                     public void process() {
                         RideSyncher sut = new RideSyncher();
                         Ride ride = sut.requestRide(12.22, 87.221);
-                        rideID = ride.getRideId();
+                        rideID = ride.getId();
                     }
 
                     @Override

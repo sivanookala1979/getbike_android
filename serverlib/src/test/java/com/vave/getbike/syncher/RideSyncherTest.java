@@ -1,5 +1,6 @@
 package com.vave.getbike.syncher;
 
+import com.vave.getbike.android.AndroidStubsFactory;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
 
@@ -9,6 +10,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,13 +26,21 @@ public class RideSyncherTest {
     public void requestRideTESTHappyFlow() {
         Ride ride = sut.requestRide(54.2122, 98.22111);
         assertNotNull(ride);
-        assertTrue(ride.getRideId() > 0);
+        assertTrue(ride.getId() > 0);
+    }
+
+    @Test
+    public void getRideByIdTESTHappyFlow() {
+        Ride ride = sut.requestRide(24.56, 24.57);
+        Ride actual = sut.getRideById(ride.getId());
+        assertNotNull(actual);
+        assertEquals(ride.getId(), actual.getId());
     }
 
     @Test
     public void acceptRideTESTHappyFlow() {
         Ride ride = sut.requestRide(24.56, 24.57);
-        boolean actual = sut.acceptRide(ride.getRideId());
+        boolean actual = sut.acceptRide(ride.getId());
         assertTrue(actual);
     }
 
@@ -38,17 +48,17 @@ public class RideSyncherTest {
     public void closeRideTESTHappyFlow() {
         // Setup
         Ride ride = sut.requestRide(24.56, 24.57);
-        sut.acceptRide(ride.getRideId());
+        sut.acceptRide(ride.getId());
         RideLocationDataSource dataSource = new RideLocationDataSource(null);
         dataSource.setUpdataSource();
         dataSource.clearAll();
-        dataSource.insert(ride.getRideId(), new Date(), 21.98, 28.65, false);
-        dataSource.insert(ride.getRideId(), new Date(), 21.986, 28.655, false);
+        dataSource.insert(ride.getId(), new Date(), 21.98, 28.65, false);
+        dataSource.insert(ride.getId(), new Date(), 21.986, 28.655, false);
         RideLocationSyncher locationSyncher = new RideLocationSyncher();
         locationSyncher.setDataSource(dataSource);
-        locationSyncher.storePendingLocations(ride.getRideId());
+        locationSyncher.storePendingLocations(ride.getId());
         // Exercise SUT
-        Ride actual = sut.closeRide(ride.getRideId());
+        Ride actual = sut.closeRide(ride.getId());
         // Verify
         assertNotNull(actual);
         assertTrue(actual.getOrderDistance() > 0);
@@ -58,6 +68,7 @@ public class RideSyncherTest {
     public void setUp() {
         sut = new RideSyncher();
         BaseSyncher.testSetup();
+        AndroidStubsFactory.IS_TEST = true;
     }
 
     @After

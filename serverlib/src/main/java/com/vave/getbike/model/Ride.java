@@ -6,7 +6,7 @@ package com.vave.getbike.model;
 
 public class Ride {
 
-    Long rideId;
+    Long id;
     String riderName;
     Long riderId;
     String riderPhoneNumber;
@@ -37,13 +37,13 @@ public class Ride {
         this.riderPhoneNumber = riderPhoneNumber;
     }
 
-    public Long getRideId() {
+    public Long getId() {
 
-        return rideId;
+        return id;
     }
 
-    public void setRideId(Long rideId) {
-        this.rideId = rideId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getOrderAmount() {

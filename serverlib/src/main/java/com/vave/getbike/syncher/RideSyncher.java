@@ -1,5 +1,6 @@
 package com.vave.getbike.syncher;
 
+import com.google.gson.Gson;
 import com.vave.getbike.model.Ride;
 
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ public class RideSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 Ride ride = new Ride();
-                ride.setRideId(jsonResult.getLong("rideId"));
+                ride.setId(jsonResult.getLong("rideId"));
                 result.setValue(ride);
             }
         }.handle();
@@ -48,8 +49,24 @@ public class RideSyncher extends BaseSyncher {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
                     Ride ride = new Ride();
                     JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
-                    ride.setRideId(jsonRideObject.getLong("id"));
+                    ride.setId(jsonRideObject.getLong("id"));
                     ride.setOrderDistance(jsonRideObject.getDouble("orderDistance"));
+                    result.setValue(ride);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public Ride getRideById(long rideId) {
+        final GetBikePointer<Ride> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/getRideById?rideId=" + rideId) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
+                    Ride ride = new Gson().fromJson(jsonRideObject.toString(), Ride.class);
                     result.setValue(ride);
                 }
             }
