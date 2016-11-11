@@ -7,6 +7,11 @@ package com.vave.getbike.model;
 public class Ride {
 
     Long id;
+    String requestorName;
+    String requestorAddress;
+    String requestorPhoneNumber;
+    Double startLatitude;
+    Double startLongitude;
     String riderName;
     Long riderId;
     String riderPhoneNumber;
@@ -60,5 +65,46 @@ public class Ride {
 
     public void setOrderDistance(Double orderDistance) {
         this.orderDistance = orderDistance;
+    }
+
+    public String getRequestorAddress() {
+        return requestorAddress;
+    }
+
+    public void setRequestorAddress(String requestorAddress) {
+        this.requestorAddress = requestorAddress;
+    }
+
+    public Double getStartLatitude() {
+        return startLatitude;
+    }
+
+    public void setStartLatitude(Double startLatitude) {
+        this.startLatitude = startLatitude;
+    }
+
+    public Double getStartLongitude() {
+        return startLongitude;
+    }
+
+    public void setStartLongitude(Double startLongitude) {
+        this.startLongitude = startLongitude;
+    }
+
+    public String getRequestorName() {
+
+        return requestorName;
+    }
+
+    public void setRequestorName(String requestorName) {
+        this.requestorName = requestorName;
+    }
+
+    public String getRequestorPhoneNumber() {
+        return requestorPhoneNumber;
+    }
+
+    public void setRequestorPhoneNumber(String requestorPhoneNumber) {
+        this.requestorPhoneNumber = requestorPhoneNumber;
     }
 }

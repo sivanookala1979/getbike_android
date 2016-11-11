@@ -35,6 +35,11 @@ public class ToastHelper {
 		}
 	}
 
+	public static void redToast(Context context, int id)
+	{
+		redToast(context, context.getResources().getString(id));
+	}
+
 	public static void redToast(Context context, String message) {
 		if (delayedToasting) {
 			lastContext = context;
