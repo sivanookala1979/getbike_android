@@ -28,11 +28,13 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.vave.getbike.R;
+import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.SignupActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
+    int notificationCount = 0;
 
     /**
      * Called when message is received.
@@ -45,6 +47,8 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
+        String messageType = data.getString("messageType");
+        Long rideId = data.getLong("rideId");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
@@ -66,7 +70,7 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+        sendNotification(message, messageType, rideId);
         // [END_EXCLUDE]
     }
     // [END receive_message]
@@ -76,8 +80,16 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, SignupActivity.class);
+    private void sendNotification(String message, String messageType, Long rideId) {
+
+        Intent intent = null;
+        if ("newRide".equals(messageType)) {
+            intent = new Intent(this, AcceptRejectRideActivity.class);
+            intent.putExtra("rideId", rideId);
+
+        } else {
+            intent = new Intent(this, SignupActivity.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -94,6 +106,6 @@ public class MyGcmListenerService extends GcmListenerService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(notificationCount++ /* ID of notification */, notificationBuilder.build());
     }
 }
