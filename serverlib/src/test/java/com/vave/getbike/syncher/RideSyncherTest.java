@@ -39,6 +39,7 @@ public class RideSyncherTest {
         assertNotNull(actual.getRequestorAddress());
         assertNotNull(actual.getRequestorPhoneNumber());
         assertNotNull(actual.getRequestorName());
+        assertNotNull(actual.getRequestedAt());
         assertEquals(24.56, actual.getStartLatitude());
         assertEquals(24.57, actual.getStartLongitude());
     }

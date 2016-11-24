@@ -1,7 +1,7 @@
 package com.vave.getbike.syncher;
 
-import com.google.gson.Gson;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONObject;
 
@@ -65,8 +65,9 @@ public class RideSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+
                     JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
-                    Ride ride = new Gson().fromJson(jsonRideObject.toString(), Ride.class);
+                    Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
                     ride.setRequestorAddress(jsonResult.getString("requestorAddress"));
                     ride.setRequestorName(jsonResult.getString("requestorName"));
                     ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));

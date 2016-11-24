@@ -1,5 +1,7 @@
 package com.vave.getbike.model;
 
+import java.util.Date;
+
 /**
  * Created by sivanookala on 26/10/16.
  */
@@ -17,6 +19,7 @@ public class Ride {
     String riderPhoneNumber;
     Double orderAmount;
     Double orderDistance;
+    Date requestedAt;
 
     public String getRiderName() {
         return riderName;
@@ -106,5 +109,13 @@ public class Ride {
 
     public void setRequestorPhoneNumber(String requestorPhoneNumber) {
         this.requestorPhoneNumber = requestorPhoneNumber;
+    }
+
+    public Date getRequestedAt() {
+        return requestedAt;
+    }
+
+    public void setRequestedAt(Date requestedAt) {
+        this.requestedAt = requestedAt;
     }
 }

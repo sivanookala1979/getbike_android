@@ -89,6 +89,8 @@
 
         <activity android:name=".activity.AcceptRejectRideActivity">
         </activity>
+        <activity android:name=".activity.WaitForRiderActivity">
+        </activity>
     </application>
 
 </manifest>
