@@ -46,9 +46,12 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        Log.d(TAG, "Message: " + data.getString("message"));
+        Log.d(TAG, "Message Type: " + data.getString("messageType"));
+        Log.d(TAG, "Ride Id: " + data.getString("rideId"));
         String message = data.getString("message");
         String messageType = data.getString("messageType");
-        Long rideId = data.getLong("rideId");
+        Long rideId = Long.parseLong(data.getString("rideId"));
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
