@@ -5,6 +5,7 @@ import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +36,11 @@ public class RideSyncherTest {
         Ride actual = sut.getRideById(ride.getId());
         assertNotNull(actual);
         assertEquals(ride.getId(), actual.getId());
+        assertNotNull(actual.getRequestorAddress());
+        assertNotNull(actual.getRequestorPhoneNumber());
+        assertNotNull(actual.getRequestorName());
+        assertEquals(24.56, actual.getStartLatitude());
+        assertEquals(24.57, actual.getStartLongitude());
     }
 
     @Test

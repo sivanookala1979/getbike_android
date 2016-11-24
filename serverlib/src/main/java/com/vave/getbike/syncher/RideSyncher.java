@@ -67,6 +67,9 @@ public class RideSyncher extends BaseSyncher {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
                     JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
                     Ride ride = new Gson().fromJson(jsonRideObject.toString(), Ride.class);
+                    ride.setRequestorAddress(jsonResult.getString("requestorAddress"));
+                    ride.setRequestorName(jsonResult.getString("requestorName"));
+                    ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));
                     result.setValue(ride);
                 }
             }

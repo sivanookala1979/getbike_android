@@ -12,115 +12,113 @@
     tools:context="com.vave.getbike.activity.AcceptRejectRideActivity">
 
     <TextView
-        android:text="Ride Requested By"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/textView3"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
-
-    <TextView
-        android:text="Ride Requested By"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Ride Requested By"/>
+
+    <TextView
         android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:text="Ride Requested By"/>
 
     <TextView
-        android:text="Ride Requested By"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/rideRequestedBy"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.WindowTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="14dp"/>
+        android:layout_marginTop="14dp"
+        android:text="Ride Requested By"/>
 
     <TextView
-        android:text="Address"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/rideRequestedBy"
-        android:layout_alignParentStart="true"
         android:layout_marginTop="19dp"
-        android:id="@+id/textView6"/>
+        android:text="Address"/>
 
     <TextView
-        android:text="Address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="21dp"
         android:id="@+id/rideRequestAddress"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.WindowTitle"
-        android:layout_alignParentEnd="true"/>
-
-    <TextView
-        android:text="Lat Lng"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rideRequestAddress"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="26dp"
-        android:id="@+id/textView8"/>
-
-    <TextView
-        android:text="Latitude Longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView8"
-        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView6"
         android:layout_marginTop="21dp"
+        android:text="Address"/>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/rideRequestAddress"
+        android:layout_marginTop="26dp"
+        android:text="Lat Lng"/>
+
+    <TextView
         android:id="@+id/rideRequestLatLng"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView8"
+        android:layout_marginTop="21dp"
+        android:text="Latitude Longitude"/>
 
     <Button
-        android:text="Reject Ride"
+        android:id="@+id/rejectRide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/acceptRide"
-        android:layout_toEndOf="@+id/textView3"
         android:layout_marginStart="31dp"
-        android:id="@+id/rejectRide"/>
+        android:layout_toEndOf="@+id/textView3"
+        android:text="Reject Ride"/>
 
     <TextView
-        android:text="Mobile Number"
+        android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView10"/>
+        android:text="Mobile Number"/>
 
     <TextView
-        android:text="Mobile Number"
+        android:id="@+id/rideRequestMobileNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView10"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView10"
         android:layout_marginTop="12dp"
-        android:id="@+id/rideRequestMobileNumber"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+        android:text="Mobile Number"
+        />
 
     <Button
-        android:text="Accept Ride"
+        android:id="@+id/acceptRide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/acceptRide"
-        android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/rideRequestMobileNumber"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="25dp"
         android:background="@color/colorPrimary"
+        android:text="Accept Ride"
         android:textColor="@color/white"/>
 
     <Button
-        android:text="Call"
+        android:id="@+id/callRideRequestor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/callRideRequestor"
         android:layout_alignBaseline="@+id/rideRequestMobileNumber"
         android:layout_alignBottom="@+id/rideRequestMobileNumber"
-        android:layout_toEndOf="@+id/rideRequestLatLng"/>
+        android:layout_marginLeft="40dp"
+        android:layout_toEndOf="@+id/rideRequestLatLng"
+        android:text="Call"/>
 
 </RelativeLayout>

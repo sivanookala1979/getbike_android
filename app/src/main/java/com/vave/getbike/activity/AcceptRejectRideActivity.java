@@ -1,5 +1,6 @@
 package com.vave.getbike.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -56,6 +57,8 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
                 }
             }
         }.execute();
+        acceptRide.setOnClickListener(this);
+        rejectRide.setOnClickListener(this);
     }
 
     @Override
@@ -63,8 +66,30 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
         switch (v.getId())
         {
             case R.id.acceptRide:
+                new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
+                    boolean rideAccepted = false;
+
+                    @Override
+                    public void process() {
+                        RideSyncher rideSyncher = new RideSyncher();
+                        rideAccepted = rideSyncher.acceptRide(rideId);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                        if (rideAccepted) {
+                            Intent intent = new Intent(AcceptRejectRideActivity.this, LocationActivity.class);
+                            intent.putExtra("rideId", rideId);
+                            startActivity(intent);
+                        } else {
+                            ToastHelper.redToast(AcceptRejectRideActivity.this, R.string.error_failed_to_accept_ride);
+                        }
+                        finish();
+                    }
+                }.execute();
                 break;
             case R.id.rejectRide:
+                finish();
                 break;
         }
     }
