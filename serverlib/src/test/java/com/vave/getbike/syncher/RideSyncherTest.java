@@ -5,11 +5,11 @@ import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -36,10 +36,7 @@ public class RideSyncherTest {
         Ride actual = sut.getRideById(ride.getId());
         assertNotNull(actual);
         assertEquals(ride.getId(), actual.getId());
-        assertNotNull(actual.getRequestorAddress());
-        assertNotNull(actual.getRequestorPhoneNumber());
-        assertNotNull(actual.getRequestorName());
-        assertNotNull(actual.getRequestedAt());
+        cAssertRequestorDetails(actual);
         assertEquals(24.56, actual.getStartLatitude());
         assertEquals(24.57, actual.getStartLongitude());
     }
@@ -71,6 +68,24 @@ public class RideSyncherTest {
         assertTrue(actual.getOrderDistance() > 0);
     }
 
+    @Test
+    public void openRidesTESTHappyFlow() {
+        // Setup
+        Ride ride1 = sut.requestRide(24.56, 24.57);
+        Ride ride2 = sut.requestRide(24.56, 24.57);
+        Ride ride3 = sut.requestRide(24.56, 24.57);
+        // Exercise SUT
+        List<Ride> actual = sut.openRides(24.56, 24.57);
+        // Verify
+        assertTrue(actual.size() > 3);
+        assertEquals(ride3.getId(), actual.get(0).getId());
+        assertEquals(ride2.getId(), actual.get(1).getId());
+        assertEquals(ride1.getId(), actual.get(2).getId());
+        cAssertRequestorDetails(actual.get(0));
+        cAssertRequestorDetails(actual.get(1));
+        cAssertRequestorDetails(actual.get(2));
+    }
+
     @Before
     public void setUp() {
         sut = new RideSyncher();
@@ -82,4 +97,12 @@ public class RideSyncherTest {
     public void tearDown() {
         sut = null;
     }
+
+    private void cAssertRequestorDetails(Ride actual) {
+        assertNotNull(actual.getRequestorAddress());
+        assertNotNull(actual.getRequestorPhoneNumber());
+        assertNotNull(actual.getRequestorName());
+        assertNotNull(actual.getRequestedAt());
+    }
+
 }

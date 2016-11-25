@@ -3,7 +3,12 @@ package com.vave.getbike.syncher;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.utils.GsonUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sivanookala on 26/10/16.
@@ -65,16 +70,36 @@ public class RideSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-
-                    JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
-                    Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
-                    ride.setRequestorAddress(jsonResult.getString("requestorAddress"));
-                    ride.setRequestorName(jsonResult.getString("requestorName"));
-                    ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));
+                    Ride ride = createRideFromJson(jsonResult);
                     result.setValue(ride);
                 }
             }
         }.handle();
         return result.getValue();
+    }
+
+    private Ride createRideFromJson(JSONObject jsonResult) throws JSONException {
+        JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
+        Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
+        ride.setRequestorAddress(jsonResult.getString("requestorAddress"));
+        ride.setRequestorName(jsonResult.getString("requestorName"));
+        ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));
+        return ride;
+    }
+
+    public List<Ride> openRides(double latitude, double longitude) {
+        final ArrayList<Ride> result = new ArrayList<>();
+        new JsonGetHandler("/openRides?latitude=" + latitude + "&longitude=" + longitude) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                JSONArray ridesArray = jsonResult.getJSONArray("rides");
+                for (int i = 0; i < ridesArray.length(); i++) {
+                    result.add(createRideFromJson(ridesArray.getJSONObject(i)));
+                }
+
+            }
+        }.handle();
+        return result;
     }
 }
