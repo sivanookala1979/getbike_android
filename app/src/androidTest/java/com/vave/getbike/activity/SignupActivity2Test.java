@@ -36,7 +36,7 @@ public class SignupActivity2Test {
         onView(withId(R.id.email))
                 .perform(typeText("siva.nookala@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.mobile))
-                .perform(typeText(UUID.randomUUID().toString()), closeSoftKeyboard());
+                .perform(typeText(generateRandomPhoneNumber()), closeSoftKeyboard());
 
         onView(withId(R.id.male))
                 .perform(click());
@@ -63,6 +63,15 @@ public class SignupActivity2Test {
     @Before
     public void setUp() {
         BaseSyncher.testSetup();
+    }
+
+    public static String generateRandomPhoneNumber() {
+        int size = 10;
+        StringBuilder generatedToken = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            generatedToken.append(((int) (Math.random() * 10)) % 10);
+        }
+        return generatedToken.toString();
     }
 
 }

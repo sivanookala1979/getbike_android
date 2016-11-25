@@ -13,13 +13,25 @@ import com.wang.avi.AVLoadingIndicatorView;
 
 public class WaitForRiderActivity extends AppCompatActivity {
 
+    // Active Instance
+    public static WaitForRiderActivity activeInstance;
     // UI Widgets.
     TextView generatedRideId;
     TextView rideRequestedAt;
+    TextView allottedRiderId;
     AVLoadingIndicatorView avLoadingIndicatorView;
     Ride ride = null;
-
     private long rideId;
+
+    public static WaitForRiderActivity instance() {
+        return activeInstance;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        activeInstance = this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +41,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
         generatedRideId = (TextView) findViewById(R.id.generatedRideId);
         rideRequestedAt = (TextView) findViewById(R.id.rideRequestedAt);
+        allottedRiderId = (TextView) findViewById(R.id.allottedRiderId);
         avLoadingIndicatorView.show();
         if (rideId > 0) {
             new GetBikeAsyncTask(WaitForRiderActivity.this) {
@@ -49,6 +62,31 @@ public class WaitForRiderActivity extends AppCompatActivity {
                     }
                 }
             }.execute();
+        }
+    }
+
+    public void rideAccepted(long acceptedRideId) {
+        if (acceptedRideId > 0 && acceptedRideId == rideId) {
+            GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(WaitForRiderActivity.this) {
+
+                @Override
+                public void process() {
+                    RideSyncher rideSyncher = new RideSyncher();
+                    ride = rideSyncher.getRideById(rideId);
+                }
+
+                @Override
+                public void afterPostExecute() {
+                    if (ride != null) {
+                        avLoadingIndicatorView.hide();
+                        allottedRiderId.setText(ride.getRiderId()+"");
+                    } else {
+                        ToastHelper.redToast(WaitForRiderActivity.this, R.string.error_ride_is_not_valid);
+                    }
+                }
+            };
+            asyncTask.setShowProgress(false);
+            asyncTask.execute();
         }
     }
 }

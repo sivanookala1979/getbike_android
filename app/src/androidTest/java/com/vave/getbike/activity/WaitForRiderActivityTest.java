@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -18,7 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -33,7 +36,7 @@ public class WaitForRiderActivityTest {
     public ActivityTestRule<WaitForRiderActivity> mActivityTestRule = new ActivityTestRule<>(WaitForRiderActivity.class);
 
     @Test
-    public void testHappyFlow() {
+    public void testInitialLaunch() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
         Ride ride = rideSyncher.requestRide(21.34, 54.67);
@@ -46,7 +49,24 @@ public class WaitForRiderActivityTest {
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.generatedRideId)).check(matches(withText(rideFromServer.getId() + "")));
         onView(withId(R.id.rideRequestedAt)).check(matches(withText(rideFromServer.getRequestedAt() + "")));
-        SystemClock.sleep(3000);
+        onView(withId(R.id.allottedRiderId)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+    }
+
+    @Test
+    public void testAfterAccept() {
+        BaseSyncher.testSetup();
+        RideSyncher rideSyncher = new RideSyncher();
+        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
+        intent.putExtra("rideId", ride.getId());
+        Ride rideFromServer = rideSyncher.getRideById(ride.getId());
+        rideSyncher.acceptRide(ride.getId());
+        mActivityTestRule.launchActivity(intent);
+        mActivityTestRule.getActivity().instance().rideAccepted(ride.getId());
+        Ride rideFromServerAfterAccepted = rideSyncher.getRideById(ride.getId());
+        onView(withId(R.id.allottedRiderId)).check(matches(withText(rideFromServerAfterAccepted.getRiderId() + "")));
     }
 
 }
