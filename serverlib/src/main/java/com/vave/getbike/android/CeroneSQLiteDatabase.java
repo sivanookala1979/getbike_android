@@ -34,7 +34,7 @@ public class CeroneSQLiteDatabase implements ISQLiteDatabase {
             Statement statement = connection.createStatement();
             String query = "insert into " + tableName + "(" + getCommaSeparatedColumns(tableName) + ") values (" + getCommaSeparatedValues(newValues, tableName) + ")";
             System.out.println(query);
-            Log.d("TAG","insert query in CeroneSQLiteDatabase is:"+query);
+            AndroidStubsFactory.getLogger().d("TAG","insert query in CeroneSQLiteDatabase is:"+query);
             statement.execute(query);
             statement.close();
         } catch (SQLException e) {

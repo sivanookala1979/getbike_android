@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Button login = (Button) findViewById(R.id.login);
         assert login != null;
-        login.setBackgroundResource(R.mipmap.signin);
+        login.setBackgroundResource(R.mipmap.sign_in);
         login.setOnClickListener(this);
         receivedOtp = (TextView) findViewById(R.id.received_otp);
     }

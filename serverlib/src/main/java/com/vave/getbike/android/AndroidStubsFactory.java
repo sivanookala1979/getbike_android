@@ -35,4 +35,14 @@ public class AndroidStubsFactory {
         }
         return result;
     }
+
+    public static ILogger getLogger() {
+        ILogger result = null;
+        if (IS_TEST) {
+            result = new CeroneLogger();
+        } else {
+            result = new AndroidLogger();
+        }
+        return result;
+    }
 }

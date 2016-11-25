@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.vave.getbike.activity.DispatchActivity">
+    tools:context="com.vave.getbike.activity.LogoScreenActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_dispatch" />
+    <include layout="@layout/content_logo_screen" />
 
 
 </android.support.design.widget.CoordinatorLayout>

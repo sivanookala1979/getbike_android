@@ -49,7 +49,7 @@
         <activity
             android:name=".activity.LocationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.DispatchActivity"
+        <activity android:name=".activity.LogoScreenActivity"
             android:screenOrientation="portrait"/>
         <receiver
             android:name=".helpers.SmsBroadcastReceiver"
