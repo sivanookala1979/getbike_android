@@ -1,11 +1,17 @@
 package com.vave.getbike.activity;
 
 import android.content.Intent;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vave.getbike.R;
 import com.vave.getbike.datasource.CallStatus;
@@ -13,46 +19,103 @@ import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.syncher.LoginSyncher;
 
+import java.util.regex.Pattern;
+
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView resultUserId;
+    RadioGroup genderGroup;
+    EditText name;
+    EditText mobile;
+    EditText email;
+    char gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         Button signup = (Button) findViewById(R.id.signup);
+        assert signup != null;
+        signup.setBackgroundResource(R.mipmap.register);
         signup.setOnClickListener(this);
+        name=(EditText)findViewById(R.id.name);
+        mobile=(EditText)findViewById(R.id.mobile);
+        email=(EditText)findViewById(R.id.email);
+
+        Button gmaps =(Button)findViewById(R.id.gmaps);
+        gmaps.setOnClickListener(this);
+        Button redirectButton=(Button)findViewById(R.id.redirectButton);
+        redirectButton.setOnClickListener(this);
         resultUserId = (TextView) findViewById(R.id.resultUserId);
         Button login = (Button) findViewById(R.id.login);
         login.setOnClickListener(this);
         Button requestRide = (Button) findViewById(R.id.requestRide);
         requestRide.setOnClickListener(this);
-
+        genderGroup=(RadioGroup)findViewById(R.id.gender);
+        genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.male) {
+                    gender = 'M';
+                }
+                if (checkedId == R.id.female) {
+                    gender = 'F';
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signup:
-                new GetBikeAsyncTask(SignupActivity.this) {
-                    CallStatus callStatus = null;
+                name.setError(null);
+                email.setError(null);
+                mobile.setError(null);
+                final String EMAIL_REGEX = "^(.+)@(.+)$";
+                final Pattern pattern1 = Pattern.compile("[^0-9]");
+                boolean patternCheck = pattern1.matcher(mobile.getText().toString()).find();
+                if (name.getText().toString().length()==0){
+                    name.setError("Required");
+                    name.requestFocus();
+                }
+                else if ((email.getText().toString().length()<=0) || (!(Pattern.matches(EMAIL_REGEX, email.getText().toString())))){
+                    email.setError("Required");
+                    email.requestFocus();
+                }
+                else if ((mobile.getText().toString().length()!=10) || (patternCheck)){
+                    mobile.setError("Required 10 digit number");
+                    mobile.requestFocus();
+                }
+                else if (genderGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(SignupActivity.this, "Please provide your Gender", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    System.out.println("selected gender is:"+gender);
+                    new GetBikeAsyncTask(SignupActivity.this) {
+                        CallStatus callStatus = null;
 
-                    @Override
-                    public void process() {
-                        LoginSyncher sut = new LoginSyncher();
-                        callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), 'M');
-                    }
-
-                    @Override
-                    public void afterPostExecute() {
-                        if (callStatus.isSuccess()) {
-                            resultUserId.setText("Success");
-                        } else if (callStatus.getErrorCode() == 9901) {
-                            ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
+                        @Override
+                        public void process() {
+                            LoginSyncher sut = new LoginSyncher();
+                            Log.d("TAG","call status for signup is:"+callStatus);
+                            callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), gender);
+                            Log.d("TAG","call status for signup is:"+callStatus);
                         }
-                    }
-                }.execute();
+
+                        @Override
+                        public void afterPostExecute() {
+                            if (callStatus.isSuccess()) {
+                                Log.d("TAG","call status for signup is:"+callStatus);
+                                resultUserId.setText("Success");
+                            } else if (callStatus.getErrorCode() == 9901) {
+                                Log.d("TAG","call status for signup is:"+callStatus);
+                                ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
+                            }
+                        }
+                    }.execute();
+                }
+
                 break;
             case R.id.login: {
                 Intent intent = new Intent(this, LoginActivity.class);
@@ -64,6 +127,22 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(intent);
             }
             break;
+            case R.id.gmaps: {
+                Intent intent=new Intent(this,GoogleMapActivity.class);
+                startActivity(intent);
+            }
+            case R.id.redirectButton: {
+                Location targetLocation = new Location("");//provider name is unnecessary
+                targetLocation.setLatitude(14.915895d);//your coordinates(lat)
+                targetLocation.setLongitude(79.988867d);//your coordinates(lng)
+                String url = null;
+                url = "google.navigation:q=" + targetLocation.getLatitude() + "," + targetLocation.getLongitude() + "&mode=d";
+                Log.d("TAG", url);
+                Uri gmmIntentUri = Uri.parse(url);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
 
         }
     }

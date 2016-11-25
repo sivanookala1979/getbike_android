@@ -1,6 +1,5 @@
 package com.vave.getbike.syncher;
 
-import com.vave.getbike.exception.GetBikeException;
 import com.vave.getbike.utils.HTTPUtils;
 
 import org.json.JSONObject;
@@ -22,7 +21,9 @@ public abstract class JsonPostHandler extends JsonHandler {
         Integer id = null;
         try {
             prepareRequest();
+            System.out.println("parameters sended to getDataFromServer are:"+BASE_URL+url+" POST "+ jsonRequest.toString());
             String resultString = HTTPUtils.getDataFromServer(BASE_URL + url, "POST", jsonRequest.toString());
+            System.out.println("result string from jsonPost handler is:"+resultString);
             jsonResult = new JSONObject(resultString);
             processResult(jsonResult);
 

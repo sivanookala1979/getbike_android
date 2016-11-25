@@ -25,6 +25,7 @@ public class LoginSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 CallStatus callStatus = new CallStatus();
+                System.out.println("json result in login syncher is:"+jsonResult);
                 if (jsonResult.has("id")) {
                     callStatus.setId(((Integer) jsonResult.get("id")).longValue());
                     callStatus.setSuccess();

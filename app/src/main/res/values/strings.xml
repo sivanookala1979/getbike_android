@@ -16,6 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="get_bike">Get Bike</string>
 
 
     <string name="latitude_label">Latitude</string>
@@ -25,4 +26,6 @@
     <string name="start_updates">Start updates</string>
     <string name="stop_updates">Stop updates</string>
     <string name="location_updated_message">Location updated</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_dispatch">DispatchActivity</string>
 </resources>

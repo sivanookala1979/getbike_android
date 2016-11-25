@@ -496,6 +496,8 @@ public class LocationActivity extends ActionBarActivity implements
                         if (closedRide != null) {
                             DecimalFormat decimalFormat = new DecimalFormat();
                             mTotalDistanceTextView.setText(decimalFormat.format(closedRide.getOrderDistance()));
+                            double distance=closedRide.getOrderDistance()/1000;
+
                         }
 
                     }

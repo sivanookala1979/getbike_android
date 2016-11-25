@@ -108,7 +108,7 @@ public class HTTPUtils {
         } else {
             readContent(response, con.getInputStream());
         }
-        System.out.println("Response received for " + urlData + "\n" + response.toString());
+        System.out.println("HTTP Response received for " + urlData + "\n" + response.toString());
         return response.toString();
     }
 
