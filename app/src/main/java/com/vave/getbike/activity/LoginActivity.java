@@ -12,8 +12,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.SMSListener;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 
 import java.util.regex.Pattern;
@@ -116,7 +118,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             final LoginSyncher loginSyncher = new LoginSyncher();
                             result = loginSyncher.loginWithOtp(mobileNumber, otp);
                             if (result) {
-
+                                GetBikePreferences.setAccessToken(BaseSyncher.getAccessToken());
+                                GetBikePreferences.setLoggedIn(true);
                                 try {
                                     InstanceID instanceID = InstanceID.getInstance(LoginActivity.this);
                                     String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),

@@ -3,17 +3,19 @@ package com.vave.getbike.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.iid.InstanceID;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 
 public class RequestRideActivity extends AppCompatActivity implements View.OnClickListener {
-
 
     TextView getBikeResult;
     Long rideID = null;
@@ -27,8 +29,10 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         getBikeResult = (TextView) findViewById(R.id.getBikeResult);
         Button location = (Button) findViewById(R.id.startRide);
         location.setOnClickListener(this);
-        Button openRides = (Button) findViewById(R.id.showOpenRides);
-        openRides.setOnClickListener(this);
+        Button showOpenRides = (Button) findViewById(R.id.showOpenRides);
+        showOpenRides.setOnClickListener(this);
+        Button logout = (Button) findViewById(R.id.logout);
+        logout.setOnClickListener(this);
     }
 
     @Override
@@ -64,6 +68,16 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.showOpenRides:
                 startActivity(new Intent(this, OpenRidesActivity.class));
+                break;
+            case R.id.logout:
+                startActivity(new Intent(this, LogoScreenActivity.class));
+                try {
+                    InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                } catch (Exception ex) {
+                    Log.e("InstanceID", ex.getMessage(), ex);
+                }
+                GetBikePreferences.reset();
+                finish();
                 break;
         }
 

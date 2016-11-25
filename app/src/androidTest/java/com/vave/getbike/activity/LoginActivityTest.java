@@ -60,7 +60,8 @@ public class LoginActivityTest {
     }
 
     public void loginTESTHappyFlow_OldTest() {
-        SMSIdlingResource smsIdlingResource = new SMSIdlingResource(mActivityTestRule.getActivity());
+        SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
+        mActivityTestRule.getActivity().setSmsListener(smsIdlingResource);
         IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS);
         Espresso.registerIdlingResources(smsIdlingResource);
 
@@ -84,7 +85,8 @@ public class LoginActivityTest {
 
     @Test
     public void loginTESTHappyFlow() {
-        SMSIdlingResource smsIdlingResource = new SMSIdlingResource(mActivityTestRule.getActivity());
+        SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
+        mActivityTestRule.getActivity().setSmsListener(smsIdlingResource);
         IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS);
         Espresso.registerIdlingResources(smsIdlingResource);
 
@@ -105,7 +107,8 @@ public class LoginActivityTest {
 
     @Test
     public void loginTESTOpenRidesActivity() {
-        SMSIdlingResource smsIdlingResource = new SMSIdlingResource(mActivityTestRule.getActivity());
+        SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
+        mActivityTestRule.getActivity().setSmsListener(smsIdlingResource);
         IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS);
         Espresso.registerIdlingResources(smsIdlingResource);
 

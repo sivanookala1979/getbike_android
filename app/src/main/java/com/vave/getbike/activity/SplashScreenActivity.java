@@ -6,26 +6,35 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.GetBikePreferences;
+import com.vave.getbike.syncher.BaseSyncher;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
+    public static final long DELAY_MILLIS = 4000L;
     Handler timerHandler; // global instance
     Runnable getmiRunnable; // global instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GetBikePreferences.setPreferences(getApplicationContext());
         setContentView(R.layout.activity_splash_screen);
 
         timerHandler = new Handler();
         getmiRunnable = new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreenActivity.this, LogoScreenActivity.class));
+                if (GetBikePreferences.isLoggedIn()) {
+                    BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
+                    startActivity(new Intent(SplashScreenActivity.this, RequestRideActivity.class));
+                } else {
+                    startActivity(new Intent(SplashScreenActivity.this, LogoScreenActivity.class));
+                }
                 finish();
             }
         };
-        timerHandler.postDelayed(getmiRunnable, 4000L);
+        timerHandler.postDelayed(getmiRunnable, DELAY_MILLIS);
     }
 
 }

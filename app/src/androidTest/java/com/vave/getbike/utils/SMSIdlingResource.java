@@ -11,14 +11,8 @@ import com.vave.getbike.helpers.SMSListener;
 
 public class SMSIdlingResource implements IdlingResource, SMSListener {
 
-    LoginActivity loginActivity;
     boolean waiting = false;
     private ResourceCallback resourceCallback;
-
-    public SMSIdlingResource(LoginActivity loginActivity) {
-        this.loginActivity = loginActivity;
-        this.loginActivity.setSmsListener(this);
-    }
 
     @Override
     public String getName() {
