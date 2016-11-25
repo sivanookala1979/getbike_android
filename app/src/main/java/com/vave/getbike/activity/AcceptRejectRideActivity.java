@@ -1,7 +1,11 @@
 package com.vave.getbike.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +26,7 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
     TextView rideRequestMobileNumber;
     Button acceptRide;
     Button rejectRide;
+    Button callRequestorButton;
 
     Ride ride = null;
     private long rideId;
@@ -37,6 +42,10 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
         rideRequestMobileNumber = (TextView) findViewById(R.id.rideRequestMobileNumber);
         acceptRide = (Button) findViewById(R.id.acceptRide);
         rejectRide = (Button) findViewById(R.id.rejectRide);
+        callRequestorButton=(Button)findViewById(R.id.callRideRequestor);
+        final View callRequestorButtonView = this.findViewById(R.id.callRideRequestor);
+        callRequestorButtonView.setBackgroundResource(R.mipmap.call_customer);
+        callRequestorButton.setOnClickListener(this);
         new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
 
             @Override
@@ -91,6 +100,21 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
             case R.id.rejectRide:
                 finish();
                 break;
+            case R.id.callRideRequestor: {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
+                if (ActivityCompat.checkSelfPermission(AcceptRejectRideActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(intent);
+                break;
+            }
         }
     }
 }
