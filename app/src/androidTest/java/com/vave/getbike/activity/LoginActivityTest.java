@@ -29,6 +29,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
@@ -100,6 +101,22 @@ public class LoginActivityTest {
         RideSyncher rideSyncher = new RideSyncher();
         Ride rideFromServer = rideSyncher.getRideById(Long.parseLong(rideIdCapture.get()));
         onView(withId(R.id.rideRequestedAt)).check(matches(withText(rideFromServer.getRequestedAt() + "")));
+    }
+
+    @Test
+    public void loginTESTOpenRidesActivity() {
+        SMSIdlingResource smsIdlingResource = new SMSIdlingResource(mActivityTestRule.getActivity());
+        IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS);
+        Espresso.registerIdlingResources(smsIdlingResource);
+
+        onView(withId(R.id.mobile))
+                .perform(typeText("9949287789"), closeSoftKeyboard());
+        onView(withId(R.id.send_otp)).perform(click());
+        smsIdlingResource.waitForSms();
+        onView(withId(R.id.received_otp)).check(matches(isPositive()));
+        onView(withId(R.id.login)).perform(click());
+        onView(withId(R.id.showOpenRides)).perform(click());
+        onView(withId(R.id.openRides)).check(matches(isDisplayed()));
     }
 
 }

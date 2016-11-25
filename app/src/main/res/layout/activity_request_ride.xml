@@ -36,4 +36,13 @@
         android:layout_alignEnd="@+id/requestRide"
         android:layout_marginTop="47dp"
         android:id="@+id/startRide"/>
+
+    <Button
+        android:text="Open Rides"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/startRide"
+        android:layout_alignEnd="@+id/startRide"
+        android:layout_marginTop="40dp"
+        android:id="@+id/showOpenRides"/>
 </RelativeLayout>

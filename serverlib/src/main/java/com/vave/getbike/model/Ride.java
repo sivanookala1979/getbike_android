@@ -118,4 +118,9 @@ public class Ride {
     public void setRequestedAt(Date requestedAt) {
         this.requestedAt = requestedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Ride Id : " + getId() + " Requestor : " + requestorName;
+    }
 }

@@ -94,7 +94,8 @@
         <activity android:name=".activity.AcceptRejectRideActivity" />
         <activity android:name=".activity.WaitForRiderActivity" />
 
-
+        <activity android:name=".activity.OpenRidesActivity">
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

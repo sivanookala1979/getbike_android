@@ -93,11 +93,12 @@ public class RideSyncher extends BaseSyncher {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                JSONArray ridesArray = jsonResult.getJSONArray("rides");
-                for (int i = 0; i < ridesArray.length(); i++) {
-                    result.add(createRideFromJson(ridesArray.getJSONObject(i)));
+                if(jsonResult.has("rides")) {
+                    JSONArray ridesArray = jsonResult.getJSONArray("rides");
+                    for (int i = 0; i < ridesArray.length(); i++) {
+                        result.add(createRideFromJson(ridesArray.getJSONObject(i)));
+                    }
                 }
-
             }
         }.handle();
         return result;

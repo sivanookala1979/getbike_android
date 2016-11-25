@@ -17,7 +17,7 @@ import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 
-public class AcceptRejectRideActivity extends AppCompatActivity implements View.OnClickListener{
+public class AcceptRejectRideActivity extends AppCompatActivity implements View.OnClickListener {
 
     // UI Widgets.
     TextView rideRequestedBy;
@@ -42,7 +42,7 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
         rideRequestMobileNumber = (TextView) findViewById(R.id.rideRequestMobileNumber);
         acceptRide = (Button) findViewById(R.id.acceptRide);
         rejectRide = (Button) findViewById(R.id.rejectRide);
-        callRequestorButton=(Button)findViewById(R.id.callRideRequestor);
+        callRequestorButton = (Button) findViewById(R.id.callRideRequestor);
         final View callRequestorButtonView = this.findViewById(R.id.callRideRequestor);
         callRequestorButtonView.setBackgroundResource(R.mipmap.call_customer);
         callRequestorButton.setOnClickListener(this);
@@ -72,8 +72,7 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.acceptRide:
                 new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
                     boolean rideAccepted = false;

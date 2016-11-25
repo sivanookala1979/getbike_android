@@ -14,6 +14,7 @@ import com.vave.getbike.syncher.RideSyncher;
 
 public class RequestRideActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     TextView getBikeResult;
     Long rideID = null;
 
@@ -26,6 +27,8 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         getBikeResult = (TextView) findViewById(R.id.getBikeResult);
         Button location = (Button) findViewById(R.id.startRide);
         location.setOnClickListener(this);
+        Button openRides = (Button) findViewById(R.id.showOpenRides);
+        openRides.setOnClickListener(this);
     }
 
     @Override
@@ -58,6 +61,9 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                 Intent intent = new Intent(this, LocationActivity.class);
                 intent.putExtra("rideId", rideID);
                 startActivity(intent);
+                break;
+            case R.id.showOpenRides:
+                startActivity(new Intent(this, OpenRidesActivity.class));
                 break;
         }
 
