@@ -54,4 +54,12 @@
         android:id="@+id/logout"
         android:layout_below="@+id/showOpenRides"
         android:layout_alignEnd="@+id/showOpenRides"/>
+
+    <Button
+        android:text="Completed Rides"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/logout"
+        android:id="@+id/myCompletedRides"/>
 </RelativeLayout>
