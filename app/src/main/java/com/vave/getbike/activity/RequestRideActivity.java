@@ -46,6 +46,9 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                     public void afterPostExecute() {
                         if (rideID != null) {
                             getBikeResult.setText(rideID + "");
+                            Intent intent = new Intent(RequestRideActivity.this, WaitForRiderActivity.class);
+                            intent.putExtra("rideId", rideID);
+                            startActivity(intent);
                         }
                     }
                 }.execute();

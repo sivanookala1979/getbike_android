@@ -30,6 +30,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.SignupActivity;
+import com.vave.getbike.activity.WaitForRiderActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -89,26 +90,31 @@ public class MyGcmListenerService extends GcmListenerService {
         if ("newRide".equals(messageType)) {
             intent = new Intent(this, AcceptRejectRideActivity.class);
             intent.putExtra("rideId", rideId);
-
+        } else if ("rideAccepted".equals(messageType)) {
+            if (WaitForRiderActivity.instance() != null) {
+                WaitForRiderActivity.instance().rideAccepted(rideId);
+            }
         } else {
             intent = new Intent(this, SignupActivity.class);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.common_ic_googleplayservices)
-                .setContentTitle("GCM Message")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.common_ic_googleplayservices)
+                    .setContentTitle("GCM Message")
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(notificationCount++ /* ID of notification */, notificationBuilder.build());
+            notificationManager.notify(notificationCount++ /* ID of notification */, notificationBuilder.build());
+        }
     }
 }
