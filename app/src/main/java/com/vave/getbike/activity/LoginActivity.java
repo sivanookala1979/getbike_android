@@ -45,7 +45,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sendOtp.setOnClickListener(this);
         mobileNumberTextView=(TextView)findViewById(R.id.mobile);
         otpTextView = (TextView)findViewById(R.id.received_otp);
-
+        try {
+            //TODO This should be placed in logout as well.
+            InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+        }
+        catch(Exception ex)
+        {
+            Log.e("InstanceID", ex.getMessage(), ex);
+        }
         Button login = (Button) findViewById(R.id.login);
         assert login != null;
         login.setBackgroundResource(R.mipmap.sign_in);
@@ -137,6 +144,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             break;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        inst = null;
     }
 
     public void updateOtp(String receivedOtp) {
