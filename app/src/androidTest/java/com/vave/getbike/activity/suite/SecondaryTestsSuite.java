@@ -3,6 +3,7 @@ package com.vave.getbike.activity.suite;
 import com.vave.getbike.activity.AcceptRejectRideActivityTest;
 import com.vave.getbike.activity.MyCompletedRidesActivityTest;
 import com.vave.getbike.activity.OpenRidesActivityTest;
+import com.vave.getbike.activity.RidesGivenByMeActivityTest;
 import com.vave.getbike.activity.ShowCompletedRideActivityTest;
 import com.vave.getbike.activity.WaitForRiderActivityTest;
 
@@ -19,6 +20,7 @@ import org.junit.runners.Suite;
         AcceptRejectRideActivityTest.class,
         MyCompletedRidesActivityTest.class,
         OpenRidesActivityTest.class,
+        RidesGivenByMeActivityTest.class,
         ShowCompletedRideActivityTest.class,
         WaitForRiderActivityTest.class
 })
