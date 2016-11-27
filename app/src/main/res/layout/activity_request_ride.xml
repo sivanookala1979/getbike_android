@@ -10,56 +10,65 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.vave.getbike.activity.RequestRideActivity">
 
-    <Button
-        android:text="Get Bike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:id="@+id/requestRide" />
-
     <TextView
         android:text="Please click on Get Bike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/requestRide"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
-        android:id="@+id/getBikeResult" />
+        android:id="@+id/getBikeResult"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/myCompletedRides"/>
+
+    <Button
+        android:text="Get Bike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:id="@+id/requestRide"
+        android:layout_below="@+id/getBikeResult"
+        android:layout_alignStart="@+id/getBikeResult"/>
 
     <Button
         android:text="Start Ride"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/getBikeResult"
-        android:layout_alignEnd="@+id/requestRide"
-        android:layout_marginTop="47dp"
-        android:id="@+id/startRide"/>
-
-    <Button
-        android:text="Open Rides"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/startRide"
-        android:layout_alignEnd="@+id/startRide"
-        android:layout_marginTop="40dp"
-        android:id="@+id/showOpenRides"/>
-
-    <Button
-        android:text="Logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:id="@+id/logout"
-        android:layout_below="@+id/showOpenRides"
-        android:layout_alignEnd="@+id/showOpenRides"/>
+        android:layout_marginTop="63dp"
+        android:id="@+id/startRide"
+        android:layout_below="@+id/requestRide"
+        android:layout_alignStart="@+id/myCompletedRides"/>
 
     <Button
         android:text="Completed Rides"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/logout"
-        android:id="@+id/myCompletedRides"/>
+        android:id="@+id/myCompletedRides"
+        android:layout_marginStart="14dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:text="Logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logout"
+        android:layout_below="@+id/myCompletedRides"
+        android:layout_alignStart="@+id/myCompletedRides"
+        android:layout_marginTop="80dp"/>
+
+    <Button
+        android:text="Open Rides"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/showOpenRides"
+        android:layout_alignBaseline="@+id/startRide"
+        android:layout_alignBottom="@+id/startRide"
+        android:layout_toEndOf="@+id/myCompletedRides"/>
+
+    <Button
+        android:text="Rides Given"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/myCompletedRides"
+        android:layout_toEndOf="@+id/getBikeResult"
+        android:layout_marginStart="43dp"
+        android:id="@+id/ridesGiven"/>
 </RelativeLayout>

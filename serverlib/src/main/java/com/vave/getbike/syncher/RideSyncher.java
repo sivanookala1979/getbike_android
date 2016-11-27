@@ -143,4 +143,21 @@ public class RideSyncher extends BaseSyncher {
         }.handle();
         return result;
     }
+
+    public List<Ride> getRidesGivenByMe() {
+        final ArrayList<Ride> result = new ArrayList<>();
+        new JsonGetHandler("/getRidesGivenByMe") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("rides")) {
+                    JSONArray ridesArray = jsonResult.getJSONArray("rides");
+                    for (int i = 0; i < ridesArray.length(); i++) {
+                        result.add(createRideFromJson(ridesArray.getJSONObject(i)));
+                    }
+                }
+            }
+        }.handle();
+        return result;
+    }
 }

@@ -109,6 +109,26 @@ public class RideSyncherTest {
     }
 
     @Test
+    public void getRidesGivenByMeTESTHappyFlow() {
+        // Setup
+        Ride ride1 = sut.requestRide(24.56, 24.57);
+        Ride ride2 = sut.requestRide(24.56, 24.57);
+        Ride ride3 = sut.requestRide(24.56, 24.57);
+        sut.acceptRide(ride2.getId());
+        sut.closeRide(ride2.getId());
+        sut.acceptRide(ride3.getId());
+        sut.closeRide(ride3.getId());
+        // Exercise SUT
+        List<Ride> actual = sut.getRidesGivenByMe();
+        // Verify
+        assertTrue(actual.size() > 1);
+        assertEquals(ride3.getId(), actual.get(0).getId());
+        assertEquals(ride2.getId(), actual.get(1).getId());
+        cAssertRequestorDetails(actual.get(0));
+        cAssertRequestorDetails(actual.get(1));
+    }
+
+    @Test
     public void getCompleteRideByIdTESTHappyFlow() {
         // Setup
         Ride ride = sut.requestRide(24.56, 24.57);

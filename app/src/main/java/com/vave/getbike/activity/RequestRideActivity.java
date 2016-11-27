@@ -35,6 +35,8 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         logout.setOnClickListener(this);
         Button myCompletedRides = (Button) findViewById(R.id.myCompletedRides);
         myCompletedRides.setOnClickListener(this);
+        Button ridesGiven = (Button) findViewById(R.id.ridesGiven);
+        ridesGiven.setOnClickListener(this);
     }
 
     @Override
@@ -73,6 +75,9 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.myCompletedRides:
                 startActivity(new Intent(this, MyCompletedRidesActivity.class));
+                break;
+            case R.id.ridesGiven:
+                startActivity(new Intent(this, RidesGivenByMeActivity.class));
                 break;
             case R.id.logout:
                 startActivity(new Intent(this, LogoScreenActivity.class));
