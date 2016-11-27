@@ -103,6 +103,7 @@ public class LoginActivityTest {
         RideSyncher rideSyncher = new RideSyncher();
         Ride rideFromServer = rideSyncher.getRideById(Long.parseLong(rideIdCapture.get()));
         onView(withId(R.id.rideRequestedAt)).check(matches(withText(rideFromServer.getRequestedAt() + "")));
+        Espresso.unregisterIdlingResources(smsIdlingResource);
     }
 
     @Test
@@ -120,6 +121,7 @@ public class LoginActivityTest {
         onView(withId(R.id.login)).perform(click());
         onView(withId(R.id.showOpenRides)).perform(click());
         onView(withId(R.id.openRides)).check(matches(isDisplayed()));
+        Espresso.unregisterIdlingResources(smsIdlingResource);
     }
 
 }

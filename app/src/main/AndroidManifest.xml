@@ -104,6 +104,8 @@
 
         <activity android:name=".activity.MyCompletedRidesActivity">
         </activity>
+        <activity android:name=".activity.ShowCompletedRideActivity">
+        </activity>
     </application>
 
 </manifest>

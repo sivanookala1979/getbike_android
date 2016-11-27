@@ -1,6 +1,7 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONArray;
@@ -78,6 +79,28 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
+    public Ride getCompleteRideById(long rideId, final List<RideLocation> rideLocations) {
+        final GetBikePointer<Ride> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/getCompleteRideById?rideId=" + rideId) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    Ride ride = createRideFromJson(jsonResult);
+                    if (jsonResult.has("rideLocations")) {
+                        JSONArray rideLocationsArray = jsonResult.getJSONArray("rideLocations");
+                        for (int i = 0; i < rideLocationsArray.length(); i++) {
+                            RideLocation rideLocation = GsonUtils.getGson().fromJson(rideLocationsArray.get(i).toString(), RideLocation.class);
+                            rideLocations.add(rideLocation);
+                        }
+                    }
+                    result.setValue(ride);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
     private Ride createRideFromJson(JSONObject jsonResult) throws JSONException {
         JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
         Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
@@ -93,7 +116,7 @@ public class RideSyncher extends BaseSyncher {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                if(jsonResult.has("rides")) {
+                if (jsonResult.has("rides")) {
                     JSONArray ridesArray = jsonResult.getJSONArray("rides");
                     for (int i = 0; i < ridesArray.length(); i++) {
                         result.add(createRideFromJson(ridesArray.getJSONObject(i)));
@@ -110,7 +133,7 @@ public class RideSyncher extends BaseSyncher {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                if(jsonResult.has("rides")) {
+                if (jsonResult.has("rides")) {
                     JSONArray ridesArray = jsonResult.getJSONArray("rides");
                     for (int i = 0; i < ridesArray.length(); i++) {
                         result.add(createRideFromJson(ridesArray.getJSONObject(i)));

@@ -3,11 +3,13 @@ package com.vave.getbike.syncher;
 import com.vave.getbike.android.AndroidStubsFactory;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.model.RideLocation;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +108,29 @@ public class RideSyncherTest {
         cAssertRequestorDetails(actual.get(1));
     }
 
+    @Test
+    public void getCompleteRideByIdTESTHappyFlow() {
+        // Setup
+        Ride ride = sut.requestRide(24.56, 24.57);
+        sut.acceptRide(ride.getId());
+        RideLocationDataSource dataSource = new RideLocationDataSource(null);
+        dataSource.setUpdataSource();
+        dataSource.clearAll();
+        dataSource.insert(ride.getId(), new Date(), 21.98, 28.65, false);
+        dataSource.insert(ride.getId(), new Date(), 21.986, 28.655, false);
+        RideLocationSyncher locationSyncher = new RideLocationSyncher();
+        locationSyncher.setDataSource(dataSource);
+        locationSyncher.storePendingLocations(ride.getId());
+        sut.closeRide(ride.getId());
+        List<RideLocation> rideLocations = new ArrayList<>();
+        // Exercise SUT
+        Ride actual = sut.getCompleteRideById(ride.getId(), rideLocations);
+        // Verify
+        assertNotNull(actual);
+        assertTrue(actual.getOrderDistance() > 0);
+        int knownNumberOfRideLocations = 2;
+        assertEquals(knownNumberOfRideLocations, rideLocations.size());
+    }
 
     @Before
     public void setUp() {

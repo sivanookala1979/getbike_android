@@ -18,8 +18,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
 import static org.hamcrest.Matchers.anything;
 
 /**
@@ -47,8 +52,30 @@ public class MyCompletedRidesActivityTest {
         rideSyncher.closeRide(ride3.getId());
         Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(6000);
         onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
+        onView(withId(R.id.totalDistance)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testWithCompleteRide() {
+        BaseSyncher.testSetup();
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        RideSyncher rideSyncher = new RideSyncher();
+        Ride ride1 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride2 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride3 = rideSyncher.requestRide(24.56, 24.57);
+        rideSyncher.acceptRide(ride2.getId());
+        rideSyncher.closeRide(ride2.getId());
+        rideSyncher.acceptRide(ride3.getId());
+        rideSyncher.closeRide(ride3.getId());
+        ShowCompletedRideActivityTest.setupCompleteRide(targetContext);
+        Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
+        mActivityTestRule.launchActivity(intent);
+        onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
+        onView(withId(R.id.totalDistance)).check(matches(isPositive()));
+        onView(withId(R.id.locationCount)).check(matches(withText((ShowCompletedRideActivityTest.LAT_LONGS.length/2)+"")));
+        SystemClock.sleep(6000);
     }
 
 }
