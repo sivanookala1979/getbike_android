@@ -14,7 +14,9 @@ import org.junit.runners.Suite;
 
 // Runs all unit tests.
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SignupActivity2Test.class,
-        LoginActivityTest.class, SplashScreenActivityTest.class})
+@Suite.SuiteClasses({
+        SignupActivity2Test.class,
+        LoginActivityTest.class,
+        SplashScreenActivityTest.class})
 public class PrimaryTestsSuite {
 }
