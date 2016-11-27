@@ -108,6 +108,10 @@
         </activity>
         <activity android:name=".activity.ShowCompletedRideActivity">
         </activity>
+        <activity android:name=".activity.GiveRideTakeRideActivity">
+        </activity>
+        <activity android:name=".activity.GiveDestinationAddressActivity">
+        </activity>
     </application>
 
 </manifest>

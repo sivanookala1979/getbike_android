@@ -16,4 +16,6 @@
     <color name="color_heading">#CCCCCC</color>
     <color name="dark_red">#B71C1C</color>
     <color name="transparent">#50ffffff</color>
+    <color name="get_bike_black">#263338</color>
+    <color name="get_bike_transparent">#50263338</color>
 </resources>
