@@ -35,6 +35,9 @@ import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.LocationSyncher;
 import com.vave.getbike.helpers.MhkTextWatcher;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.Ride;
+import com.vave.getbike.model.RideLocation;
+import com.vave.getbike.syncher.RideSyncher;
 
 import org.w3c.dom.Document;
 
@@ -47,12 +50,12 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     GoogleMap googleMap;
     TextView yourLocation;
     LatLng yourLocationLatLng;
-
+    TextView takeRideTextView;
     AutoCompleteTextView destination;
     GMapV2Direction googleMapV2Direction;
     LatLng destPosition;
-    Document doc;
-    Polyline polylin;
+    Document document;
+    Polyline polyline;
     List<String> locations = new ArrayList<String>();
 
     @Override
@@ -61,6 +64,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_give_destination_address);
         yourLocation = (TextView) findViewById(R.id.yourLocation);
         destination = (AutoCompleteTextView) findViewById(R.id.destination);
+        takeRideTextView = (TextView) findViewById(R.id.takeRide);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -200,28 +204,41 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         if (yourLocationLatLng != null && destPosition != null) {
             hideKeyBoard();
             new GetBikeAsyncTask(GiveDestinationAddressActivity.this) {
+                ArrayList<LatLng> directionPoints = null;
+                Ride estimatedRide = null;
+
                 @Override
                 public void process() {
-                    doc = googleMapV2Direction.getDocument(yourLocationLatLng,
+                    document = googleMapV2Direction.getDocument(yourLocationLatLng,
                             destPosition, GMapV2Direction.MODE_DRIVING);
-
+                    directionPoints = googleMapV2Direction
+                            .getDirection(document);
+                    RideSyncher rideSyncher = new RideSyncher();
+                    ArrayList<RideLocation> rideLocations = new ArrayList<RideLocation>();
+                    for (LatLng directionPoint : directionPoints) {
+                        RideLocation rideLocation = new RideLocation();
+                        rideLocation.setLatitude(directionPoint.latitude);
+                        rideLocation.setLongitude(directionPoint.longitude);
+                        rideLocations.add(rideLocation);
+                    }
+                    estimatedRide = rideSyncher.estimateRide(rideLocations);
                 }
 
                 @Override
                 public void afterPostExecute() {
-                    if (polylin != null) {
-                        polylin.remove();
+                    if (polyline != null) {
+                        polyline.remove();
                     }
-                    ArrayList<LatLng> directionPoint = googleMapV2Direction
-                            .getDirection(doc);
+                    takeRideTextView.setText("Take Ride \nEstimated ₹ " + estimatedRide.getOrderAmount() + " for " + estimatedRide.getOrderDistance() + " km");
+
                     PolylineOptions rectLine = new PolylineOptions().width(3)
                             .color(Color.RED);
-                    for (int i = 0; i < directionPoint.size(); i++) {
-                        rectLine.add(directionPoint.get(i));
+                    for (int i = 0; i < directionPoints.size(); i++) {
+                        rectLine.add(directionPoints.get(i));
                     }
-                    polylin = googleMap.addPolyline(rectLine);
-                    polylin.setColor(Color.parseColor("#2a94eb"));
-                    polylin.setWidth(10f);
+                    polyline = googleMap.addPolyline(rectLine);
+                    polyline.setColor(Color.parseColor("#2a94eb"));
+                    polyline.setWidth(10f);
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
                     builder.include(yourLocationLatLng);

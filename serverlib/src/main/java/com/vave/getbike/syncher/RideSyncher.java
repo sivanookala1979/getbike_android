@@ -160,4 +160,12 @@ public class RideSyncher extends BaseSyncher {
         }.handle();
         return result;
     }
+
+    public Ride estimateRide(List<RideLocation> rideLocations) {
+        //TODO - Need to implement this method on the server side.
+        Ride result = new Ride();
+        result.setOrderAmount(35.0);
+        result.setOrderDistance(2.45);
+        return result;
+    }
 }
