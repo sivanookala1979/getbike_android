@@ -118,6 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             final LoginSyncher loginSyncher = new LoginSyncher();
                             result = loginSyncher.loginWithOtp(mobileNumber, otp);
                             if (result) {
+                                GetBikePreferences.setPreferences(LoginActivity.this);
                                 GetBikePreferences.setAccessToken(BaseSyncher.getAccessToken());
                                 GetBikePreferences.setLoggedIn(true);
                                 try {

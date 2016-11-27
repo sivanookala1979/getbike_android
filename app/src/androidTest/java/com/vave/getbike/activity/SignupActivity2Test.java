@@ -60,11 +60,6 @@ public class SignupActivity2Test {
         // TODO: 01/11/16 Validate that the popup shows the message 'User already exists'
     }
 
-    @Before
-    public void setUp() {
-        BaseSyncher.testSetup();
-    }
-
     public static String generateRandomPhoneNumber() {
         int size = 10;
         StringBuilder generatedToken = new StringBuilder();

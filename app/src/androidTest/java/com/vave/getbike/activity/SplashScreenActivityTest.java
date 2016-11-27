@@ -18,6 +18,7 @@ import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.utils.SMSIdlingResource;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,6 +101,11 @@ public class SplashScreenActivityTest {
         });
 
         return currentActivity;
+    }
+
+    @Before
+    public void setUp() {
+        GetBikePreferences.reset();
     }
 
     @After
