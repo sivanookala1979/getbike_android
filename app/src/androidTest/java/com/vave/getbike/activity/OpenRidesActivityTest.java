@@ -49,5 +49,4 @@ public class OpenRidesActivityTest {
         onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala ")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
     }
-
 }
