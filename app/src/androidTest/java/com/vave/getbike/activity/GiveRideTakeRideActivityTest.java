@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.vave.getbike.R;
+import com.vave.getbike.syncher.BaseSyncher;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class GiveRideTakeRideActivityTest {
 
     @Test
     public void testInitialLaunch() {
+        BaseSyncher.testSetup();
         onView(withId(R.id.takeRide)).perform(click());
         onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
         onView(withId(R.id.destination)).perform(typeText("Musunur"), ViewActions.closeSoftKeyboard());

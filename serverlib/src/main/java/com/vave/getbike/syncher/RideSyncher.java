@@ -180,4 +180,5 @@ public class RideSyncher extends BaseSyncher {
         }
         return result;
     }
+
 }
