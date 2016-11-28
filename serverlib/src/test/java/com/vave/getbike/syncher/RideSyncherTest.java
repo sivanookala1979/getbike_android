@@ -152,6 +152,21 @@ public class RideSyncherTest {
         assertEquals(knownNumberOfRideLocations, rideLocations.size());
     }
 
+    @Test
+    public void estimateRideTESTHappyFlow() {
+        // Setup
+        ArrayList<RideLocation> rideLocations = new ArrayList<>();
+        rideLocations.add(createRideLocation(23.45, 65.45));
+        rideLocations.add(createRideLocation(23.46, 65.55));
+        rideLocations.add(createRideLocation(23.47, 65.65));
+        rideLocations.add(createRideLocation(23.48, 65.75));
+        // Exercise SUT
+        Ride actual = sut.estimateRide(rideLocations);
+        // Verify
+        assertEquals(30779.65820996688, actual.getOrderDistance());
+        assertEquals(92.33897462990065, actual.getOrderAmount());
+    }
+
     @Before
     public void setUp() {
         sut = new RideSyncher();
@@ -169,6 +184,13 @@ public class RideSyncherTest {
         assertNotNull(actual.getRequestorPhoneNumber());
         assertNotNull(actual.getRequestorName());
         assertNotNull(actual.getRequestedAt());
+    }
+
+    private RideLocation createRideLocation(double latitude, double longitude) {
+        RideLocation result = new RideLocation();
+        result.setLatitude(latitude);
+        result.setLongitude(longitude);
+        return result;
     }
 
 }

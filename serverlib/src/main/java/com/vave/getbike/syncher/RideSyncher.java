@@ -3,6 +3,7 @@ package com.vave.getbike.syncher;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.utils.GsonUtils;
+import com.vave.getbike.utils.HTTPUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -162,10 +163,21 @@ public class RideSyncher extends BaseSyncher {
     }
 
     public Ride estimateRide(List<RideLocation> rideLocations) {
-        //TODO - Need to implement this method on the server side.
-        Ride result = new Ride();
-        result.setOrderAmount(35.0);
-        result.setOrderDistance(2.45);
+        Ride result = null;
+        try {
+            JSONArray jsonArray = new JSONArray();
+            int index = 0;
+            for (RideLocation rideLocation : rideLocations) {
+                JSONObject rideLocationObject = new JSONObject();
+                rideLocationObject.put("latitude", rideLocation.getLatitude());
+                rideLocationObject.put("longitude", rideLocation.getLongitude());
+                jsonArray.put(index++, rideLocationObject);
+            }
+            String response = HTTPUtils.getDataFromServer(BASE_URL + "/estimateRide", "POST", jsonArray.toString());
+            result = GsonUtils.getGson().fromJson(response, Ride.class);
+        } catch (Exception ex) {
+            handleException(ex);
+        }
         return result;
     }
 }
