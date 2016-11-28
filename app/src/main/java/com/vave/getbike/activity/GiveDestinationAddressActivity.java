@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -33,7 +32,7 @@ import com.vave.getbike.helpers.GMapV2Direction;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.LocationSyncher;
-import com.vave.getbike.helpers.MhkTextWatcher;
+import com.vave.getbike.helpers.GetBikeTextWatcher;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
@@ -150,7 +149,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                 }.execute();
             }
         });
-        destination.addTextChangedListener(new MhkTextWatcher() {
+        destination.addTextChangedListener(new GetBikeTextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -187,15 +186,9 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     private void drawMarker(LatLng point, boolean isDestination) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(point);
-        int key = 1;
         BitmapDescriptor fromResource = BitmapDescriptorFactory
-                .fromResource(R.drawable.pick_up_location_from_icon);
-        if (isDestination) {
-            key = 2;
-            fromResource = BitmapDescriptorFactory
-                    .fromResource(R.drawable.pick_location_to_icon);
-        }
-        Marker addMarker = googleMap
+                .fromResource(isDestination ? R.drawable.pick_location_to_icon : R.drawable.pick_up_location_from_icon);
+        googleMap
                 .addMarker(markerOptions.icon(fromResource));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
     }
