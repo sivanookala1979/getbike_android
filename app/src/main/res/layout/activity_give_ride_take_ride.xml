@@ -23,33 +23,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="70"
+            android:layout_weight="65"
             android:background="@color/transparent"></LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="30"
+            android:layout_weight="35"
             android:background="@color/transparent"
             android:orientation="vertical"
             android:padding="5dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/giveRide"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@color/get_bike_black"
-                android:text="Give Ride"
+                android:layout_height="70dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/give_ride_large"
                 android:textColor="@color/white"/>
 
-            <Button
+            <ImageButton
                 android:id="@+id/takeRide"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@color/get_bike_black"
-                android:text="Take Ride"
+                android:layout_height="70dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/take_ride_large"
                 android:textColor="@color/white"/>
 
         </LinearLayout>

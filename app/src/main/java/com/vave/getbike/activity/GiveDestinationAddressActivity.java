@@ -49,7 +49,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     GoogleMap googleMap;
     TextView yourLocation;
     LatLng yourLocationLatLng;
-    TextView takeRideTextView;
+    TextView rideEstimateTextView;
     AutoCompleteTextView destination;
     GMapV2Direction googleMapV2Direction;
     LatLng destPosition;
@@ -63,7 +63,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_give_destination_address);
         yourLocation = (TextView) findViewById(R.id.yourLocation);
         destination = (AutoCompleteTextView) findViewById(R.id.destination);
-        takeRideTextView = (TextView) findViewById(R.id.takeRide);
+        rideEstimateTextView = (TextView) findViewById(R.id.rideEstimate);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -222,7 +222,8 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                     if (polyline != null) {
                         polyline.remove();
                     }
-                    takeRideTextView.setText("Take Ride \nEstimated ₹ " + estimatedRide.getOrderAmount() + " for " + estimatedRide.getOrderDistance() + " km");
+                    rideEstimateTextView.setVisibility(View.VISIBLE);
+                    rideEstimateTextView.setText("Estimated ₹ " + estimatedRide.getOrderAmount() + " for " + estimatedRide.getOrderDistance() + " km");
 
                     PolylineOptions rectLine = new PolylineOptions().width(3)
                             .color(Color.RED);

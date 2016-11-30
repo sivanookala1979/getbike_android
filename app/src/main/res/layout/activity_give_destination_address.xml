@@ -74,16 +74,23 @@
             android:background="@color/transparent"
             android:orientation="vertical"
             android:padding="5dp">
-
-            <TextView
+            <ImageButton
                 android:id="@+id/takeRide"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/take_ride_small"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/rideEstimate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
                 android:background="@color/get_bike_black"
                 android:gravity="center"
                 android:padding="3dp"
-                android:text="Take Ride"
+                android:visibility="invisible"
                 android:textColor="@color/white"/>
 
         </LinearLayout>

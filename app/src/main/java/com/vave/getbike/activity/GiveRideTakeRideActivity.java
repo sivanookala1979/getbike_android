@@ -9,8 +9,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,7 +27,7 @@ public class GiveRideTakeRideActivity extends AppCompatActivity implements OnMap
     GoogleMap googleMap;
     private Location mCurrentLocation;
     private LocationManager locationManager;
-    private Button takeRide;
+    private ImageButton takeRide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class GiveRideTakeRideActivity extends AppCompatActivity implements OnMap
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
-        takeRide = (Button) findViewById(R.id.takeRide);
+        takeRide = (ImageButton) findViewById(R.id.takeRide);
         takeRide.setOnClickListener(this);
     }
 
