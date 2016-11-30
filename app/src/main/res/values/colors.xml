@@ -18,4 +18,6 @@
     <color name="transparent">#50ffffff</color>
     <color name="get_bike_black">#263338</color>
     <color name="get_bike_transparent">#50263338</color>
+    <color name="get_bike_orange">#FF9500</color>
+
 </resources>

@@ -2,8 +2,13 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +20,7 @@ import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 
-public class RequestRideActivity extends AppCompatActivity implements View.OnClickListener {
+public class RequestRideActivity extends BaseActivity implements View.OnClickListener {
 
     TextView getBikeResult;
     Long rideID = null;
@@ -23,7 +28,11 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_ride);
+        setContentView(R.layout.home_activity);
+        //
+        addNavigationMenu();
+
+        //
         Button requestRide = (Button) findViewById(R.id.requestRide);
         requestRide.setOnClickListener(this);
         getBikeResult = (TextView) findViewById(R.id.getBikeResult);
