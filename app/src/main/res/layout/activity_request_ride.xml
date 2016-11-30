@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_request_ride"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.vave.getbike.activity.RequestRideActivity">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_request_ride"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.vave.getbike.activity.RequestRideActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -24,70 +24,72 @@
             android:layout_gravity="center"
             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
             android:text="Home"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
-    <Button
-        android:id="@+id/startRide"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/myCompletedRides"
-        android:layout_below="@+id/requestRide"
-        android:layout_marginTop="63dp"
-        android:text="Start Ride" />
-
-    <Button
-        android:id="@+id/myCompletedRides"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="14dp"
-        android:text="Completed Rides" />
-
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/myCompletedRides"
-        android:layout_below="@+id/myCompletedRides"
         android:layout_marginTop="80dp"
-        android:text="Logout" />
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/showOpenRides"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/startRide"
-        android:layout_alignBottom="@+id/startRide"
-        android:layout_toEndOf="@+id/myCompletedRides"
-        android:text="Open Rides" />
+        <Button
+            android:id="@+id/home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Home"/>
 
-    <Button
-        android:id="@+id/ridesGiven"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/myCompletedRides"
-        android:layout_marginStart="43dp"
-        android:layout_toEndOf="@+id/getBikeResult"
-        android:text="Rides Given" />
+        <TextView
+            android:id="@+id/getBikeResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Please click on Get Bike"/>
 
-    <Button
+        <Button
+            android:id="@+id/startRide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Start Ride"/>
 
-        android:id="@+id/requestRide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/myCompletedRides"
-        android:layout_alignStart="@+id/startRide"
-        android:layout_marginBottom="52dp"
-        android:text="Get Bike" />
+        <Button
+            android:id="@+id/myCompletedRides"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Completed Rides"/>
 
-    <TextView
-        android:id="@+id/getBikeResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginTop="12dp"
-        android:text="Please click on Get Bike" />
+
+        <Button
+            android:id="@+id/showOpenRides"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Open Rides"/>
+
+        <Button
+            android:id="@+id/ridesGiven"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Rides Given"/>
+
+        <Button
+            android:id="@+id/requestRide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Get Bike"/>
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Logout"/>
+    </LinearLayout>
+
 </RelativeLayout>

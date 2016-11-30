@@ -43,10 +43,9 @@ public class OpenRidesActivityTest {
         rideSyncher.requestRide(21.34, 54.67);
         Intent intent = new Intent(targetContext, OpenRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(6000);
         onData(anything()).inAdapterView(withId(R.id.openRides)).atPosition(0).perform(click());
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala ")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
     }
 }

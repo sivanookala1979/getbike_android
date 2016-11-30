@@ -5,9 +5,11 @@ package com.vave.getbike.model;
  */
 
 public class SearchResults {
-    private String rideId="";
-    private String requesterName="";
-    private String requestedTime="";
+
+    // TODO: 30/11/16 This class is not needed. We need to remove this and use ride where ever required 
+    private String rideId = "";
+    private String requesterName = "";
+    private String requestedTime = "";
 
     public String getRideId() {
         return rideId;

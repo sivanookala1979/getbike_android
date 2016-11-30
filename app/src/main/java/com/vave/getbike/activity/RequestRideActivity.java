@@ -2,13 +2,7 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +25,6 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.home_activity);
         //
         addNavigationMenu();
-
         //
         Button requestRide = (Button) findViewById(R.id.requestRide);
         requestRide.setOnClickListener(this);
@@ -46,6 +39,8 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
         myCompletedRides.setOnClickListener(this);
         Button ridesGiven = (Button) findViewById(R.id.ridesGiven);
         ridesGiven.setOnClickListener(this);
+        Button home = (Button) findViewById(R.id.home);
+        home.setOnClickListener(this);
     }
 
     @Override
@@ -87,6 +82,9 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.ridesGiven:
                 startActivity(new Intent(this, RidesGivenByMeActivity.class));
+                break;
+            case R.id.home:
+                startActivity(new Intent(this, GiveRideTakeRideActivity.class));
                 break;
             case R.id.logout:
                 startActivity(new Intent(this, LogoScreenActivity.class));

@@ -58,7 +58,7 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
             public void afterPostExecute() {
                 if (ride != null) {
                     rideRequestedBy.setText(ride.getRequestorName());
-                    rideRequestAddress.setText(ride.getRequestorAddress());
+                    rideRequestAddress.setText(ride.getSourceAddress());
                     rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
                     rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
                 } else {

@@ -19,8 +19,20 @@ import java.util.List;
 public class RideSyncher extends BaseSyncher {
 
     public Ride requestRide(final double latitude, final double longitude) {
+        return requestRide(latitude, longitude, "Source Not Provided", "Destination Not Provided");
+    }
+
+    public Ride requestRide(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress) {
         final GetBikePointer<Ride> result = new GetBikePointer<>();
-        new JsonGetHandler("/getBike?latitude=" + latitude + "&longitude=" + longitude) {
+        new JsonPostHandler("/getBike") {
+
+            @Override
+            protected void prepareRequest() {
+                put("latitude", latitude);
+                put("longitude", longitude);
+                put("sourceAddress", sourceAddress);
+                put("destinationAddress", destinationAddress);
+            }
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
@@ -105,7 +117,6 @@ public class RideSyncher extends BaseSyncher {
     private Ride createRideFromJson(JSONObject jsonResult) throws JSONException {
         JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
         Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
-        ride.setRequestorAddress(jsonResult.getString("requestorAddress"));
         ride.setRequestorName(jsonResult.getString("requestorName"));
         ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));
         return ride;

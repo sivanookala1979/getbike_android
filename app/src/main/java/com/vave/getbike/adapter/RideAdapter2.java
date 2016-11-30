@@ -16,12 +16,13 @@ import java.util.ArrayList;
  * Created by RAM on 11/26/2016.
  */
 
-public class MyCustomBaseAdapter extends BaseAdapter{
-    private static ArrayList<SearchResults> searchArrayList;
+public class RideAdapter2 extends BaseAdapter {
+
+    private ArrayList<SearchResults> searchArrayList;
 
     private LayoutInflater mInflater;
 
-    public MyCustomBaseAdapter(Context context, ArrayList<SearchResults> results) {
+    public RideAdapter2(Context context, ArrayList<SearchResults> results) {
         searchArrayList = results;
         mInflater = LayoutInflater.from(context);
     }
@@ -60,6 +61,7 @@ public class MyCustomBaseAdapter extends BaseAdapter{
     }
 
     static class ViewHolder {
+
         TextView rideId;
         TextView requestorName;
         TextView requestedTime;

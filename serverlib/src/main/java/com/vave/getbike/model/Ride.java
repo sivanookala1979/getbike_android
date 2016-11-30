@@ -10,7 +10,8 @@ public class Ride {
 
     Long id;
     String requestorName;
-    String requestorAddress;
+    String sourceAddress;
+    String destinationAddress;
     String requestorPhoneNumber;
     Double startLatitude;
     Double startLongitude;
@@ -70,12 +71,12 @@ public class Ride {
         this.orderDistance = orderDistance;
     }
 
-    public String getRequestorAddress() {
-        return requestorAddress;
+    public String getSourceAddress() {
+        return sourceAddress;
     }
 
-    public void setRequestorAddress(String requestorAddress) {
-        this.requestorAddress = requestorAddress;
+    public void setSourceAddress(String sourceAddress) {
+        this.sourceAddress = sourceAddress;
     }
 
     public Double getStartLatitude() {
@@ -122,5 +123,13 @@ public class Ride {
     @Override
     public String toString() {
         return "Ride Id : " + getId() + " Requestor : " + requestorName;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 }

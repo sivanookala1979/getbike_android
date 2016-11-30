@@ -36,13 +36,15 @@ public class RideSyncherTest {
 
     @Test
     public void getRideByIdTESTHappyFlow() {
-        Ride ride = sut.requestRide(24.56, 24.57);
+        Ride ride = sut.requestRide(24.56, 24.57, "Kavali", "Musunur");
         Ride actual = sut.getRideById(ride.getId());
         assertNotNull(actual);
         assertEquals(ride.getId(), actual.getId());
         cAssertRequestorDetails(actual);
         assertEquals(24.56, actual.getStartLatitude());
         assertEquals(24.57, actual.getStartLongitude());
+        assertEquals("Kavali", actual.getSourceAddress());
+        assertEquals("Musunur", actual.getDestinationAddress());
     }
 
     @Test
@@ -165,8 +167,8 @@ public class RideSyncherTest {
         // Exercise SUT
         Ride actual = sut.estimateRide(rideLocations);
         // Verify
-        assertEquals(30779.65820996688, actual.getOrderDistance());
-        assertEquals(92.33897462990065, actual.getOrderAmount());
+        assertEquals(30.77, actual.getOrderDistance());
+        assertEquals(246.0, actual.getOrderAmount());
     }
 
     @Test
@@ -181,8 +183,8 @@ public class RideSyncherTest {
         // Exercise SUT
         Ride actual = sut.estimateRide(rideLocations);
         // Verify
-        assertEquals(3333.674908258635, actual.getOrderDistance());
-        assertEquals(10.001024724775904, actual.getOrderAmount());
+        assertEquals(3.33, actual.getOrderDistance());
+        assertEquals(26.0, actual.getOrderAmount());
     }
 
     @Before
@@ -198,7 +200,7 @@ public class RideSyncherTest {
     }
 
     private void cAssertRequestorDetails(Ride actual) {
-        assertNotNull(actual.getRequestorAddress());
+        assertNotNull(actual.getSourceAddress());
         assertNotNull(actual.getRequestorPhoneNumber());
         assertNotNull(actual.getRequestorName());
         assertNotNull(actual.getRequestedAt());

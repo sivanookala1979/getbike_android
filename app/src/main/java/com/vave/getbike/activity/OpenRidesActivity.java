@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.vave.getbike.R;
-import com.vave.getbike.adapter.MyCustomBaseAdapter;
+import com.vave.getbike.adapter.RideAdapter2;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.SearchResults;
@@ -28,7 +28,7 @@ public class OpenRidesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_rides);
-        openRidesListView = (ListView) findViewById(R.id.ListView01);
+        openRidesListView = (ListView) findViewById(R.id.openRides);
 
         new GetBikeAsyncTask(OpenRidesActivity.this) {
 
@@ -36,16 +36,13 @@ public class OpenRidesActivity extends AppCompatActivity {
             public void process() {
                 RideSyncher rideSyncher = new RideSyncher();
                 result = rideSyncher.openRides(23.45, 21.67);
-                System.out.println("result in open rides activity is:"+result);
-                System.out.println("result in open rides activity is result.get(0):"+result.get(0).getId()+" "+result.get(0).getRequestorName());
             }
 
             @Override
             public void afterPostExecute() {
                 if (result != null) {
                     searchResults = GetSearchResults();
-                    openRidesListView.setAdapter(new MyCustomBaseAdapter(OpenRidesActivity.this, searchResults));
-                    //openRidesListView.setAdapter(new ArrayAdapter<Ride>(OpenRidesActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, result));
+                    openRidesListView.setAdapter(new RideAdapter2(OpenRidesActivity.this, searchResults));
                 }
             }
         }.execute();
@@ -54,7 +51,6 @@ public class OpenRidesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (result != null) {
-                    System.out.println("Clicked on the ride id:"+result.get(position).getId());
                     Intent intent = new Intent(OpenRidesActivity.this, AcceptRejectRideActivity.class);
                     intent.putExtra("rideId", result.get(position).getId());
                     startActivity(intent);
@@ -62,14 +58,15 @@ public class OpenRidesActivity extends AppCompatActivity {
             }
         });
     }
-    private ArrayList<SearchResults> GetSearchResults(){
+
+    private ArrayList<SearchResults> GetSearchResults() {
         ArrayList<SearchResults> results = new ArrayList<SearchResults>();
 
-        for (int i=0;i<result.size();i++){
+        for (int i = 0; i < result.size(); i++) {
             SearchResults sr1 = new SearchResults();
-            sr1.setRideId("Ride Id "+result.get(i).getId().toString());
-            sr1.setRequesterName("Requestor Name "+result.get(i).getRequestorName());
-            sr1.setRequestedTime("Requested Time "+"NA");
+            sr1.setRideId("Ride Id " + result.get(i).getId().toString());
+            sr1.setRequesterName("Requestor Name " + result.get(i).getRequestorName());
+            sr1.setRequestedTime("Requested Time " + "NA");
             results.add(sr1);
         }
 
