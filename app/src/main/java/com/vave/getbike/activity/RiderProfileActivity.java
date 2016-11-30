@@ -1,7 +1,6 @@
 package com.vave.getbike.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
@@ -9,7 +8,6 @@ import com.vave.getbike.R;
 import com.vave.getbike.adapter.ProfilePagerAdapter;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
-import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.syncher.LoginSyncher;
 
@@ -21,12 +19,11 @@ import java.util.List;
  */
 
 public class RiderProfileActivity extends BaseActivity {
+
     TabLayout mPagerSlidingTabStrip;
     ViewPager mViewPager;
     List<String> statusList = new ArrayList<String>();
     LoginSyncher loginSyncher = new LoginSyncher();
-    long usrId = 4l;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +32,7 @@ public class RiderProfileActivity extends BaseActivity {
         addToolbarView();
         mPagerSlidingTabStrip = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        statusList.add("YOUE VEHICLE");
+        statusList.add("YOUR VEHICLE");
         statusList.add("YOUR DRIVING LICENCE");
 
         getProfileDetails();
@@ -43,13 +40,11 @@ public class RiderProfileActivity extends BaseActivity {
 
     private void getProfileDetails() {
         new GetBikeAsyncTask(RiderProfileActivity.this) {
-            boolean result = false;
 
             @Override
             public void process() {
-
-                Profile publicProfile = loginSyncher.getPublicProfile(usrId);
-                if(publicProfile!=null){
+                Profile publicProfile = loginSyncher.getPublicProfile(0l);
+                if (publicProfile != null) {
                     GetBikePreferences.setPublicProfile(publicProfile);
                 }
             }

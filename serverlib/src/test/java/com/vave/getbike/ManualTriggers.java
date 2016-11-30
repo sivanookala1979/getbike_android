@@ -10,12 +10,12 @@ import com.vave.getbike.syncher.RideSyncher;
 public class ManualTriggers {
 
     public static void main(String s[]) {
-        acceptRide(39);
+        acceptRide(48);
     }
 
     public static void acceptRide(long rideId) {
         BaseSyncher.testSetup();
-        boolean actual = new RideSyncher().acceptRide(47);
+        boolean actual = new RideSyncher().acceptRide(rideId);
     }
 
 }

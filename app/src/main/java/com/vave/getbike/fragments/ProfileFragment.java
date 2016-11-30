@@ -1,35 +1,24 @@
 package com.vave.getbike.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
-import com.vave.getbike.activity.LoginActivity;
-import com.vave.getbike.activity.RequestRideActivity;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.ToastHelper;
@@ -38,14 +27,15 @@ import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.utils.HTTPUtils;
 
-import java.io.File;
-
 /**
  * Created by adarsht on 30/11/16.
  */
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
+
     private static final String ARG_PARAM1 = "position";
+    private static final int GALLERY_REQUET_CODE = 11111;
+    private static final int CAMERA_REQUEST_CODE = 100;
     int tabIndex = 0;
     TextView title, vehicleOrLicenceNumberTitle, vehicleOrLicenceNumber;
     LinearLayout galleryView, camera;
@@ -54,13 +44,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     EditText number;
     //
     String customerImageBitmapToString;
-    private static final int GALLERY_REQUET_CODE = 11111;
-    private static final int CAMERA_REQUEST_CODE = 100;
     LoginSyncher loginSyncher = new LoginSyncher();
     Profile publicProfile;
 
     private Uri fileUri;
 
+    public static Fragment newInstance(int position, String pageTitle) {
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, position);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,12 +83,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             vehicleOrLicenceNumberTitle.setText("Driving License Number");
             vehicleOrLicenceNumber.setText("Driving License Number");
         }
-        if(publicProfile!=null) {
-            String imageUrl = "http://videos.meritcampus.com:9000/"+((tabIndex==0)?publicProfile.getVehiclePlateImageName():publicProfile.getDrivingLicenseImageName());
-            String numberInfo = ((tabIndex==0)?publicProfile.getVehicleNumber():publicProfile.getDrivingLicenseNumber());
+        if (publicProfile != null) {
+            String imageUrl = BaseSyncher.BASE_URL + "/" + ((tabIndex == 0) ? publicProfile.getVehiclePlateImageName() : publicProfile.getDrivingLicenseImageName());
+            String numberInfo = ((tabIndex == 0) ? publicProfile.getVehicleNumber() : publicProfile.getDrivingLicenseNumber());
 
             Picasso.with(getContext()).load(imageUrl).placeholder(R.drawable.picture).into(picture);
-            if(numberInfo!=null) {
+            if (numberInfo != null) {
                 number.setText("" + numberInfo);
             }
         }
@@ -103,14 +98,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         for (View view : views) {
             view.setOnClickListener(this);
         }
-    }
-
-    public static Fragment newInstance(int position, String pageTitle) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, position);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -128,36 +115,37 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
                 break;
             case R.id.updateData:
-                if(customerImageBitmapToString!=null){
+                if (customerImageBitmapToString != null) {
                     String vehicleOrLicenceNumberText = number.getText().toString();
-                    if(!vehicleOrLicenceNumberText.isEmpty()){
+                    if (!vehicleOrLicenceNumberText.isEmpty()) {
                         new GetBikeAsyncTask(getActivity()) {
                             boolean result = false;
 
                             @Override
                             public void process() {
-                                if(tabIndex ==0){
-                                    result=loginSyncher.storeVehicleNumber(customerImageBitmapToString,number.getText().toString());
-                                }else {
-                                    result=loginSyncher.storeDrivingLicense(customerImageBitmapToString,number.getText().toString());
+                                if (tabIndex == 0) {
+                                    result = loginSyncher.storeVehicleNumber(customerImageBitmapToString, number.getText().toString());
+                                } else {
+                                    result = loginSyncher.storeDrivingLicense(customerImageBitmapToString, number.getText().toString());
                                 }
                             }
+
                             @Override
                             public void afterPostExecute() {
-                                if(result){
-                                    ToastHelper.redToast(getContext(),"Data successfully uploaded.");
-                                }else {
-                                    ToastHelper.redToast(getContext(),"Failed to upload data try again.");
+                                if (result) {
+                                    ToastHelper.redToast(getContext(), "Data successfully uploaded.");
+                                } else {
+                                    ToastHelper.redToast(getContext(), "Failed to upload data try again.");
                                 }
                             }
                         }.execute();
 
-                    }else {
-                        ToastHelper.redToast(getContext(),"please enter valid "+((tabIndex==1)?"Driving License":"Vehicle")+"number.");
+                    } else {
+                        ToastHelper.redToast(getContext(), "please enter valid " + ((tabIndex == 1) ? "Driving License" : "Vehicle") + "number.");
 
                     }
-                }else {
-                    ToastHelper.redToast(getContext(),"please choose "+((tabIndex==1)?"Driving License":"Vehicle")+"image");
+                } else {
+                    ToastHelper.redToast(getContext(), "please choose " + ((tabIndex == 1) ? "Driving License" : "Vehicle") + "image");
                 }
                 break;
         }

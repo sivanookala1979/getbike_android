@@ -49,7 +49,8 @@ public class RideSyncherTest {
 
     @Test
     public void acceptRideTESTHappyFlow() {
-        boolean actual = sut.acceptRide(47);
+        Ride ride = sut.requestRide(24.56, 24.57);
+        boolean actual = sut.acceptRide(ride.getId());
         assertTrue(actual);
     }
 
