@@ -25,7 +25,7 @@ public class LoginSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 CallStatus callStatus = new CallStatus();
-                System.out.println("json result in login syncher is:"+jsonResult);
+                System.out.println("json result in login syncher is:" + jsonResult);
                 if (jsonResult.has("id")) {
                     callStatus.setId(((Integer) jsonResult.get("id")).longValue());
                     callStatus.setSuccess();
@@ -72,7 +72,7 @@ public class LoginSyncher extends BaseSyncher {
                 if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
                     result.setValue(true);
                     System.out.println(jsonResult.get("authToken"));
-                    BaseSyncher.setAccessToken((String)jsonResult.get("authToken"));
+                    BaseSyncher.setAccessToken((String) jsonResult.get("authToken"));
                 }
             }
         }.handle();
@@ -93,4 +93,47 @@ public class LoginSyncher extends BaseSyncher {
         }.handle();
         return result.getValue();
     }
+
+    public boolean storeVehicleNumber(final String encodedImageData, final String vehicleNumber) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+        new JsonPostHandler("/storeVehiclePlate") {
+
+            @Override
+            protected void prepareRequest() {
+
+                put("vehiclePlateNumber", vehicleNumber);
+                put("imageData", encodedImageData);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public boolean storeDrivingLicense(final String encodedImageData, final String drivingLicenseNumber) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+        new JsonPostHandler("/storeDrivingLicense") {
+
+            @Override
+            protected void prepareRequest() {
+
+                put("drivingLicenseNumber", drivingLicenseNumber);
+                put("imageData", encodedImageData);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
 }

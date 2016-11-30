@@ -6,6 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
@@ -51,8 +55,27 @@ public class LoginSyncherTest {
         String gcmCode = "cdcszGene8c:APA91bHQYHdw6Y1rM0JfWrtb_P36-OtE9_wYQb2hDxfPhZhDLYM9DKZipd2fT6QQnV1BUnkJUTZqbuuvotukeixEiMblhLCjQhVgeg9O91PrMxkBYJrnsCdJe3NpeAHGFGpzKbhuSvWz";
         boolean actual = sut.storeGcmCode(gcmCode);
         assertTrue(actual);
-
     }
+
+    @Test
+    public void storeVehicleNumberTESTHappyFlow() {
+        BaseSyncher.testSetup();
+        boolean actual = sut.storeVehicleNumber("aGVsbG8gaGVsbG8gaGVsbG8=", "AAp09Bf3497");
+        assertTrue(actual);
+    }
+
+    @SuppressWarnings("Since15")
+    @Test
+    public void storeDrivingLicenseTESTHappyFlow() throws IOException {
+        BaseSyncher.testSetup();
+        InputStream resourceAsStream = new FileInputStream("src/test/java/com/vave/getbike/syncher/vehicle-number-plate.png");
+        byte[] targetArray = new byte[resourceAsStream.available()];
+        resourceAsStream.read(targetArray);
+        byte[] encodedData = Base64.getEncoder().encode(targetArray);
+        boolean actual = sut.storeDrivingLicense(new String(encodedData), "77362862");
+        assertTrue(actual);
+    }
+
 
     @Before
     public void setUp() {
