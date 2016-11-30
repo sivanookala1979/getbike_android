@@ -7,7 +7,9 @@ import android.widget.TextView;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -18,7 +20,8 @@ public class WaitForRiderActivity extends AppCompatActivity {
     // UI Widgets.
     TextView generatedRideId;
     TextView rideRequestedAt;
-    TextView allottedRiderId;
+    TextView allottedRiderDetails;
+    TextView rideStatus;
     AVLoadingIndicatorView avLoadingIndicatorView;
     Ride ride = null;
     private long rideId;
@@ -47,7 +50,8 @@ public class WaitForRiderActivity extends AppCompatActivity {
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
         generatedRideId = (TextView) findViewById(R.id.generatedRideId);
         rideRequestedAt = (TextView) findViewById(R.id.rideRequestedAt);
-        allottedRiderId = (TextView) findViewById(R.id.allottedRiderId);
+        rideStatus = (TextView) findViewById(R.id.rideStatus);
+        allottedRiderDetails = (TextView) findViewById(R.id.allottedRiderDetails);
         avLoadingIndicatorView.show();
         if (rideId > 0) {
             new GetBikeAsyncTask(WaitForRiderActivity.this) {
@@ -62,7 +66,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
                 public void afterPostExecute() {
                     if (ride != null) {
                         generatedRideId.setText(ride.getId() + "");
-                        rideRequestedAt.setText(ride.getRequestedAt() + "");
+                        rideRequestedAt.setText(ride.getStartLatitude() + ", " + ride.getStartLongitude() + "\n" + ride.getSourceAddress() + "\n" + ride.getDestinationAddress());
                     } else {
                         ToastHelper.redToast(WaitForRiderActivity.this, R.string.error_ride_is_not_valid);
                     }
@@ -74,18 +78,24 @@ public class WaitForRiderActivity extends AppCompatActivity {
     public void rideAccepted(long acceptedRideId) {
         if (acceptedRideId > 0 && acceptedRideId == rideId) {
             GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(WaitForRiderActivity.this) {
+                Profile riderProfile;
 
                 @Override
                 public void process() {
                     RideSyncher rideSyncher = new RideSyncher();
                     ride = rideSyncher.getRideById(rideId);
+                    if (ride != null) {
+                        riderProfile = new LoginSyncher().getPublicProfile(ride.getRiderId());
+                    }
                 }
 
                 @Override
                 public void afterPostExecute() {
-                    if (ride != null) {
+                    if (ride != null && riderProfile != null) {
                         avLoadingIndicatorView.hide();
-                        allottedRiderId.setText(ride.getRiderId()+"");
+                        rideStatus.setText("Rider Allocated, he/she will call and reach you shortly.");
+                        allottedRiderDetails.setText(riderProfile.getName() + "\n" + riderProfile.getPhoneNumber() + "\n" + riderProfile.getVehicleNumber());
+                        ToastHelper.blueToast(WaitForRiderActivity.this, "Rider is allocated to you, he will call you shortly.");
                     } else {
                         ToastHelper.redToast(WaitForRiderActivity.this, R.string.error_ride_is_not_valid);
                     }

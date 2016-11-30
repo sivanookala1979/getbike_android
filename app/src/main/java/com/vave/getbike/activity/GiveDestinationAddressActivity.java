@@ -1,6 +1,7 @@
 package com.vave.getbike.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -45,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class GiveDestinationAddressActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class GiveDestinationAddressActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     GoogleMap googleMap;
     TextView yourLocation;
@@ -53,6 +55,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     TextView rideEstimateTextView;
     AutoCompleteTextView destination;
     GMapV2Direction googleMapV2Direction;
+    ImageButton takeRideButton;
     LatLng destPosition;
     Document document;
     Polyline polyline;
@@ -65,6 +68,8 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         yourLocation = (TextView) findViewById(R.id.yourLocation);
         destination = (AutoCompleteTextView) findViewById(R.id.destination);
         rideEstimateTextView = (TextView) findViewById(R.id.rideEstimate);
+        takeRideButton = (ImageButton) findViewById(R.id.takeRide);
+        takeRideButton.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -274,5 +279,35 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.takeRide:
+                new GetBikeAsyncTask(GiveDestinationAddressActivity.this) {
+                    Long rideID = null;
+
+                    @Override
+                    public void process() {
+                        RideSyncher sut = new RideSyncher();
+                        Ride ride = sut.requestRide(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString());
+                        rideID = ride.getId();
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                        if (rideID != null) {
+                            Intent intent = new Intent(GiveDestinationAddressActivity.this, WaitForRiderActivity.class);
+                            intent.putExtra("rideId", rideID);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to book a ride.");
+                        }
+                    }
+                }.execute();
+                break;
+        }
     }
 }

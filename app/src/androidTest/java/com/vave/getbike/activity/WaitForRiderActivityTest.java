@@ -49,7 +49,7 @@ public class WaitForRiderActivityTest {
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.generatedRideId)).check(matches(withText(rideFromServer.getId() + "")));
         onView(withId(R.id.rideRequestedAt)).check(matches(withText(rideFromServer.getRequestedAt() + "")));
-        onView(withId(R.id.allottedRiderId)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+        onView(withId(R.id.allottedRiderDetails)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class WaitForRiderActivityTest {
         mActivityTestRule.launchActivity(intent);
         mActivityTestRule.getActivity().instance().rideAccepted(ride.getId());
         Ride rideFromServerAfterAccepted = rideSyncher.getRideById(ride.getId());
-        onView(withId(R.id.allottedRiderId)).check(matches(withText(rideFromServerAfterAccepted.getRiderId() + "")));
+        onView(withId(R.id.allottedRiderDetails)).check(matches(withText(rideFromServerAfterAccepted.getRiderId() + "")));
     }
 
 }

@@ -87,9 +87,11 @@ public class MyGcmListenerService extends GcmListenerService {
     private void sendNotification(String message, String messageType, Long rideId) {
 
         Intent intent = null;
+        String title = "Get Bike Alert";
         if ("newRide".equals(messageType)) {
             intent = new Intent(this, AcceptRejectRideActivity.class);
             intent.putExtra("rideId", rideId);
+            title = "New Ride Alert";
         } else if ("rideAccepted".equals(messageType)) {
             if (WaitForRiderActivity.instance() != null) {
                 WaitForRiderActivity.instance().rideAccepted(rideId);
@@ -104,8 +106,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.common_ic_googleplayservices)
-                    .setContentTitle("GCM Message")
+                    .setSmallIcon(R.mipmap.getbike_logo)
+                    .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)

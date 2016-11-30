@@ -70,6 +70,7 @@ public class GiveRideTakeRideActivity extends AppCompatActivity implements OnMap
                 intent.putExtra("latitude", mCurrentLocation.getLatitude());
                 intent.putExtra("longitude", mCurrentLocation.getLongitude());
                 startActivity(intent);
+                finish();
                 break;
         }
     }
