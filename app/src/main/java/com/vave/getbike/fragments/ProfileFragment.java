@@ -1,6 +1,7 @@
 package com.vave.getbike.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,12 +26,14 @@ import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.LoginActivity;
 import com.vave.getbike.activity.RequestRideActivity;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.Profile;
 import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.utils.HTTPUtils;
@@ -53,6 +57,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private static final int GALLERY_REQUET_CODE = 11111;
     private static final int CAMERA_REQUEST_CODE = 100;
     LoginSyncher loginSyncher = new LoginSyncher();
+    Profile publicProfile;
 
     private Uri fileUri;
 
@@ -60,6 +65,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rider_profile_update_screen, container, false);
+        publicProfile = GetBikePreferences.getPublicProfile();
         if (getArguments() != null) {
             tabIndex = getArguments().getInt(ARG_PARAM1);
         }
@@ -72,12 +78,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         uploadData = (Button) view.findViewById(R.id.updateData);
         number = (EditText) view.findViewById(R.id.numberField);
         setOnclickListeners(galleryView, camera, uploadData);
+        updateFieldsBasedOnIndex();
+        return view;
+    }
+
+    private void updateFieldsBasedOnIndex() {
         if (tabIndex == 1) {
             title.setText("Upload Driving License Image");
             vehicleOrLicenceNumberTitle.setText("Driving License Number");
             vehicleOrLicenceNumber.setText("Driving License Number");
         }
-        return view;
+        if(publicProfile!=null) {
+            String imageUrl = "http://videos.meritcampus.com:9000/"+((tabIndex==0)?publicProfile.getVehiclePlateImageName():publicProfile.getDrivingLicenseImageName());
+            String numberInfo = ((tabIndex==0)?publicProfile.getVehicleNumber():publicProfile.getDrivingLicenseNumber());
+
+            Picasso.with(getContext()).load(imageUrl).placeholder(R.drawable.picture).into(picture);
+            if(numberInfo!=null) {
+                number.setText("" + numberInfo);
+            }
+        }
     }
 
     private void setOnclickListeners(View... views) {

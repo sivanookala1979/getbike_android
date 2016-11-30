@@ -35,7 +35,7 @@
             android:icon="@mipmap/ic_launcher"
             android:title="Support" />
         <item
-            android:id="@+id/getBikeResult"
+            android:id="@+id/logout"
             android:icon="@mipmap/ic_launcher"
             android:title="Logout" />
     </group>

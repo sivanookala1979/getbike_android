@@ -2,6 +2,7 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 
+import com.google.android.gms.iid.InstanceID;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.GetBikePreferences;
 
 /**
  * Created by adarsht on 30/11/16.
@@ -45,9 +49,25 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Log.d("TEst","Need to handel");
-        startActivity(new Intent(this, RiderProfileActivity.class));
+        int id = menuItem.getItemId();
 
-        return false;
+        switch(id){
+            case R.id.profilAndSettings:
+                startActivity(new Intent(this, RiderProfileActivity.class));
+                break;
+            case R.id.logout:
+                startActivity(new Intent(this, LogoScreenActivity.class));
+                try {
+                    InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                } catch (Exception ex) {
+                    Log.e("InstanceID", ex.getMessage(), ex);
+                }
+                GetBikePreferences.reset();
+                finish();
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
