@@ -3,6 +3,7 @@ package com.vave.getbike.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.vave.getbike.R;
@@ -20,6 +21,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         GetBikePreferences.setPreferences(getApplicationContext());
         setContentView(R.layout.activity_splash_screen);
+        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(SplashScreenActivity.this, R.color.white));
 
         timerHandler = new Handler();
         getmiRunnable = new Runnable() {
