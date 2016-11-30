@@ -1,10 +1,13 @@
 package com.vave.getbike.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.iid.InstanceID;
@@ -13,6 +16,9 @@ import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestRideActivity extends BaseActivity implements View.OnClickListener {
 
@@ -82,6 +88,13 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.ridesGiven:
                 startActivity(new Intent(this, RidesGivenByMeActivity.class));
+//                final Dialog dialog = new Dialog(RequestRideActivity.this);
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.setContentView(R.layout.vehicle_details_dialogue);
+//                Window window = dialog.getWindow();
+//                // window.setGravity(Gravity.BOTTOM);
+//                dialog.show();
+
                 break;
             case R.id.home:
                 startActivity(new Intent(this, GiveRideTakeRideActivity.class));

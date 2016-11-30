@@ -1,5 +1,6 @@
 package com.vave.getbike.activity;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,6 +46,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         Log.d("TEst","Need to handel");
+        startActivity(new Intent(this, RiderProfileActivity.class));
+
         return false;
     }
 }

@@ -33,6 +33,8 @@
         android:textColor="@color/black"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/get_bike_black"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/white"
         app:tabIndicatorHeight="4dp" />
 
 

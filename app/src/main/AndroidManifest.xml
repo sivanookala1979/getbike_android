@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <permission
         android:name="com.vave.getbike.permission.C2D_MESSAGE"
@@ -107,6 +111,7 @@
         <activity android:name=".activity.ShowCompletedRideActivity"></activity>
         <activity android:name=".activity.GiveRideTakeRideActivity"></activity>
         <activity android:name=".activity.GiveDestinationAddressActivity"></activity>
+        <activity android:name=".activity.RiderProfileActivity"></activity>
     </application>
 
 </manifest>
