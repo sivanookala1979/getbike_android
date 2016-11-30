@@ -10,6 +10,8 @@ public class User {
     String vehicleNumber;
     String drivingLicenseImageName;
     String drivingLicenseNumber;
+    String name;
+    String phoneNumber;
 
     public String getVehiclePlateImageName() {
         return vehiclePlateImageName;
@@ -41,5 +43,21 @@ public class User {
 
     public void setDrivingLicenseNumber(String drivingLicenseNumber) {
         this.drivingLicenseNumber = drivingLicenseNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

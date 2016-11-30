@@ -1,6 +1,7 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
+import com.vave.getbike.model.User;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +59,14 @@ public class LoginSyncherTest {
     }
 
     @Test
+    public void getPublicProfileTESTHappyFlow() {
+        BaseSyncher.testSetup();
+        User actual = sut.getPublicProfile(3L);
+        assertEquals("Siva", actual.getName());
+        assertEquals("9949287789", actual.getPhoneNumber());
+    }
+
+    @Test
     public void storeVehicleNumberTESTHappyFlow() {
         BaseSyncher.testSetup();
         boolean actual = sut.storeVehicleNumber("aGVsbG8gaGVsbG8gaGVsbG8=", "AAp09Bf3497");
@@ -75,7 +84,6 @@ public class LoginSyncherTest {
         boolean actual = sut.storeDrivingLicense(new String(encodedData), "77362862");
         assertTrue(actual);
     }
-
 
     @Before
     public void setUp() {
