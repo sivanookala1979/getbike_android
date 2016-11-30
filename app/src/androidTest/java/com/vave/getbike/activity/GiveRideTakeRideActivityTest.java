@@ -35,7 +35,7 @@ public class GiveRideTakeRideActivityTest {
     public ActivityTestRule<GiveRideTakeRideActivity> mActivityTestRule = new ActivityTestRule<>(GiveRideTakeRideActivity.class);
 
     @Test
-    public void testInitialLaunch() {
+    public void testKavaliToMusunur() {
         BaseSyncher.testSetup();
         onView(withId(R.id.takeRide)).perform(click());
         onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
@@ -57,6 +57,30 @@ public class GiveRideTakeRideActivityTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Musunur, Andhra Pradesh, India")));
-        SystemClock.sleep(50000);
+        SystemClock.sleep(5000);
+        // TODO: 30/11/16 Add the validation for the amount and distance
+    }
+    @Test
+    public void testKavaliToHyderabad() {
+        BaseSyncher.testSetup();
+        onView(withId(R.id.takeRide)).perform(click());
+        onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
+        onView(withId(R.id.destination)).perform(typeText("Hyderabad"), ViewActions.closeSoftKeyboard());
+        GiveRideTakeRideActivity mActivity = mActivityTestRule.getActivity();
+
+        onView(withText("Hyderabad, Telangana, India"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        // Tap on a suggestion.
+        onView(withText("Hyderabad, Telangana, India"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .perform(click());
+
+        // By clicking on the auto complete term, the text should be filled in.
+        onView(withId(R.id.destination))
+                .check(matches(withText("Hyderabad, Telangana, India")));
+        SystemClock.sleep(5000);
+        // TODO: 30/11/16 Add the validation for the amount and distance
     }
 }

@@ -22,7 +22,7 @@
             android:id="@+id/profileImage"
             android:layout_width="@dimen/profile_image_height"
             android:layout_height="@dimen/profile_image_height"
-            android:src="@drawable/user" />
+            android:background="@drawable/cancel_icon" />
 
     </LinearLayout>
 
@@ -59,7 +59,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:scaleType="centerInside"
-                    android:src="@drawable/home" />
+                    android:background="@drawable/call_icon" />
 
                 <TextView
                     android:id="@+id/occupation"
@@ -98,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:scaleType="centerInside"
-                    android:src="@drawable/home" />
+                    android:background="@drawable/call_icon" />
 
                 <TextView
                     android:id="@+id/address"

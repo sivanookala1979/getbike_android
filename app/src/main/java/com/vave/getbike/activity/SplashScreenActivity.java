@@ -11,7 +11,7 @@ import com.vave.getbike.syncher.BaseSyncher;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    public static final long DELAY_MILLIS = 4000L;
+    public static final long DELAY_MILLIS = 40L;
     Handler timerHandler; // global instance
     Runnable getmiRunnable; // global instance
 

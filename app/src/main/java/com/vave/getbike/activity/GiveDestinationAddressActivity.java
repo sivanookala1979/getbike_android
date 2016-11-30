@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
@@ -30,9 +31,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GMapV2Direction;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikeTextWatcher;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.LocationSyncher;
-import com.vave.getbike.helpers.GetBikeTextWatcher;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
@@ -208,39 +209,58 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                             .getDirection(document);
                     RideSyncher rideSyncher = new RideSyncher();
                     ArrayList<RideLocation> rideLocations = new ArrayList<RideLocation>();
-                    for (LatLng directionPoint : directionPoints) {
-                        RideLocation rideLocation = new RideLocation();
-                        rideLocation.setLatitude(directionPoint.latitude);
-                        rideLocation.setLongitude(directionPoint.longitude);
-                        rideLocations.add(rideLocation);
+                    if (directionPoints.size() <= 20) {
+                        for (LatLng directionPoint : directionPoints) {
+                            RideLocation rideLocation = getRideLocation(directionPoint);
+                            rideLocations.add(rideLocation);
+                        }
+                    } else {
+                        rideLocations.add(getRideLocation(directionPoints.get(0)));
+                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() / 4)));
+                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() / 2)));
+                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() * 3 / 4)));
+                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() - 1)));
                     }
                     estimatedRide = rideSyncher.estimateRide(rideLocations);
                 }
 
+                @NonNull
+                public RideLocation getRideLocation(LatLng directionPoint) {
+                    RideLocation rideLocation = new RideLocation();
+                    rideLocation.setLatitude(directionPoint.latitude);
+                    rideLocation.setLongitude(directionPoint.longitude);
+                    return rideLocation;
+                }
+
                 @Override
                 public void afterPostExecute() {
+                    if (estimatedRide == null) {
+                        ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to estimate ride");
+                    }
                     if (polyline != null) {
                         polyline.remove();
                     }
-                    rideEstimateTextView.setVisibility(View.VISIBLE);
-                    rideEstimateTextView.setText("Estimated ₹ " + estimatedRide.getOrderAmount() + " for " + estimatedRide.getOrderDistance() + " km");
+                    if (estimatedRide != null) {
+                        rideEstimateTextView.setVisibility(View.VISIBLE);
+                        rideEstimateTextView.setText("Estimated ₹ " + estimatedRide.getOrderAmount() + " for " + estimatedRide.getOrderDistance() + " km");
 
-                    PolylineOptions rectLine = new PolylineOptions().width(3)
-                            .color(Color.RED);
-                    for (int i = 0; i < directionPoints.size(); i++) {
-                        rectLine.add(directionPoints.get(i));
+                        PolylineOptions rectLine = new PolylineOptions().width(3)
+                                .color(Color.RED);
+                        for (int i = 0; i < directionPoints.size(); i++) {
+                            rectLine.add(directionPoints.get(i));
+                        }
+                        polyline = googleMap.addPolyline(rectLine);
+                        polyline.setColor(Color.parseColor("#2a94eb"));
+                        polyline.setWidth(10f);
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                        builder.include(yourLocationLatLng);
+                        builder.include(destPosition);
+                        LatLngBounds bounds = builder.build();
+                        int padding = 100;
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                        googleMap.moveCamera(cu);
                     }
-                    polyline = googleMap.addPolyline(rectLine);
-                    polyline.setColor(Color.parseColor("#2a94eb"));
-                    polyline.setWidth(10f);
-                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-                    builder.include(yourLocationLatLng);
-                    builder.include(destPosition);
-                    LatLngBounds bounds = builder.build();
-                    int padding = 100;
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                    googleMap.moveCamera(cu);
                 }
             }.execute();
         } else {
