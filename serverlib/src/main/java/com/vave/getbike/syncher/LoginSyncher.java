@@ -1,7 +1,7 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
-import com.vave.getbike.model.User;
+import com.vave.getbike.model.Profile;
 import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONObject;
@@ -138,14 +138,14 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public User getPublicProfile(Long userId) {
-        final GetBikePointer<User> result = new GetBikePointer<>(null);
+    public Profile getPublicProfile(Long userId) {
+        final GetBikePointer<Profile> result = new GetBikePointer<>(null);
         new JsonGetHandler("/getPublicProfile/" + userId) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-                    User profile = GsonUtils.getGson().fromJson(jsonResult.get("profile").toString(), User.class);
+                    Profile profile = GsonUtils.getGson().fromJson(jsonResult.get("profile").toString(), Profile.class);
                     result.setValue(profile);
                 }
             }

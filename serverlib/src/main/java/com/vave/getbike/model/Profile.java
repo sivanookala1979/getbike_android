@@ -4,7 +4,7 @@ package com.vave.getbike.model;
  * Created by sivanookala on 28/11/16.
  */
 
-public class User {
+public class Profile {
 
     String vehiclePlateImageName;
     String vehicleNumber;
