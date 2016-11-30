@@ -1,5 +1,6 @@
 package com.vave.getbike.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -94,6 +95,10 @@ public class WaitForRiderAllocationActivity extends AppCompatActivity {
                     if (ride != null && riderProfile != null) {
                         avLoadingIndicatorView.hide();
                         ToastHelper.blueToast(WaitForRiderAllocationActivity.this, "Rider is allocated to you, he will call you shortly.");
+                        Intent intent = new Intent(WaitForRiderAllocationActivity.this, WaitForRiderAfterAcceptanceActivity.class);
+                        intent.putExtra("rideId", ride.getId());
+                        startActivity(intent);
+                        finish();
                     } else {
                         ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
                     }

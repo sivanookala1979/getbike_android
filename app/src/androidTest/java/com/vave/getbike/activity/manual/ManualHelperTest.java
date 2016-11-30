@@ -14,7 +14,9 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.GiveDestinationAddressActivity;
 import com.vave.getbike.activity.LoginActivity;
+import com.vave.getbike.activity.LoginActivityTest;
 import com.vave.getbike.activity.SplashScreenActivity;
+import com.vave.getbike.syncher.RideSyncher;
 import com.vave.getbike.utils.SMSIdlingResource;
 
 import org.junit.Rule;
@@ -23,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -95,8 +98,14 @@ public class ManualHelperTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Musunur, Andhra Pradesh, India")));
-        SystemClock.sleep(5000);
+        SystemClock.sleep(3000);
         onView(withId(R.id.takeRide)).perform(click());
+        AtomicReference<String> rideIdCapture = new AtomicReference<>();
+        onView(withId(R.id.generatedRideId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));
+        RideSyncher rideSyncher = new RideSyncher();
+        SystemClock.sleep(3000);
+        rideSyncher.acceptRide(Long.parseLong(rideIdCapture.get()));
+        SystemClock.sleep(3000);
     }
 
     private Activity getActivityInstance() {
