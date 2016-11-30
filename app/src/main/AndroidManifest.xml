@@ -99,7 +99,7 @@
             android:exported="false" />
 
         <activity android:name=".activity.AcceptRejectRideActivity" />
-        <activity android:name=".activity.WaitForRiderActivity" />
+        <activity android:name=".activity.WaitForRiderAllocationActivity" />
         <activity android:name=".activity.OpenRidesActivity"></activity>
 
         <meta-data

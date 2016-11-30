@@ -2,7 +2,6 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
@@ -19,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -30,10 +28,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class WaitForRiderActivityTest {
+public class WaitForRiderAllocationActivityTest {
 
     @Rule
-    public ActivityTestRule<WaitForRiderActivity> mActivityTestRule = new ActivityTestRule<>(WaitForRiderActivity.class);
+    public ActivityTestRule<WaitForRiderAllocationActivity> mActivityTestRule = new ActivityTestRule<>(WaitForRiderAllocationActivity.class);
 
     @Test
     public void testInitialLaunch() {

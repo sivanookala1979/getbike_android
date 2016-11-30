@@ -5,7 +5,7 @@ import com.vave.getbike.activity.MyCompletedRidesActivityTest;
 import com.vave.getbike.activity.OpenRidesActivityTest;
 import com.vave.getbike.activity.RidesGivenByMeActivityTest;
 import com.vave.getbike.activity.ShowCompletedRideActivityTest;
-import com.vave.getbike.activity.WaitForRiderActivityTest;
+import com.vave.getbike.activity.WaitForRiderAllocationActivityTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
         OpenRidesActivityTest.class,
         RidesGivenByMeActivityTest.class,
         ShowCompletedRideActivityTest.class,
-        WaitForRiderActivityTest.class
+        WaitForRiderAllocationActivityTest.class
 })
 public class SecondaryTestsSuite {
 

@@ -30,7 +30,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.SignupActivity;
-import com.vave.getbike.activity.WaitForRiderActivity;
+import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -93,8 +93,8 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.putExtra("rideId", rideId);
             title = "New Ride Alert";
         } else if ("rideAccepted".equals(messageType)) {
-            if (WaitForRiderActivity.instance() != null) {
-                WaitForRiderActivity.instance().rideAccepted(rideId);
+            if (WaitForRiderAllocationActivity.instance() != null) {
+                WaitForRiderAllocationActivity.instance().rideAccepted(rideId);
             }
         } else {
             intent = new Intent(this, SignupActivity.class);

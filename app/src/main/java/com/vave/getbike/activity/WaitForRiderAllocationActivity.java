@@ -13,10 +13,10 @@ import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 import com.wang.avi.AVLoadingIndicatorView;
 
-public class WaitForRiderActivity extends AppCompatActivity {
+public class WaitForRiderAllocationActivity extends AppCompatActivity {
 
     // Active Instance
-    public static WaitForRiderActivity activeInstance;
+    public static WaitForRiderAllocationActivity activeInstance;
     // UI Widgets.
     TextView generatedRideId;
     TextView rideRequestedAt;
@@ -26,7 +26,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
     Ride ride = null;
     private long rideId;
 
-    public static WaitForRiderActivity instance() {
+    public static WaitForRiderAllocationActivity instance() {
         return activeInstance;
     }
 
@@ -45,7 +45,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wait_for_rider);
+        setContentView(R.layout.activity_wait_for_rider_allocation);
         rideId = getIntent().getLongExtra("rideId", 0L);
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
         generatedRideId = (TextView) findViewById(R.id.generatedRideId);
@@ -54,7 +54,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
         allottedRiderDetails = (TextView) findViewById(R.id.allottedRiderDetails);
         avLoadingIndicatorView.show();
         if (rideId > 0) {
-            new GetBikeAsyncTask(WaitForRiderActivity.this) {
+            new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
 
                 @Override
                 public void process() {
@@ -68,7 +68,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
                         generatedRideId.setText(ride.getId() + "");
                         rideRequestedAt.setText(ride.getStartLatitude() + ", " + ride.getStartLongitude() + "\n" + ride.getSourceAddress() + "\n" + ride.getDestinationAddress());
                     } else {
-                        ToastHelper.redToast(WaitForRiderActivity.this, R.string.error_ride_is_not_valid);
+                        ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
                     }
                 }
             }.execute();
@@ -77,7 +77,7 @@ public class WaitForRiderActivity extends AppCompatActivity {
 
     public void rideAccepted(long acceptedRideId) {
         if (acceptedRideId > 0 && acceptedRideId == rideId) {
-            GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(WaitForRiderActivity.this) {
+            GetBikeAsyncTask asyncTask = new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
                 Profile riderProfile;
 
                 @Override
@@ -93,11 +93,9 @@ public class WaitForRiderActivity extends AppCompatActivity {
                 public void afterPostExecute() {
                     if (ride != null && riderProfile != null) {
                         avLoadingIndicatorView.hide();
-                        rideStatus.setText("Rider Allocated, he/she will call and reach you shortly.");
-                        allottedRiderDetails.setText(riderProfile.getName() + "\n" + riderProfile.getPhoneNumber() + "\n" + riderProfile.getVehicleNumber());
-                        ToastHelper.blueToast(WaitForRiderActivity.this, "Rider is allocated to you, he will call you shortly.");
+                        ToastHelper.blueToast(WaitForRiderAllocationActivity.this, "Rider is allocated to you, he will call you shortly.");
                     } else {
-                        ToastHelper.redToast(WaitForRiderActivity.this, R.string.error_ride_is_not_valid);
+                        ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
                     }
                 }
             };

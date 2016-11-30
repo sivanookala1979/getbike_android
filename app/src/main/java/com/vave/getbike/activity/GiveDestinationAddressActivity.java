@@ -298,7 +298,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                     @Override
                     public void afterPostExecute() {
                         if (rideID != null) {
-                            Intent intent = new Intent(GiveDestinationAddressActivity.this, WaitForRiderActivity.class);
+                            Intent intent = new Intent(GiveDestinationAddressActivity.this, WaitForRiderAllocationActivity.class);
                             intent.putExtra("rideId", rideID);
                             startActivity(intent);
                             finish();
