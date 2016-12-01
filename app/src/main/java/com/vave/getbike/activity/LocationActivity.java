@@ -487,7 +487,7 @@ public class LocationActivity extends BaseActivity implements
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location startLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (mMap != null) {
+        if (mMap != null && startLocation != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
         }
 

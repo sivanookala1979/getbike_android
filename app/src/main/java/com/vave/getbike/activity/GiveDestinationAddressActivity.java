@@ -115,7 +115,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (googleMap != null) {
+        if (googleMap != null && yourLocationLatLng != null && yourLocationLatLng.latitude != 0.0 && yourLocationLatLng.longitude != 0.0) {
             googleMap.addMarker(new MarkerOptions().position(yourLocationLatLng).title("Start"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourLocationLatLng, 16.0f));
         }

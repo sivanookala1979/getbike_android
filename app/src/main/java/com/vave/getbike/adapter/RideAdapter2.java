@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
-import com.vave.getbike.model.SearchResults;
+import com.vave.getbike.model.Ride;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by RAM on 11/26/2016.
@@ -18,12 +18,11 @@ import java.util.ArrayList;
 
 public class RideAdapter2 extends BaseAdapter {
 
-    private ArrayList<SearchResults> searchArrayList;
     Context context;
-
+    private List<Ride> searchArrayList;
     private LayoutInflater mInflater;
 
-    public RideAdapter2(Context context, ArrayList<SearchResults> results) {
+    public RideAdapter2(Context context, List<Ride> results) {
         searchArrayList = results;
         this.context = context;
         mInflater = LayoutInflater.from(context);
@@ -57,13 +56,16 @@ public class RideAdapter2 extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.rideId.setText(searchArrayList.get(position).getRideId());
-        //TODO NEED TO GET FROM OBJECT
-        holder.price.setText(indianRupee + "0.0");
-//        holder.fromAddress.setText(searchArrayList.get(position).getRequesterName());
-//        holder.toAddress.setText(searchArrayList.get(position).getRequestedTime());
-//        holder.rideDateTime.setText(searchArrayList.get(position).getRequestedTime());
-
+        Ride ride = searchArrayList.get(position);
+        holder.rideId.setText("Trip ID : " + ride.getId());
+        if (ride.getTotalBill() != null) {
+            holder.price.setText(indianRupee + ride.getTotalBill());
+        } else {
+            holder.price.setText("");
+        }
+        holder.fromAddress.setText(ride.getSourceAddress());
+        holder.toAddress.setText(ride.getDestinationAddress());
+        holder.rideDateTime.setText(ride.getRequestedAt() + "");
         return convertView;
     }
 
@@ -74,7 +76,6 @@ public class RideAdapter2 extends BaseAdapter {
         TextView toAddress;
         TextView price;
         TextView rideDateTime;
-
 
     }
 }

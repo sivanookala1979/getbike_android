@@ -57,7 +57,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             return;
         }
         mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (googleMap != null) {
+        if (googleMap != null && mCurrentLocation != null) {
             googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
         }

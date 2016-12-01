@@ -2,9 +2,6 @@ package com.vave.getbike.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -26,11 +23,11 @@ import java.util.List;
 
 public class ShowCompletedRideActivity extends BaseActivity implements OnMapReadyCallback {
 
+    TextView tripDateTime, tripId, userName, rating, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash;
     private GoogleMap mMap;
     private Ride ride = null;
     private long rideId;
     private List<RideLocation> locations = new ArrayList<>();
-    TextView tripDateTime,tripId,userName,rating,bikeType,fromTime,toTime,fromAddress,toAddress,totalFare,taxAndFee,subTotal,roundingOff,totalBill,cash;
     //
 
     @Override
@@ -40,29 +37,40 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         //
         addToolbarView();
 
-        tripDateTime = (TextView)findViewById(R.id.tipDateTime);
-        tripId = (TextView)findViewById(R.id.tripId);
-        userName = (TextView)findViewById(R.id.userName);
-        rating = (TextView)findViewById(R.id.ratingCount);
-        bikeType = (TextView)findViewById(R.id.bikeType);
-        fromTime = (TextView)findViewById(R.id.fromTime);
-        toTime = (TextView)findViewById(R.id.toTime);
-        fromAddress = (TextView)findViewById(R.id.fromAddress);
-        toAddress =(TextView)findViewById(R.id.toAddress);
-        totalFare = (TextView)findViewById(R.id.totalFare);
-        taxAndFee = (TextView)findViewById(R.id.taxFee);
-        subTotal = (TextView)findViewById(R.id.subTotal);
-        roundingOff = (TextView)findViewById(R.id.roundingOff);
-        totalBill = (TextView)findViewById(R.id.totalBill);
-        cash = (TextView)findViewById(R.id.cashAmount);
+        tripDateTime = (TextView) findViewById(R.id.tipDateTime);
+        tripId = (TextView) findViewById(R.id.tripId);
+        userName = (TextView) findViewById(R.id.userName);
+        rating = (TextView) findViewById(R.id.ratingCount);
+        bikeType = (TextView) findViewById(R.id.bikeType);
+        fromTime = (TextView) findViewById(R.id.fromTime);
+        toTime = (TextView) findViewById(R.id.toTime);
+        fromAddress = (TextView) findViewById(R.id.fromAddress);
+        toAddress = (TextView) findViewById(R.id.toAddress);
+        totalFare = (TextView) findViewById(R.id.totalFare);
+        taxAndFee = (TextView) findViewById(R.id.taxFee);
+        subTotal = (TextView) findViewById(R.id.subTotal);
+        roundingOff = (TextView) findViewById(R.id.roundingOff);
+        totalBill = (TextView) findViewById(R.id.totalBill);
+        cash = (TextView) findViewById(R.id.cashAmount);
         rideId = getIntent().getLongExtra("rideId", 0L);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
     public void updateRideDetails() {
-        if(ride!=null){
-            userName.setText(""+ride.getRequestorName());
+        if (ride != null) {
+            userName.setText("" + ride.getRequestorName());
+            totalFare.setText("" + ride.getTotalFare());
+            taxAndFee.setText("" + ride.getTaxesAndFees());
+            subTotal.setText("" + ride.getSubTotal());
+            roundingOff.setText("" + ride.getRoundingOff());
+            totalBill.setText("" + ride.getTotalBill());
+            cash.setText("" + ride.getTotalBill());
+            fromAddress.setText(ride.getSourceAddress());
+            toAddress.setText(ride.getDestinationAddress());
+            tripId.setText("Trip ID : " + ride.getId());
+            tripDateTime.setText(ride.getRideStartedAt() + "");
         }
     }
 
@@ -104,7 +112,6 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
                         mMap.animateCamera(cameraUpdate);
                     }
                 }
-
 
             }.execute();
         }

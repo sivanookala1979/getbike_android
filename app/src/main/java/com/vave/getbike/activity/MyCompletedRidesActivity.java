@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.adapter.RideAdapter;
+import com.vave.getbike.adapter.RideAdapter2;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
@@ -38,7 +39,7 @@ public class MyCompletedRidesActivity extends BaseActivity {
             @Override
             public void afterPostExecute() {
                 if (result != null) {
-                    myCompletedRidesListView.setAdapter(new RideAdapter(MyCompletedRidesActivity.this, result, getResources()));
+                    myCompletedRidesListView.setAdapter(new RideAdapter2(MyCompletedRidesActivity.this, result));
                 }
             }
         }.execute();
