@@ -82,13 +82,6 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.ridesGiven:
                 startActivity(new Intent(this, RidesGivenByMeActivity.class));
-//                final Dialog dialog = new Dialog(RequestRideActivity.this);
-//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                dialog.setContentView(R.layout.vehicle_details_dialogue);
-//                Window window = dialog.getWindow();
-//                // window.setGravity(Gravity.BOTTOM);
-//                dialog.show();
-
                 break;
             case R.id.home:
                 startActivity(new Intent(this, GiveRideTakeRideActivity.class));

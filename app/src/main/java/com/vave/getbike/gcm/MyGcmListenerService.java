@@ -29,7 +29,9 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
+import com.vave.getbike.activity.ShowCompletedRideActivity;
 import com.vave.getbike.activity.SignupActivity;
+import com.vave.getbike.activity.WaitForRiderAfterAcceptanceActivity;
 import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
@@ -95,6 +97,13 @@ public class MyGcmListenerService extends GcmListenerService {
         } else if ("rideAccepted".equals(messageType)) {
             if (WaitForRiderAllocationActivity.instance() != null) {
                 WaitForRiderAllocationActivity.instance().rideAccepted(rideId);
+            }
+        } else if ("rideClosed".equals(messageType)) {
+            if (WaitForRiderAfterAcceptanceActivity.instance() != null) {
+                WaitForRiderAfterAcceptanceActivity.instance().rideCompleted(rideId);
+            } else {
+                intent = new Intent(this, ShowCompletedRideActivity.class);
+                intent.putExtra("rideId", rideId);
             }
         } else {
             intent = new Intent(this, SignupActivity.class);

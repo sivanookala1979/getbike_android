@@ -34,12 +34,29 @@ import com.vave.getbike.syncher.RideSyncher;
 
 public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
+    static WaitForRiderAfterAcceptanceActivity activeInstance;
     GoogleMap googleMap;
     long rideId;
     TextView allottedRiderDetailsView;
-    ImageButton callRider = null,showVehicleDetails;
-    private Ride ride = null;
+    ImageButton callRider = null, showVehicleDetails;
     Profile riderProfile = null;
+    private Ride ride = null;
+
+    public static WaitForRiderAfterAcceptanceActivity instance() {
+        return activeInstance;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        activeInstance = this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        activeInstance = null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +65,8 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
         rideId = getIntent().getLongExtra("rideId", 0L);
         allottedRiderDetailsView = (TextView) findViewById(R.id.allottedRiderDetails);
         callRider = (ImageButton) findViewById(R.id.callRider);
-        showVehicleDetails =  (ImageButton) findViewById(R.id.showVehicle);
+        callRider.setOnClickListener(this);
+        showVehicleDetails = (ImageButton) findViewById(R.id.showVehicle);
         showVehicleDetails.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
@@ -60,7 +78,6 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         new GetBikeAsyncTask(WaitForRiderAfterAcceptanceActivity.this) {
-
 
             @Override
             public void process() {
@@ -113,12 +130,12 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                 final Dialog dialog = new Dialog(WaitForRiderAfterAcceptanceActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.vehicle_details_dialogue);
-                ImageView picture = (ImageView)dialog.findViewById(R.id.vehiclePicture);
-                TextView number = (TextView)dialog.findViewById(R.id.vehicleNumber);
-                Button close = (Button)dialog.findViewById(R.id.close);
-                if(riderProfile!=null){
-                    number.setText(""+riderProfile.getVehicleNumber());
-                    Picasso.with(this).load(BaseSyncher.BASE_URL+"/"+riderProfile.getVehiclePlateImageName()).placeholder(R.drawable.picture).into(picture);
+                ImageView picture = (ImageView) dialog.findViewById(R.id.vehiclePicture);
+                TextView number = (TextView) dialog.findViewById(R.id.vehicleNumber);
+                Button close = (Button) dialog.findViewById(R.id.close);
+                if (riderProfile != null) {
+                    number.setText("" + riderProfile.getVehicleNumber());
+                    Picasso.with(this).load(BaseSyncher.BASE_URL + "/" + riderProfile.getVehiclePlateImageName()).placeholder(R.drawable.picture).into(picture);
 
                 }
                 close.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +147,15 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                 dialog.show();
                 break;
 
+        }
+    }
+
+    public void rideCompleted(long rideId) {
+        if (rideId == ride.getId()) {
+            Intent intent = new Intent(WaitForRiderAfterAcceptanceActivity.this, ShowCompletedRideActivity.class);
+            intent.putExtra("rideId", ride.getId());
+            startActivity(intent);
+            finish();
         }
     }
 }

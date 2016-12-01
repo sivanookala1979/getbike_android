@@ -1,4 +1,5 @@
 package com.vave.getbike.helpers;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,9 +31,11 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
             //this will update the UI with message
             LoginActivity inst = LoginActivity.instance();
-            int index = smsMessageStr.indexOf(" is ");
-            if(smsMessageStr.contains("NETSECURE") && index > 0 ) {
-                inst.updateOtp(smsMessageStr.substring(index + 4, index + 10));
+            if (inst != null) {
+                int index = smsMessageStr.indexOf(" is ");
+                if (smsMessageStr.contains("NETSECURE") && index > 0) {
+                    inst.updateOtp(smsMessageStr.substring(index + 4, index + 10));
+                }
             }
         }
     }

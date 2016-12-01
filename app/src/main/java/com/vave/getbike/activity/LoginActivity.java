@@ -39,20 +39,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        inst = null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Button sendOtp = (Button) findViewById(R.id.send_otp);
         assert sendOtp != null;
         sendOtp.setOnClickListener(this);
-        mobileNumberTextView=(TextView)findViewById(R.id.mobile);
-        otpTextView = (TextView)findViewById(R.id.received_otp);
+        mobileNumberTextView = (TextView) findViewById(R.id.mobile);
+        otpTextView = (TextView) findViewById(R.id.received_otp);
         try {
             //TODO This should be placed in logout as well.
             InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             Log.e("InstanceID", ex.getMessage(), ex);
         }
         Button login = (Button) findViewById(R.id.login);
@@ -69,11 +73,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 final String mobileNumber = ((TextView) findViewById(R.id.mobile)).getText() + "";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
                 boolean patternCheck = pattern1.matcher(mobileNumber).find();
-                if ((mobileNumber.length()!=10) || (patternCheck)){
+                if ((mobileNumber.length() != 10) || (patternCheck)) {
                     mobileNumberTextView.setError("Required 10 digits");
                     mobileNumberTextView.requestFocus();
-                }
-                else{
+                } else {
                     new GetBikeAsyncTask(LoginActivity.this) {
                         boolean result = false;
 
@@ -85,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         @Override
                         public void afterPostExecute() {
-                            Log.d("TAG","SEND otp button clicked result is:"+result);
+                            Log.d("TAG", "SEND otp button clicked result is:" + result);
                             if (!result) {
                                 ToastHelper.redToast(getApplicationContext(), "unregistered mobile number!");
                             }
@@ -101,15 +104,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
                 boolean patternCheck1 = pattern1.matcher(mobileNumber).find();
                 boolean patternCheck2 = pattern1.matcher(otp).find();
-                if ((mobileNumber.length()!=10) || (patternCheck1)){
+                if ((mobileNumber.length() != 10) || (patternCheck1)) {
                     mobileNumberTextView.setError("Required 10 digits");
                     mobileNumberTextView.requestFocus();
-                }
-                else if ((otp.length()==0) || (patternCheck2)){
+                } else if ((otp.length() == 0) || (patternCheck2)) {
                     otpTextView.setError("Required");
                     otpTextView.requestFocus();
-                }
-                else {
+                } else {
                     new GetBikeAsyncTask(LoginActivity.this) {
                         boolean result = false;
 
@@ -148,12 +149,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             break;
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        inst = null;
     }
 
     public void updateOtp(String receivedOtp) {

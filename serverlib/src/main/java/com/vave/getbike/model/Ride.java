@@ -21,6 +21,13 @@ public class Ride {
     Double orderAmount;
     Double orderDistance;
     Date requestedAt;
+    Date rideStartedAt;
+    Date rideEndedAt;
+    Double totalFare;
+    Double taxesAndFees;
+    Double subTotal;
+    Double roundingOff;
+    Double totalBill;
 
     public String getRiderName() {
         return riderName;
@@ -131,5 +138,61 @@ public class Ride {
 
     public void setDestinationAddress(String destinationAddress) {
         this.destinationAddress = destinationAddress;
+    }
+
+    public Date getRideStartedAt() {
+        return rideStartedAt;
+    }
+
+    public void setRideStartedAt(Date rideStartedAt) {
+        this.rideStartedAt = rideStartedAt;
+    }
+
+    public Date getRideEndedAt() {
+        return rideEndedAt;
+    }
+
+    public void setRideEndedAt(Date rideEndedAt) {
+        this.rideEndedAt = rideEndedAt;
+    }
+
+    public Double getTotalFare() {
+        return totalFare;
+    }
+
+    public void setTotalFare(Double totalFare) {
+        this.totalFare = totalFare;
+    }
+
+    public Double getTaxesAndFees() {
+        return taxesAndFees;
+    }
+
+    public void setTaxesAndFees(Double taxesAndFees) {
+        this.taxesAndFees = taxesAndFees;
+    }
+
+    public Double getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(Double subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    public Double getRoundingOff() {
+        return roundingOff;
+    }
+
+    public void setRoundingOff(Double roundingOff) {
+        this.roundingOff = roundingOff;
+    }
+
+    public Double getTotalBill() {
+        return totalBill;
+    }
+
+    public void setTotalBill(Double totalBill) {
+        this.totalBill = totalBill;
     }
 }
