@@ -15,10 +15,14 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -37,109 +41,74 @@
             android:layout_gravity="center"
             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
             android:text="@string/get_bike"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/start_updates_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:onClick="startUpdatesButtonHandler"
-                android:text="START" />
-
-            <Button
-                android:id="@+id/stop_updates_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:gravity="center"
-                android:text="STOP" />
-
-            <Button
-                android:id="@+id/closeRide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="CLOSE" />
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/latitude_text"
+        <Button
+            android:id="@+id/start_updates_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:textSize="@dimen/default_text_size" />
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@color/get_bike_black"
+            android:gravity="center"
+            android:onClick="startUpdatesButtonHandler"
+            android:text="Start\nTracking"
+            android:textColor="@color/white"/>
 
-        <TextView
-            android:id="@+id/longitude_text"
+        <Button
+            android:id="@+id/stop_updates_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:textSize="@dimen/default_text_size" />
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@color/get_bike_black"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="STOP\nTRACKING"
+            android:textColor="@color/white"/>
 
-        <TextView
-            android:id="@+id/last_update_time_text"
+        <Button
+            android:id="@+id/closeRide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:textSize="@dimen/default_text_size" />
-
-
-        <TextView
-            android:id="@+id/totalDistance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:text="Distance"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/locationCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:text="Count"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-        <fragment
-            android:id="@+id/map"
-            class="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@color/get_bike_black"
+            android:text="CLOSE\nRIDE"
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/last_update_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginStart="@dimen/small_margin"
+        android:textSize="@dimen/default_text_size"/>
+
+    <TextView
+        android:id="@+id/locationCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginStart="@dimen/small_margin"
+        android:text="Number Of Locations : "
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

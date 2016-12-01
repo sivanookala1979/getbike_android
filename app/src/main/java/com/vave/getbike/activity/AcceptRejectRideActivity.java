@@ -89,6 +89,7 @@ public class AcceptRejectRideActivity extends AppCompatActivity implements View.
                             Intent intent = new Intent(AcceptRejectRideActivity.this, LocationActivity.class);
                             intent.putExtra("rideId", rideId);
                             startActivity(intent);
+                            finish();
                         } else {
                             ToastHelper.redToast(AcceptRejectRideActivity.this, R.string.error_failed_to_accept_ride);
                         }

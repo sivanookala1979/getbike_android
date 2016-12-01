@@ -18,6 +18,7 @@ package com.vave.getbike.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -48,7 +49,6 @@ import com.vave.getbike.syncher.RideLocationSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,11 +102,7 @@ public class LocationActivity extends BaseActivity implements
     protected Button mStopUpdatesButton;
     protected Button mCloseRideButton;
     protected TextView mLastUpdateTimeTextView;
-    protected TextView mLatitudeTextView;
-    protected TextView mLongitudeTextView;
-    protected TextView mTotalDistanceTextView;
     protected TextView mLocationCountTextView;
-
     //    protected ListView listView;
     //protected LocationAdapter adapter;
     // Labels.
@@ -138,10 +134,7 @@ public class LocationActivity extends BaseActivity implements
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mCloseRideButton = (Button) findViewById(R.id.closeRide);
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
-        mTotalDistanceTextView = (TextView) findViewById(R.id.totalDistance);
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
 
         // Set labels.
@@ -212,20 +205,6 @@ public class LocationActivity extends BaseActivity implements
 //                .addOnConnectionFailedListener(this)
 //                .addApi(LocationServices.API)
 //                .build();
-        locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-        try {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                onLocationChanged(location);
-                ToastHelper.blueToast(getApplicationContext(), "Last location is " + location.getLatitude() + " " + location.getLongitude() + " " + location.getProvider());
-
-            } else {
-                ToastHelper.blueToast(getApplicationContext(), "Location could not be found.");
-            }
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        }
 
         //createLocationRequest();
     }
@@ -321,14 +300,7 @@ public class LocationActivity extends BaseActivity implements
      */
     private void updateUI() {
         if (mCurrentLocation != null) {
-            String latitude = String.format("%s: %f", mLatitudeLabel,
-                    mCurrentLocation.getLatitude());
-            mLatitudeTextView.setText(latitude);
-            String longitude = String.format("%s: %f", mLongitudeLabel,
-                    mCurrentLocation.getLongitude());
-            mLongitudeTextView.setText(longitude);
-            String locationTime = String.format("%s: %s", mLastUpdateTimeLabel,
-                    mLastUpdateTime);
+            String locationTime = String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime);
             mLastUpdateTimeTextView.setText(locationTime);
             RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
             dataSource.setUpdataSource();
@@ -353,12 +325,7 @@ public class LocationActivity extends BaseActivity implements
                 mMap.animateCamera(cameraUpdate);
 
             }
-            mLocationCountTextView.setText("  Count " + locations.size());
-//            adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
-//            listView.setAdapter(adapter);
-        } else {
-            mLatitudeTextView.setText("Latitude");
-            mLongitudeTextView.setText("Longitude");
+            mLocationCountTextView.setText("Number Of Locations : " + locations.size());
         }
     }
 
@@ -482,7 +449,6 @@ public class LocationActivity extends BaseActivity implements
                 }.execute();
                 break;
             case R.id.closeRide:
-                mTotalDistanceTextView.setText("Calculating Distance");
                 new GetBikeAsyncTask(LocationActivity.this) {
                     Ride closedRide = null;
 
@@ -495,12 +461,11 @@ public class LocationActivity extends BaseActivity implements
                     @Override
                     public void afterPostExecute() {
                         if (closedRide != null) {
-                            DecimalFormat decimalFormat = new DecimalFormat();
-                            mTotalDistanceTextView.setText(decimalFormat.format(closedRide.getOrderDistance()));
-                            double distance=closedRide.getOrderDistance()/1000;
-
+                            Intent intent = new Intent(LocationActivity.this, ShowCompletedRideActivity.class);
+                            intent.putExtra("rideId", closedRide.getId());
+                            startActivity(intent);
+                            finish();
                         }
-
                     }
                 }.execute();
                 break;
@@ -510,8 +475,21 @@ public class LocationActivity extends BaseActivity implements
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(14.902696, 79.993980), 18);
-        mMap.animateCamera(cameraUpdate);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location startLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (mMap != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
+        }
 
     }
 }
