@@ -20,7 +20,7 @@ import com.vave.getbike.syncher.LoginSyncher;
 
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static LoginActivity inst;
     TextView receivedOtp;
@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        addToolbarView();
         Button sendOtp = (Button) findViewById(R.id.send_otp);
         assert sendOtp != null;
         sendOtp.setOnClickListener(this);
@@ -63,12 +64,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         assert login != null;
         login.setBackgroundResource(R.mipmap.sign_in);
         login.setOnClickListener(this);
+        Button register = (Button) findViewById(R.id.register);
+        assert register != null;
+        register.setBackgroundResource(R.mipmap.register);
+        register.setOnClickListener(this);
         receivedOtp = (TextView) findViewById(R.id.received_otp);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case  R.id.register:
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+                finish();
+                break;
             case R.id.send_otp: {
                 final String mobileNumber = ((TextView) findViewById(R.id.mobile)).getText() + "";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
@@ -140,6 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (result) {
                                 Intent intent = new Intent(getApplicationContext(), RequestRideActivity.class);
                                 startActivity(intent);
+                                finish();
                             } else {
                                 ToastHelper.redToast(getApplicationContext(), "Failed to login.");
                             }

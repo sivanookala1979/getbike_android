@@ -10,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.iid.InstanceID;
 import com.vave.getbike.R;
@@ -21,7 +23,10 @@ import com.vave.getbike.helpers.GetBikePreferences;
  */
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    public  ImageView userProfileImage;
+    public TextView occupation;
+    public TextView friendsCount;
+    public TextView userAddress;
     public void addToolbarView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -37,15 +42,18 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     public void addNavigationMenu(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        userProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
+        occupation = (TextView) headerView.findViewById(R.id.occupation);
+        friendsCount = (TextView) headerView.findViewById(R.id.friendsCount);
+        userAddress = (TextView) headerView.findViewById(R.id.userAddress);
     }
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {

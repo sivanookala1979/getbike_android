@@ -21,7 +21,7 @@ import com.vave.getbike.syncher.LoginSyncher;
 
 import java.util.regex.Pattern;
 
-public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignupActivity extends BaseActivity implements View.OnClickListener {
 
     TextView resultUserId;
     RadioGroup genderGroup;
@@ -34,24 +34,28 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        addToolbarView();
         Button signup = (Button) findViewById(R.id.signup);
         assert signup != null;
         signup.setBackgroundResource(R.mipmap.register);
         signup.setOnClickListener(this);
-        name=(EditText)findViewById(R.id.name);
-        mobile=(EditText)findViewById(R.id.mobile);
-        email=(EditText)findViewById(R.id.email);
+        //
+        name = (EditText) findViewById(R.id.name);
+        mobile = (EditText) findViewById(R.id.mobile);
+        email = (EditText) findViewById(R.id.email);
 
-        Button gmaps =(Button)findViewById(R.id.gmaps);
+        Button gmaps = (Button) findViewById(R.id.gmaps);
         gmaps.setOnClickListener(this);
-        Button redirectButton=(Button)findViewById(R.id.redirectButton);
+        Button redirectButton = (Button) findViewById(R.id.redirectButton);
         redirectButton.setOnClickListener(this);
         resultUserId = (TextView) findViewById(R.id.resultUserId);
         Button login = (Button) findViewById(R.id.login);
+        assert login != null;
+        login.setBackgroundResource(R.mipmap.sign_in);
         login.setOnClickListener(this);
         Button requestRide = (Button) findViewById(R.id.requestRide);
         requestRide.setOnClickListener(this);
-        genderGroup=(RadioGroup)findViewById(R.id.gender);
+        genderGroup = (RadioGroup) findViewById(R.id.gender);
         genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -75,41 +79,37 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 final String EMAIL_REGEX = "^(.+)@(.+)$";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
                 boolean patternCheck = pattern1.matcher(mobile.getText().toString()).find();
-                if (name.getText().toString().length()==0){
+                if (name.getText().toString().length() == 0) {
                     name.setError("Required");
                     name.requestFocus();
-                }
-                else if ((email.getText().toString().length()<=0) || (!(Pattern.matches(EMAIL_REGEX, email.getText().toString())))){
+                } else if ((email.getText().toString().length() <= 0) || (!(Pattern.matches(EMAIL_REGEX, email.getText().toString())))) {
                     email.setError("Required");
                     email.requestFocus();
-                }
-                else if ((mobile.getText().toString().length()!=10) || (patternCheck)){
+                } else if ((mobile.getText().toString().length() != 10) || (patternCheck)) {
                     mobile.setError("Required 10 digit number");
                     mobile.requestFocus();
-                }
-                else if (genderGroup.getCheckedRadioButtonId() == -1) {
+                } else if (genderGroup.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(SignupActivity.this, "Please provide your Gender", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    System.out.println("selected gender is:"+gender);
+                } else {
+                    System.out.println("selected gender is:" + gender);
                     new GetBikeAsyncTask(SignupActivity.this) {
                         CallStatus callStatus = null;
 
                         @Override
                         public void process() {
                             LoginSyncher sut = new LoginSyncher();
-                            Log.d("TAG","call status for signup is:"+callStatus);
+                            Log.d("TAG", "call status for signup is:" + callStatus);
                             callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), gender);
-                            Log.d("TAG","call status for signup is:"+callStatus);
+                            Log.d("TAG", "call status for signup is:" + callStatus);
                         }
 
                         @Override
                         public void afterPostExecute() {
                             if (callStatus.isSuccess()) {
-                                Log.d("TAG","call status for signup is:"+callStatus);
+                                Log.d("TAG", "call status for signup is:" + callStatus);
                                 resultUserId.setText("Success");
                             } else if (callStatus.getErrorCode() == 9901) {
-                                Log.d("TAG","call status for signup is:"+callStatus);
+                                Log.d("TAG", "call status for signup is:" + callStatus);
                                 ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
                             }
                         }
@@ -120,6 +120,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.login: {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
             break;
             case R.id.requestRide: {
@@ -128,7 +129,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             }
             break;
             case R.id.gmaps: {
-                Intent intent=new Intent(this,GoogleMapActivity.class);
+                Intent intent = new Intent(this, GoogleMapActivity.class);
                 startActivity(intent);
             }
             case R.id.redirectButton: {

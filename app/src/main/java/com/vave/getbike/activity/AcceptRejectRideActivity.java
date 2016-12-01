@@ -35,6 +35,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_reject_ride);
+        addToolbarView();
         rideId = getIntent().getLongExtra("rideId", 0L);
         rideRequestedBy = (TextView) findViewById(R.id.rideRequestedBy);
         rideRequestAddress = (TextView) findViewById(R.id.rideRequestAddress);

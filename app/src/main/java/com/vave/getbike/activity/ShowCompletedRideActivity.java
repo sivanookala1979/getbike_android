@@ -2,6 +2,7 @@ package com.vave.getbike.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -36,7 +37,6 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         setContentView(R.layout.trip_details_screen);
         //
         addToolbarView();
-
         tripDateTime = (TextView) findViewById(R.id.tipDateTime);
         tripId = (TextView) findViewById(R.id.tripId);
         userName = (TextView) findViewById(R.id.userName);
@@ -59,18 +59,20 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     }
 
     public void updateRideDetails() {
+        String indianRupee = getApplicationContext().getResources().getString(R.string.Rs);
         if (ride != null) {
             userName.setText("" + ride.getRequestorName());
-            totalFare.setText("" + ride.getTotalFare());
-            taxAndFee.setText("" + ride.getTaxesAndFees());
-            subTotal.setText("" + ride.getSubTotal());
-            roundingOff.setText("" + ride.getRoundingOff());
-            totalBill.setText("" + ride.getTotalBill());
-            cash.setText("" + ride.getTotalBill());
+            totalFare.setText(indianRupee+" " + ride.getTotalFare());
+            taxAndFee.setText(indianRupee+" " + ride.getTaxesAndFees());
+            subTotal.setText(indianRupee+" " + ride.getSubTotal());
+            roundingOff.setText(indianRupee+" " + ride.getRoundingOff());
+            totalBill.setText(indianRupee+" " + ride.getTotalBill());
+            cash.setText(indianRupee+" " + ride.getTotalBill());
             fromAddress.setText(ride.getSourceAddress());
             toAddress.setText(ride.getDestinationAddress());
             tripId.setText("Trip ID : " + ride.getId());
             tripDateTime.setText(ride.getRideStartedAt() + "");
+            Log.d("adarsh",""+ride.getRideStartedAt());
         }
     }
 
