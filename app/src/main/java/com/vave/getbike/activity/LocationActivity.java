@@ -25,7 +25,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -145,6 +144,7 @@ public class LocationActivity extends BaseActivity implements
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
         mStopUpdatesButton.setOnClickListener(this);
+
         mCloseRideButton.setOnClickListener(this);
 
 //        listView = (ListView) findViewById(R.id.locationsList);
@@ -287,11 +287,11 @@ public class LocationActivity extends BaseActivity implements
      */
     private void setButtonsEnabledState() {
         if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
+            mStartUpdatesButton.setVisibility(View.GONE);
+            mStopUpdatesButton.setVisibility(View.VISIBLE);
         } else {
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
+            mStopUpdatesButton.setVisibility(View.GONE);
+            mCloseRideButton.setVisibility(View.VISIBLE);
         }
     }
 

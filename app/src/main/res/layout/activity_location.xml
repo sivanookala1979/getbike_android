@@ -59,7 +59,7 @@
             android:background="@color/get_bike_black"
             android:gravity="center"
             android:onClick="startUpdatesButtonHandler"
-            android:text="Start\nTracking"
+            android:text="Start Tracking"
             android:textColor="@color/white"/>
 
         <Button
@@ -69,9 +69,9 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@color/get_bike_black"
-            android:enabled="false"
+            android:visibility="gone"
             android:gravity="center"
-            android:text="STOP\nTRACKING"
+            android:text="STOP TRACKING"
             android:textColor="@color/white"/>
 
         <Button
@@ -81,7 +81,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@color/get_bike_black"
-            android:text="CLOSE\nRIDE"
+            android:text="CLOSE RIDE"
+            android:visibility="gone"
             android:textColor="@color/white"
             />
     </LinearLayout>
