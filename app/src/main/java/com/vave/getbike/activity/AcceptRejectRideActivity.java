@@ -17,7 +17,7 @@ import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 
-public class AcceptRejectRideActivity extends AppCompatActivity implements View.OnClickListener {
+public class AcceptRejectRideActivity extends BaseActivity implements View.OnClickListener {
 
     // UI Widgets.
     TextView rideRequestedBy;

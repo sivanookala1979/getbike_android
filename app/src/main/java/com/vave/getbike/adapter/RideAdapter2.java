@@ -19,11 +19,13 @@ import java.util.ArrayList;
 public class RideAdapter2 extends BaseAdapter {
 
     private ArrayList<SearchResults> searchArrayList;
+    Context context;
 
     private LayoutInflater mInflater;
 
     public RideAdapter2(Context context, ArrayList<SearchResults> results) {
         searchArrayList = results;
+        this.context = context;
         mInflater = LayoutInflater.from(context);
     }
 
@@ -41,21 +43,26 @@ public class RideAdapter2 extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        String indianRupee = context.getResources().getString(R.string.Rs);
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.custom_row_view, null);
+            convertView = mInflater.inflate(R.layout.ride_history_item, null);
             holder = new ViewHolder();
             holder.rideId = (TextView) convertView.findViewById(R.id.ride_id);
-            holder.requestorName = (TextView) convertView.findViewById(R.id.requester_name);
-            holder.requestedTime = (TextView) convertView.findViewById(R.id.requested_time);
-
+            holder.fromAddress = (TextView) convertView.findViewById(R.id.fromAddress);
+            holder.toAddress = (TextView) convertView.findViewById(R.id.toAddress);
+            holder.price = (TextView) convertView.findViewById(R.id.price);
+            holder.rideDateTime = (TextView) convertView.findViewById(R.id.rideDateTime);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.rideId.setText(searchArrayList.get(position).getRideId());
-        holder.requestorName.setText(searchArrayList.get(position).getRequesterName());
-        holder.requestedTime.setText(searchArrayList.get(position).getRequestedTime());
+        //TODO NEED TO GET FROM OBJECT
+        holder.price.setText(indianRupee + "0.0");
+//        holder.fromAddress.setText(searchArrayList.get(position).getRequesterName());
+//        holder.toAddress.setText(searchArrayList.get(position).getRequestedTime());
+//        holder.rideDateTime.setText(searchArrayList.get(position).getRequestedTime());
 
         return convertView;
     }
@@ -63,7 +70,11 @@ public class RideAdapter2 extends BaseAdapter {
     static class ViewHolder {
 
         TextView rideId;
-        TextView requestorName;
-        TextView requestedTime;
+        TextView fromAddress;
+        TextView toAddress;
+        TextView price;
+        TextView rideDateTime;
+
+
     }
 }
