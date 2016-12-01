@@ -16,6 +16,7 @@ package com.vave.getbike.gcm;
  * limitations under the License.
  */
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -37,7 +38,7 @@ import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
-    int notificationCount = 0;
+    static int notificationCount = 0;
 
     /**
      * Called when message is received.
@@ -113,7 +114,7 @@ public class MyGcmListenerService extends GcmListenerService {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                     PendingIntent.FLAG_ONE_SHOT);
 
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.getbike_logo)
                     .setContentTitle(title)
@@ -125,7 +126,12 @@ public class MyGcmListenerService extends GcmListenerService {
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(notificationCount++ /* ID of notification */, notificationBuilder.build());
+            Notification notification = notificationBuilder.build();
+            notification.defaults |= Notification.DEFAULT_LIGHTS;
+            notification.defaults |= Notification.DEFAULT_VIBRATE;
+            notification.flags |= Notification.FLAG_INSISTENT;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(notificationCount++ /* ID of notification */, notification);
         }
     }
 }
