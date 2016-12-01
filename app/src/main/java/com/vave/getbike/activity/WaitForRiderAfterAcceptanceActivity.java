@@ -112,7 +112,7 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.callRider: {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + riderProfile.getPhoneNumber()));
                 if (ActivityCompat.checkSelfPermission(WaitForRiderAfterAcceptanceActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
