@@ -17,7 +17,7 @@ import com.vave.getbike.syncher.RideSyncher;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenRidesActivity extends AppCompatActivity {
+public class OpenRidesActivity extends BaseActivity {
 
     // UI Widgets
     ListView openRidesListView;
@@ -28,6 +28,7 @@ public class OpenRidesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_rides);
+        addToolbarView();
         openRidesListView = (ListView) findViewById(R.id.openRides);
 
         new GetBikeAsyncTask(OpenRidesActivity.this) {

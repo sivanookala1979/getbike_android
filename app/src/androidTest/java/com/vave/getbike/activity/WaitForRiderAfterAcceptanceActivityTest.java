@@ -37,7 +37,7 @@ public class WaitForRiderAfterAcceptanceActivityTest {
         intent.putExtra("rideId", ride.getId());
         rideSyncher.acceptRide(ride.getId());
         mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(5000);
+        SystemClock.sleep(10000);
     }
 
 }

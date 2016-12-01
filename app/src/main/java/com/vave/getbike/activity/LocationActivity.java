@@ -67,7 +67,7 @@ import java.util.List;
  * uses Google Play services for authentication, see
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
-public class LocationActivity extends ActionBarActivity implements
+public class LocationActivity extends BaseActivity implements
         android.location.LocationListener, View.OnClickListener, OnMapReadyCallback {
 
     /**
@@ -132,6 +132,7 @@ public class LocationActivity extends ActionBarActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
+        addToolbarView();
         rideId = getIntent().getLongExtra("rideId", 0L);
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);

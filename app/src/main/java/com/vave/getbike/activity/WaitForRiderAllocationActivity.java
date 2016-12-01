@@ -14,7 +14,7 @@ import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 import com.wang.avi.AVLoadingIndicatorView;
 
-public class WaitForRiderAllocationActivity extends AppCompatActivity {
+public class WaitForRiderAllocationActivity extends BaseActivity {
 
     // Active Instance
     public static WaitForRiderAllocationActivity activeInstance;
@@ -47,6 +47,7 @@ public class WaitForRiderAllocationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_rider_allocation);
+        addToolbarView();
         rideId = getIntent().getLongExtra("rideId", 0L);
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
         generatedRideId = (TextView) findViewById(R.id.generatedRideId);

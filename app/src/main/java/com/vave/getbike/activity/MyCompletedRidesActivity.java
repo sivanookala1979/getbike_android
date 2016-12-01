@@ -15,7 +15,7 @@ import com.vave.getbike.syncher.RideSyncher;
 
 import java.util.List;
 
-public class MyCompletedRidesActivity extends AppCompatActivity {
+public class MyCompletedRidesActivity extends BaseActivity {
 
     // UI Widgets
     ListView myCompletedRidesListView;
@@ -25,6 +25,7 @@ public class MyCompletedRidesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_completed_rides);
+        addToolbarView();
         myCompletedRidesListView = (ListView) findViewById(R.id.myCompletedRides);
         new GetBikeAsyncTask(MyCompletedRidesActivity.this) {
 

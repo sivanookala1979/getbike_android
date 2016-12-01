@@ -36,7 +36,7 @@
                     android:id="@+id/vehiclePicture"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/picture" />
+                    android:src="@drawable/picture" />
 
             </LinearLayout>
 
@@ -55,7 +55,7 @@
                     android:textColor="@color/get_bike_black"
                     android:textSize="@dimen/text_size_intermediate" />
 
-                <EditText
+                <TextView
                     android:id="@+id/vehicleNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -71,8 +71,8 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/closeOrUpdate"
+            <Button
+                android:id="@+id/close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/get_bike_orange"

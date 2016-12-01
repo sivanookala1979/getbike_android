@@ -1,6 +1,7 @@
 package com.vave.getbike.activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,7 +9,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -19,10 +23,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -31,8 +37,9 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     GoogleMap googleMap;
     long rideId;
     TextView allottedRiderDetailsView;
-    ImageButton callRider = null;
+    ImageButton callRider = null,showVehicleDetails;
     private Ride ride = null;
+    Profile riderProfile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,8 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
         rideId = getIntent().getLongExtra("rideId", 0L);
         allottedRiderDetailsView = (TextView) findViewById(R.id.allottedRiderDetails);
         callRider = (ImageButton) findViewById(R.id.callRider);
+        showVehicleDetails =  (ImageButton) findViewById(R.id.showVehicle);
+        showVehicleDetails.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -51,10 +60,12 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         new GetBikeAsyncTask(WaitForRiderAfterAcceptanceActivity.this) {
-            Profile riderProfile = null;
+
 
             @Override
             public void process() {
+                riderProfile = null;
+                ride = null;
                 RideSyncher rideSyncher = new RideSyncher();
                 ride = rideSyncher.getRideById(rideId);
                 if (ride != null) {
@@ -98,6 +109,26 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                 startActivity(intent);
                 break;
             }
+            case R.id.showVehicle:
+                final Dialog dialog = new Dialog(WaitForRiderAfterAcceptanceActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.vehicle_details_dialogue);
+                ImageView picture = (ImageView)dialog.findViewById(R.id.vehiclePicture);
+                TextView number = (TextView)dialog.findViewById(R.id.vehicleNumber);
+                Button close = (Button)dialog.findViewById(R.id.close);
+                if(riderProfile!=null){
+                    number.setText(""+riderProfile.getVehicleNumber());
+                    Picasso.with(this).load(BaseSyncher.BASE_URL+"/"+riderProfile.getVehiclePlateImageName()).placeholder(R.drawable.picture).into(picture);
+
+                }
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+                break;
 
         }
     }

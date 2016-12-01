@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vave.getbike.R;
 
-public class GiveRideTakeRideActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
+public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
 
     GoogleMap googleMap;
     private Location mCurrentLocation;
@@ -33,6 +33,7 @@ public class GiveRideTakeRideActivity extends AppCompatActivity implements OnMap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give_ride_take_ride);
+        addToolbarView();
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
