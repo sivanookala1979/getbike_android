@@ -98,7 +98,7 @@
                     android:layout_height="25dp"
                     android:layout_weight="1.5"
                     android:scaleType="centerInside"
-                    android:background="@drawable/home" />
+                    android:background="@drawable/home_icon" />
 
                 <TextView
                     android:id="@+id/userAddress"
