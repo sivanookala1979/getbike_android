@@ -44,6 +44,29 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
+    public Ride hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber) {
+        final GetBikePointer<Ride> result = new GetBikePointer<>();
+        new JsonPostHandler("/hailCustomer") {
+
+            @Override
+            protected void prepareRequest() {
+                put("latitude", latitude);
+                put("longitude", longitude);
+                put("sourceAddress", sourceAddress);
+                put("destinationAddress", destinationAddress);
+                put("phoneNumber", phoneNumber);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                Ride ride = new Ride();
+                ride.setId(jsonResult.getLong("rideId"));
+                result.setValue(ride);
+            }
+        }.handle();
+        return result.getValue();
+    }
+
     public boolean acceptRide(long rideId) {
         final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
         result.setValue(false);
@@ -117,7 +140,9 @@ public class RideSyncher extends BaseSyncher {
     private Ride createRideFromJson(JSONObject jsonResult) throws JSONException {
         JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
         Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
-        ride.setRequestorName(jsonResult.getString("requestorName"));
+        if (jsonResult.has("requestorName") && !jsonResult.isNull("requestorName") ) {
+            ride.setRequestorName(jsonResult.getString("requestorName"));
+        }
         ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));
         return ride;
     }

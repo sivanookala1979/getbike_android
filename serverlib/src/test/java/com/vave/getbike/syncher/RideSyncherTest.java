@@ -48,6 +48,19 @@ public class RideSyncherTest {
     }
 
     @Test
+    public void hailCustomerTESTHappyFlow() {
+        Ride ride = sut.hailCustomer(24.56, 24.57, "Kavali", "Musunur", "9383787373");
+        Ride actual = sut.getRideById(ride.getId());
+        assertNotNull(actual);
+        assertEquals(ride.getId(), actual.getId());
+        assertEquals(24.56, actual.getStartLatitude());
+        assertEquals(24.57, actual.getStartLongitude());
+        assertEquals("Kavali", actual.getSourceAddress());
+        assertEquals("Musunur", actual.getDestinationAddress());
+        assertEquals("RideAccepted", actual.getRideStatus());
+    }
+
+    @Test
     public void acceptRideTESTHappyFlow() {
         Ride ride = sut.requestRide(24.56, 24.57);
         boolean actual = sut.acceptRide(ride.getId());

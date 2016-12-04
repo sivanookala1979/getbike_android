@@ -61,7 +61,7 @@ public class GiveRideTakeRideActivityTest {
                 .check(matches(withText("Musunur, Andhra Pradesh, India")));
         SystemClock.sleep(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 25.8 for 3.25 km")));
+                .check(matches(withText("Estimated ₹ 25.3 for 3.19 km")));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class GiveRideTakeRideActivityTest {
                 .check(matches(withText("Hyderabad, Telangana, India")));
         SystemClock.sleep(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 2516.0 for 359.0 km")));
+                .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class GiveRideTakeRideActivityTest {
                 .check(matches(withText("Hyderabad, Telangana, India")));
         SystemClock.sleep(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 2516.0 for 359.0 km")));
+                .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
         onView(withId(R.id.giveRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
         onView(withId(R.id.tripId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));

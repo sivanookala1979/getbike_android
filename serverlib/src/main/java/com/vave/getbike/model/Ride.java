@@ -28,6 +28,7 @@ public class Ride {
     Double subTotal;
     Double roundingOff;
     Double totalBill;
+    String rideStatus;
 
     public String getRiderName() {
         return riderName;
@@ -194,5 +195,13 @@ public class Ride {
 
     public void setTotalBill(Double totalBill) {
         this.totalBill = totalBill;
+    }
+
+    public String getRideStatus() {
+        return rideStatus;
+    }
+
+    public void setRideStatus(String rideStatus) {
+        this.rideStatus = rideStatus;
     }
 }

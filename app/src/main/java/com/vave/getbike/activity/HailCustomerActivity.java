@@ -294,8 +294,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                     @Override
                     public void process() {
                         RideSyncher sut = new RideSyncher();
-                        Ride ride = sut.requestRide(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString());
-                        sut.acceptRide(ride.getId());
+                        Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString(), customerMobileNumber.getText().toString());
                         rideID = ride.getId();
                     }
 
