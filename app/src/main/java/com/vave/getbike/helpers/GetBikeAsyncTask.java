@@ -55,6 +55,8 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... urls) {
+        Log.d("GetBikeAsyncTask", "onPreExecuteEnd");
+        ToastHelper.delayToasting();
         String result = FAILURE;
         if (isOnline(context)) {
             try {
