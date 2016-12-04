@@ -29,6 +29,7 @@ public class RiderProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_profile);
+        GetBikePreferences.setPreferences(getApplicationContext());
         addToolbarView();
         mPagerSlidingTabStrip = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.pager);
