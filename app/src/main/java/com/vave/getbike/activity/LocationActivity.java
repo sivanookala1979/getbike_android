@@ -266,9 +266,8 @@ public class LocationActivity extends BaseActivity implements
                         .add(latLngs)
                         .width(5)
                         .color(Color.RED));
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 20.0f);
                 mMap.animateCamera(cameraUpdate);
-
             }
             mLocationCountTextView.setText("Number Of Locations : " + locations.size());
         }

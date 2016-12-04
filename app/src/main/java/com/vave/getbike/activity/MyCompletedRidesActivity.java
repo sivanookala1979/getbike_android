@@ -2,13 +2,11 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.vave.getbike.R;
-import com.vave.getbike.adapter.RideAdapter;
 import com.vave.getbike.adapter.RideAdapter2;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;

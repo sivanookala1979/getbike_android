@@ -36,10 +36,11 @@
 
             <EditText
                 android:id="@+id/customerMobileNumber"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="number"
+                android:hint="Type Mobile Number Here"
                 android:textStyle="bold"/>
 
             <TextView

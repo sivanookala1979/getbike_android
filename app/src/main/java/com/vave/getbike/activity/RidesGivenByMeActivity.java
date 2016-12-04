@@ -2,13 +2,12 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.vave.getbike.R;
-import com.vave.getbike.adapter.RideAdapter;
+import com.vave.getbike.adapter.RideAdapter2;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
@@ -38,7 +37,7 @@ public class RidesGivenByMeActivity extends BaseActivity {
             @Override
             public void afterPostExecute() {
                 if (result != null) {
-                    myCompletedRidesListView.setAdapter(new RideAdapter(RidesGivenByMeActivity.this, result, getResources()));
+                    myCompletedRidesListView.setAdapter(new RideAdapter2(RidesGivenByMeActivity.this, result));
                 }
             }
         }.execute();

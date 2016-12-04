@@ -111,8 +111,7 @@
             android:layout_marginStart="@dimen/small_margin"
             android:layout_weight="50"
             android:textColor="@color/black"
-            android:textSize="@dimen/large_text_size"
-            android:textStyle="bold"/>
+            android:textSize="12sp"/>
     </LinearLayout>
 
 
@@ -122,8 +121,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/small_margin"
         android:layout_marginStart="@dimen/small_margin"
-        android:text="Number Of Locations : "
-        android:textColor="@color/black"
+        android:text="No Locations Yet"
+        android:textColor="@color/get_bike_orange"
         android:textSize="@dimen/large_text_size"
         android:textStyle="bold"/>
 
