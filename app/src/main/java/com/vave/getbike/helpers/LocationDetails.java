@@ -4,6 +4,8 @@
  */
 package com.vave.getbike.helpers;
 
+import android.location.Location;
+
 /**
  * @author Adarsh.T
  * @version 1.0, 09-Feb-2016
@@ -15,15 +17,19 @@ public class LocationDetails {
     double longitude;
     String city;
 
+    public static boolean isValid(Location location) {
+        return location != null && location.getLatitude() != 0.0 && location.getLatitude() != 0.0;
+    }
+
     public String getCity() {
-		return city;
-	}
+        return city;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public String getAddress() {
+    public String getAddress() {
         return address;
     }
 

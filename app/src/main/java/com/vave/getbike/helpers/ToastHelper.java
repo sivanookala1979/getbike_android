@@ -40,6 +40,11 @@ public class ToastHelper {
 		redToast(context, context.getResources().getString(id));
 	}
 
+	public static void gpsToast(Context context)
+	{
+		redToast(context, context.getResources().getString(R.string.gps_permission_missing_toast));
+	}
+
 	public static void redToast(Context context, String message) {
 		if (delayedToasting) {
 			lastContext = context;

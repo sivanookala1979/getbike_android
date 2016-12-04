@@ -437,8 +437,6 @@ public class LocationActivity extends BaseActivity implements
                         RideLocationSyncher locationSyncher = new RideLocationSyncher();
                         locationSyncher.setDataSource(dataSource);
                         RideSyncher rideSyncher = new RideSyncher();
-                        // TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
-                        rideSyncher.acceptRide(rideId);
                         locationSyncher.storePendingLocations(rideId);
                         dataSource.close();
                     }

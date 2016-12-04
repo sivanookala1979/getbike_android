@@ -8,10 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,9 +18,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.LocationDetails;
+import com.vave.getbike.helpers.ToastHelper;
 
 public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
 
+    public static final int GPS_PERMISSION_REQUEST_CODE = 8;
     GoogleMap googleMap;
     private Location mCurrentLocation;
     private LocationManager locationManager;
@@ -44,19 +44,29 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+    public void onMapReady(GoogleMap googleMapParam) {
+        this.googleMap = googleMapParam;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    GPS_PERMISSION_REQUEST_CODE);
             return;
         }
+        resetLocation();
+    }
+
+    public void resetLocation() throws SecurityException {
         mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (mCurrentLocation == null) {
+            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        if (mCurrentLocation == null) {
+            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+        if (!LocationDetails.isValid(mCurrentLocation)) {
+            ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
+        }
+
         if (googleMap != null && mCurrentLocation != null) {
             googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
@@ -67,12 +77,33 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takeRide:
-                Intent intent = new Intent(GiveRideTakeRideActivity.this, GiveDestinationAddressActivity.class);
-                intent.putExtra("latitude", mCurrentLocation.getLatitude());
-                intent.putExtra("longitude", mCurrentLocation.getLongitude());
-                startActivity(intent);
-                finish();
+                if (LocationDetails.isValid(mCurrentLocation)) {
+                    Intent intent = new Intent(GiveRideTakeRideActivity.this, GiveDestinationAddressActivity.class);
+                    intent.putExtra("latitude", mCurrentLocation.getLatitude());
+                    intent.putExtra("longitude", mCurrentLocation.getLongitude());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
+                }
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case GPS_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    resetLocation();
+
+                } else {
+
+                }
+                return;
+            }
         }
     }
 }
