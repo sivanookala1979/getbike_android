@@ -62,7 +62,7 @@ public class LoginSyncherTest {
     public void getPublicProfileTESTHappyFlow() {
         BaseSyncher.testSetup();
         Profile actual = sut.getPublicProfile(3L);
-        assertEquals("Siva", actual.getName());
+        assertEquals("Siva Nookala", actual.getName());
         assertEquals("9949287789", actual.getPhoneNumber());
     }
 

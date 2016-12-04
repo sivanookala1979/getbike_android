@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
     TextView rideRequestAddress;
     TextView rideRequestLatLng;
     TextView rideRequestMobileNumber;
+    TextView rideDestination;
     Button acceptRide;
     Button rejectRide;
     Button callRequestorButton;
@@ -41,11 +41,10 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         rideRequestAddress = (TextView) findViewById(R.id.rideRequestAddress);
         rideRequestLatLng = (TextView) findViewById(R.id.rideRequestLatLng);
         rideRequestMobileNumber = (TextView) findViewById(R.id.rideRequestMobileNumber);
+        rideDestination = (TextView) findViewById(R.id.rideDestinationAddress);
         acceptRide = (Button) findViewById(R.id.acceptRide);
         rejectRide = (Button) findViewById(R.id.rejectRide);
         callRequestorButton = (Button) findViewById(R.id.callRideRequestor);
-        final View callRequestorButtonView = this.findViewById(R.id.callRideRequestor);
-        callRequestorButtonView.setBackgroundResource(R.mipmap.call_customer);
         callRequestorButton.setOnClickListener(this);
         new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
 
@@ -62,6 +61,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                     rideRequestAddress.setText(ride.getSourceAddress());
                     rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
                     rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
+                    rideDestination.setText(ride.getDestinationAddress());
                 } else {
                     ToastHelper.redToast(AcceptRejectRideActivity.this, R.string.error_ride_is_not_valid);
                 }

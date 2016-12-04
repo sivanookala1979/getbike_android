@@ -29,7 +29,7 @@ public class BaseSyncher {
     }
 
     public static void testSetup() {
-        BaseSyncher.setAccessToken("cd87bd9d-970a-40e3-b98d-bd75dc92939b");
+        BaseSyncher.setAccessToken("49938a4a-790f-4e49-89cf-4be1e9fc7229");
         //  BaseSyncher.setAccessToken("3584e6e4-a461-4660-a3d0-719a9f121b0c");
     }
 }

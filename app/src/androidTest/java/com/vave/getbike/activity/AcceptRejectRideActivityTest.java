@@ -55,7 +55,7 @@ public class AcceptRejectRideActivityTest {
     public void withValidRide() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
 
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -65,16 +65,17 @@ public class AcceptRejectRideActivityTest {
         mActivityTestRule.launchActivity(intent);
         SystemClock.sleep(3000);
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala ")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
-        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Address of 21.34,54.67")));
+        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
+        onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
     }
 
     @Test
     public void clickOnAcceptRide() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
 
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -83,9 +84,10 @@ public class AcceptRejectRideActivityTest {
 
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala ")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
-        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Address of 21.34,54.67")));
+        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
+        onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
         onView(withId(R.id.acceptRide)).perform(click());
         onView(withId(R.id.start_updates_button)).check(matches(isDisplayed()));
     }
@@ -94,7 +96,7 @@ public class AcceptRejectRideActivityTest {
     public void clickOnRejectRide() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
 
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -103,9 +105,10 @@ public class AcceptRejectRideActivityTest {
 
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala ")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
-        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Address of 21.34,54.67")));
+        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
+        onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
         onView(withId(R.id.rejectRide)).perform(click());
         assertTrue(mActivityTestRule.getActivity().isFinishing());
     }

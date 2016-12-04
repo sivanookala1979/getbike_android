@@ -168,7 +168,7 @@ public class RideSyncherTest {
         Ride actual = sut.estimateRide(rideLocations);
         // Verify
         assertEquals(30.77, actual.getOrderDistance());
-        assertEquals(246.0, actual.getOrderAmount());
+        assertEquals(218.4, actual.getOrderAmount());
     }
 
     @Test
@@ -184,7 +184,7 @@ public class RideSyncherTest {
         Ride actual = sut.estimateRide(rideLocations);
         // Verify
         assertEquals(3.33, actual.getOrderDistance());
-        assertEquals(26.0, actual.getOrderAmount());
+        assertEquals(26.3, actual.getOrderAmount());
     }
 
     @Before

@@ -49,6 +49,7 @@ public class SplashScreenActivityTest {
 
     @Test
     public void testWithLoginAndLogout() {
+        GetBikePreferences.reset();
         SystemClock.sleep(SplashScreenActivity.DELAY_MILLIS + 1000);
         onView(withId(R.id.login_button)).perform(click());
         SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
@@ -69,6 +70,7 @@ public class SplashScreenActivityTest {
 
     @Test
     public void testWithLoginOnlyAndRelaunchingTheSplashScreen() {
+        GetBikePreferences.reset();
         SystemClock.sleep(SplashScreenActivity.DELAY_MILLIS + 1000);
         onView(withId(R.id.login_button)).perform(click());
         SMSIdlingResource smsIdlingResource = new SMSIdlingResource();

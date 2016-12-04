@@ -66,7 +66,7 @@ public class LoginActivityTest {
         Espresso.registerIdlingResources(smsIdlingResource);
 
         onView(withId(R.id.mobile))
-                .perform(typeText("9949257729"), closeSoftKeyboard());
+                .perform(typeText("9949287789"), closeSoftKeyboard());
         onView(withId(R.id.send_otp)).perform(click());
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
@@ -83,7 +83,6 @@ public class LoginActivityTest {
 
     }
 
-    @Test
     public void loginTESTHappyFlow() {
         SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
         mActivityTestRule.getActivity().setSmsListener(smsIdlingResource);
@@ -91,7 +90,7 @@ public class LoginActivityTest {
         Espresso.registerIdlingResources(smsIdlingResource);
 
         onView(withId(R.id.mobile))
-                .perform(typeText("9949257729"), closeSoftKeyboard());
+                .perform(typeText("9949287789"), closeSoftKeyboard());
         onView(withId(R.id.send_otp)).perform(click());
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
@@ -114,7 +113,7 @@ public class LoginActivityTest {
         Espresso.registerIdlingResources(smsIdlingResource);
 
         onView(withId(R.id.mobile))
-                .perform(typeText("9949257729"), closeSoftKeyboard());
+                .perform(typeText("9949287789"), closeSoftKeyboard());
         onView(withId(R.id.send_otp)).perform(click());
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
