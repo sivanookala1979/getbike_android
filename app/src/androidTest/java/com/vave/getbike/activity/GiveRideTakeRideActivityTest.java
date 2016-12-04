@@ -57,9 +57,11 @@ public class GiveRideTakeRideActivityTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Musunur, Andhra Pradesh, India")));
-        SystemClock.sleep(5000);
-        // TODO: 30/11/16 Add the validation for the amount and distance
+        SystemClock.sleep(2000);
+        onView(withId(R.id.rideEstimate))
+                .check(matches(withText("Estimated ₹ 25.8 for 3.25 km")));
     }
+
     @Test
     public void testKavaliToHyderabad() {
         BaseSyncher.testSetup();
@@ -80,7 +82,8 @@ public class GiveRideTakeRideActivityTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Hyderabad, Telangana, India")));
-        SystemClock.sleep(5000);
-        // TODO: 30/11/16 Add the validation for the amount and distance
+        SystemClock.sleep(2000);
+        onView(withId(R.id.rideEstimate))
+                .check(matches(withText("Estimated ₹ 2516.0 for 359.0 km")));
     }
 }
