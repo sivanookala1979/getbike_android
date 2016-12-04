@@ -1,10 +1,7 @@
 package com.vave.getbike.activity;
 
 import android.content.Intent;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -105,12 +102,16 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
 
                         @Override
                         public void afterPostExecute() {
-                            if (callStatus.isSuccess()) {
-                                Log.d("TAG", "call status for signup is:" + callStatus);
-                                resultUserId.setText("Success");
-                            } else if (callStatus.getErrorCode() == 9901) {
-                                Log.d("TAG", "call status for signup is:" + callStatus);
-                                ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
+                            if (callStatus != null) {
+                                if (callStatus.isSuccess()) {
+                                    Log.d("TAG", "call status for signup is:" + callStatus);
+                                    resultUserId.setText("Success");
+                                } else if (callStatus.getErrorCode() == 9901) {
+                                    Log.d("TAG", "call status for signup is:" + callStatus);
+                                    ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
+                                }
+                            } else {
+                                ToastHelper.serverToast(getApplicationContext());
                             }
                         }
                     }.execute();
@@ -128,22 +129,6 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                 startActivity(intent);
             }
             break;
-            case R.id.gmaps: {
-                Intent intent = new Intent(this, GoogleMapActivity.class);
-                startActivity(intent);
-            }
-            case R.id.redirectButton: {
-                Location targetLocation = new Location("");//provider name is unnecessary
-                targetLocation.setLatitude(14.915895d);//your coordinates(lat)
-                targetLocation.setLongitude(79.988867d);//your coordinates(lng)
-                String url = null;
-                url = "google.navigation:q=" + targetLocation.getLatitude() + "," + targetLocation.getLongitude() + "&mode=d";
-                Log.d("TAG", url);
-                Uri gmmIntentUri = Uri.parse(url);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-            }
 
         }
     }

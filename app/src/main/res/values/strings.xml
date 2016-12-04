@@ -36,6 +36,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="gps_permission_missing_toast">Could not get the current location. Please check your GPS permissions and enable GPS on your phone. Please try this app outdoor, where the sky is clearly visible.</string>
+    <string name="internet_or_server_error">Please check if your internet connection is working or please retry since the server might be facing a temporary problem.</string>
     <string name="Rs">\u20B9</string>
 
 </resources>
