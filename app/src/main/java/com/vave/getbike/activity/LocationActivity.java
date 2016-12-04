@@ -137,7 +137,8 @@ public class LocationActivity extends BaseActivity implements
         mCloseRideButton = (Button) findViewById(R.id.closeRide);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
-
+        TextView tripIdTextView = (TextView) findViewById(R.id.tripId);
+        tripIdTextView.setText("Trip ID : " + rideId);
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);

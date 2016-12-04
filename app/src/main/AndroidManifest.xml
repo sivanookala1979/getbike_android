@@ -113,6 +113,7 @@
         <activity android:name=".activity.GiveDestinationAddressActivity"></activity>
         <activity android:name=".activity.RiderProfileActivity"></activity>
         <activity android:name=".activity.WaitForRiderAfterAcceptanceActivity"></activity>
+        <activity android:name=".activity.HailCustomerActivity"></activity>
     </application>
 
 </manifest>

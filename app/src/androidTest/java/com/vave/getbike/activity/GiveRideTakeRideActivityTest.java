@@ -13,6 +13,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -86,4 +88,40 @@ public class GiveRideTakeRideActivityTest {
         onView(withId(R.id.rideEstimate))
                 .check(matches(withText("Estimated ₹ 2516.0 for 359.0 km")));
     }
+
+    @Test
+    public void giveRideToKnownUser() {
+        BaseSyncher.testSetup();
+        onView(withId(R.id.giveRide)).perform(click());
+        onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
+        onView(withId(R.id.customerMobileNumber)).perform(typeText("9949257729"));
+        onView(withId(R.id.destination)).perform(typeText("Hyderabad"), ViewActions.closeSoftKeyboard());
+        GiveRideTakeRideActivity mActivity = mActivityTestRule.getActivity();
+
+        onView(withText("Hyderabad, Telangana, India"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        // Tap on a suggestion.
+        onView(withText("Hyderabad, Telangana, India"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .perform(click());
+
+        // By clicking on the auto complete term, the text should be filled in.
+        onView(withId(R.id.destination))
+                .check(matches(withText("Hyderabad, Telangana, India")));
+        SystemClock.sleep(2000);
+        onView(withId(R.id.rideEstimate))
+                .check(matches(withText("Estimated ₹ 2516.0 for 359.0 km")));
+        onView(withId(R.id.giveRide)).perform(click());
+        AtomicReference<String> rideIdCapture = new AtomicReference<>();
+        onView(withId(R.id.tripId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));
+        onView(withId(R.id.start_updates_button)).perform(click());
+        SystemClock.sleep(4000);
+        onView(withId(R.id.stop_updates_button)).perform(click());
+        onView(withId(R.id.closeRide)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.tripId)).check(matches(withText(rideIdCapture.get())));
+    }
+
 }

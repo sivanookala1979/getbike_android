@@ -28,6 +28,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     private Location mCurrentLocation;
     private LocationManager locationManager;
     private ImageButton takeRide;
+    private ImageButton giveRide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                 getSystemService(Context.LOCATION_SERVICE);
         takeRide = (ImageButton) findViewById(R.id.takeRide);
         takeRide.setOnClickListener(this);
+        giveRide = (ImageButton) findViewById(R.id.giveRide);
+        giveRide.setOnClickListener(this);
     }
 
     @Override
@@ -68,16 +71,23 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takeRide:
-                if (LocationDetails.isValid(mCurrentLocation)) {
-                    Intent intent = new Intent(GiveRideTakeRideActivity.this, GiveDestinationAddressActivity.class);
-                    intent.putExtra("latitude", mCurrentLocation.getLatitude());
-                    intent.putExtra("longitude", mCurrentLocation.getLongitude());
-                    startActivity(intent);
-                    finish();
-                } else {
-                    ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
-                }
+                launchActivity(GiveDestinationAddressActivity.class);
                 break;
+            case R.id.giveRide:
+                launchActivity(HailCustomerActivity.class);
+                break;
+        }
+    }
+
+    public void launchActivity(Class targetActivity) {
+        if (LocationDetails.isValid(mCurrentLocation)) {
+            Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
+            intent.putExtra("latitude", mCurrentLocation.getLatitude());
+            intent.putExtra("longitude", mCurrentLocation.getLongitude());
+            startActivity(intent);
+            finish();
+        } else {
+            ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
         }
     }
 
