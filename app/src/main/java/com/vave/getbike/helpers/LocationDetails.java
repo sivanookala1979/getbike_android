@@ -4,7 +4,9 @@
  */
 package com.vave.getbike.helpers;
 
+import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 
 /**
  * @author Adarsh.T
@@ -19,6 +21,20 @@ public class LocationDetails {
 
     public static boolean isValid(Location location) {
         return location != null && location.getLatitude() != 0.0 && location.getLatitude() != 0.0;
+    }
+
+    public static Location getLocationOrShowToast(Context context, LocationManager locationManager) throws SecurityException {
+        Location result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (result == null) {
+            result = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        if (result == null) {
+            result = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+        if (!isValid(result)) {
+            ToastHelper.gpsToast(context);
+        }
+        return result;
     }
 
     public String getCity() {

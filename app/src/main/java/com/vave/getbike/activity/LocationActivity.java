@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
@@ -51,6 +52,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.vave.getbike.activity.GiveRideTakeRideActivity.GPS_PERMISSION_REQUEST_CODE;
 
 /**
  * Getting Location Updates.
@@ -474,20 +477,37 @@ public class LocationActivity extends BaseActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    GPS_PERMISSION_REQUEST_CODE);
             return;
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location startLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        animateToLocation();
+    }
+
+    public void animateToLocation() {
+        Location startLocation = LocationDetails.getLocationOrShowToast(LocationActivity.this, locationManager);
         if (mMap != null && startLocation != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
         }
-
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case GPS_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    animateToLocation();
+
+                } else {
+
+                }
+                return;
+            }
+        }
+    }
+
 }

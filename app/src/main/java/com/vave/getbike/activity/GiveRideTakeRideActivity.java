@@ -56,16 +56,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     }
 
     public void resetLocation() throws SecurityException {
-        mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (mCurrentLocation == null) {
-            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        if (mCurrentLocation == null) {
-            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        }
-        if (!LocationDetails.isValid(mCurrentLocation)) {
-            ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
-        }
+        mCurrentLocation = LocationDetails.getLocationOrShowToast(GiveRideTakeRideActivity.this, locationManager);
 
         if (googleMap != null && mCurrentLocation != null) {
             googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start"));
