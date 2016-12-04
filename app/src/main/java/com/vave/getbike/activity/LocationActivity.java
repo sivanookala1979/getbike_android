@@ -488,7 +488,7 @@ public class LocationActivity extends BaseActivity implements
 
     public void animateToLocation() {
         Location startLocation = LocationDetails.getLocationOrShowToast(LocationActivity.this, locationManager);
-        if (mMap != null && startLocation != null) {
+        if (mMap != null && LocationDetails.isValid(startLocation)) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
         }
     }
