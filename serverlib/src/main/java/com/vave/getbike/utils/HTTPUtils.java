@@ -53,14 +53,16 @@ public class HTTPUtils {
         }
         return sb.toString();
     }
+
     public static String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.NO_WRAP|Base64.NO_CLOSE|Base64.NO_PADDING);
+        String temp = Base64.encodeToString(b, Base64.NO_WRAP | Base64.NO_CLOSE | Base64.NO_PADDING);
         System.out.println(" JPEG Bitmap size : " + temp.length() + " JPEG Byte array length :" + b.length);
         return temp;
     }
+
     public static Bitmap getBitmapFromCameraData(Intent data, Context context) {
         Uri selectedImage = data.getData();
         String[] filePathColumn = {MediaStore.MediaColumns.DATA};
@@ -186,9 +188,5 @@ public class HTTPUtils {
             e.printStackTrace();
         }
         return jsonObject;
-    }
-
-    public static boolean isOnline(Object context) {
-        return true;
     }
 }

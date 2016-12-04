@@ -3,25 +3,24 @@ package com.vave.getbike.helpers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.WindowManager;
 
-
 import com.vave.getbike.R;
-import com.vave.getbike.utils.HTTPUtils;
-
 
 /**
  * Created by suzuki on 19-04-2016.
  */
 public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
 
+    public static String FAILURE = "Failure";
+    public static String SUCCESS = "Success";
     Context context;
     boolean showProgress = true;
     String progressMessage = "Loading....";
-    public static String FAILURE = "Failure";
-    public static String SUCCESS = "Success";
     ProgressDialog progressDialog;
 
     public GetBikeAsyncTask(Context context) {
@@ -29,10 +28,35 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
         this.context = context;
     }
 
+    public static ProgressDialog createProgressDialog(Context mContext) {
+        ProgressDialog dialog = new ProgressDialog(mContext);
+        try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException e) {
+
+        }
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.progressdialoglayout);
+        return dialog;
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+        if (netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()) {
+            ToastHelper.redToast(context, "Please check your Internet connection!");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected String doInBackground(String... urls) {
         String result = FAILURE;
-        if(HTTPUtils.isOnline(context)) {
+        if (isOnline(context)) {
             try {
                 process();
 
@@ -75,8 +99,7 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPreExecute() {
         Log.d("GetBikeAsyncTask", "onPreExecuteStart");
-        if(progressDialog !=null)
-        {
+        if (progressDialog != null) {
             progressDialog = null;
         }
         if (showProgress) {
@@ -103,17 +126,5 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
     public void setProgressMessage(String progressMessage) {
         this.progressMessage = progressMessage;
     }
-    public static ProgressDialog createProgressDialog(Context mContext) {
-        ProgressDialog dialog = new ProgressDialog(mContext);
-        try {
-            dialog.show();
-        } catch (WindowManager.BadTokenException e) {
 
-        }
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.progressdialoglayout);
-        return dialog;
-    }
 }
