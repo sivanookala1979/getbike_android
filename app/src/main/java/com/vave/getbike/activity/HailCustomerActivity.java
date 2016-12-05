@@ -303,6 +303,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                         if (rideID != null) {
                             Intent intent = new Intent(HailCustomerActivity.this, LocationActivity.class);
                             intent.putExtra("rideId", rideID);
+                            intent.putExtra("reachedCustomer", true);
                             startActivity(intent);
                             finish();
                         } else {

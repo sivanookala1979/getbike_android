@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -25,6 +26,11 @@ import static org.junit.Assert.assertTrue;
 public class LoginSyncherTest {
 
     LoginSyncher sut;
+
+    @Test
+    public void isReachable() throws Exception {
+        assertTrue(InetAddress.getByName("videos.meritcampus.com").isReachable(1000));
+    }
 
     @Test
     public void signupTESTHappyFlow() {

@@ -23,10 +23,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.datasource.RideLocationDataSource;
@@ -104,6 +107,10 @@ public class LocationActivity extends BaseActivity implements
     protected Button mCloseRideButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLocationCountTextView;
+    protected Button callCustomerButton;
+    protected Button reachedCustomerButton;
+    protected LinearLayout reachCustomerPanel;
+    protected LinearLayout locationTrackingPanel;
     //    protected ListView listView;
     //protected LocationAdapter adapter;
     // Labels.
@@ -122,6 +129,7 @@ public class LocationActivity extends BaseActivity implements
     protected Date mLastUpdateTimeAsDate;
     List<RideLocation> locations = new ArrayList<>();
     LocationManager locationManager;
+    Ride ride = null;
     private GoogleMap mMap;
     private long rideId;
 
@@ -139,6 +147,10 @@ public class LocationActivity extends BaseActivity implements
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
         TextView tripIdTextView = (TextView) findViewById(R.id.tripId);
         tripIdTextView.setText("Trip ID : " + rideId);
+        reachCustomerPanel = (LinearLayout) findViewById(R.id.reach_customer_panel);
+        locationTrackingPanel = (LinearLayout) findViewById(R.id.location_tracking_panel);
+        callCustomerButton = (Button) findViewById(R.id.call_customer_button);
+        reachedCustomerButton = (Button) findViewById(R.id.reached_customer_button);
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -147,41 +159,18 @@ public class LocationActivity extends BaseActivity implements
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
         mStopUpdatesButton.setOnClickListener(this);
-
         mCloseRideButton.setOnClickListener(this);
+        callCustomerButton.setOnClickListener(this);
+        reachedCustomerButton.setOnClickListener(this);
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
 
-    /**
-     * Sets up the location request. Android has two location request settings:
-     * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
-     * the accuracy of the current location. This sample uses ACCESS_FINE_LOCATION, as defined in
-     * the AndroidManifest.xml.
-     * <p/>
-     * When the ACCESS_FINE_LOCATION setting is specified, combined with a fast update
-     * interval (5 seconds), the Fused Location Provider API returns location updates that are
-     * accurate to within a few feet.
-     * <p/>
-     * These settings are appropriate for mapping applications that show real-time location
-     * updates.
-     */
-//    protected void createLocationRequest() {
-//        mLocationRequest = new LocationRequest();
-//
-//        // Sets the desired interval for active location updates. This interval is
-//        // inexact. You may not receive updates at all if no location sources are available, or
-//        // you may receive them slower than requested. You may also receive updates faster than
-//        // requested if other applications are requesting location at a faster interval.
-//        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-//
-//        // Sets the fastest rate for active location updates. This interval is exact, and your
-//        // application will never receive updates faster than this value.
-//        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-//
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//    }
+        if (getIntent().getBooleanExtra("reachedCustomer", false)) {
+            startTracking();
+        }
+    }
 
     /**
      * Handles the Start Updates button and requests start of location updates. Does nothing if
@@ -401,7 +390,29 @@ public class LocationActivity extends BaseActivity implements
                     }
                 }.execute();
                 break;
+            case R.id.call_customer_button:
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
+                if (ActivityCompat.checkSelfPermission(LocationActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(intent);
+                break;
+            case R.id.reached_customer_button:
+                startTracking();
+                break;
         }
+    }
+
+    public void startTracking() {
+        reachCustomerPanel.setVisibility(View.GONE);
+        locationTrackingPanel.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -417,10 +428,31 @@ public class LocationActivity extends BaseActivity implements
         animateToLocation();
     }
 
-    public void animateToLocation() {
+    public void animateToLocation() throws SecurityException {
         Location startLocation = LocationDetails.getLocationOrShowToast(LocationActivity.this, locationManager);
-        if (mMap != null && LocationDetails.isValid(startLocation)) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+            if (LocationDetails.isValid(startLocation)) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
+            }
+            new GetBikeAsyncTask(LocationActivity.this) {
+
+                @Override
+                public void process() {
+                    RideSyncher rideSyncher = new RideSyncher();
+                    ride = rideSyncher.getRideById(rideId);
+                }
+
+                @Override
+                public void afterPostExecute() {
+                    if (ride != null && ride.getStartLatitude() != null && ride.getStartLongitude() != null) {
+                        if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
+                            LatLng destination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
+                            mMap.addMarker(new MarkerOptions().position(destination).title("Customer Location"));
+                        }
+                    }
+                }
+            }.execute();
         }
     }
 
