@@ -32,6 +32,7 @@ import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.ShowCompletedRideActivity;
 import com.vave.getbike.activity.SignupActivity;
+import com.vave.getbike.activity.SplashScreenActivity;
 import com.vave.getbike.activity.WaitForRiderAfterAcceptanceActivity;
 import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 
@@ -107,7 +108,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 intent.putExtra("rideId", rideId);
             }
         } else {
-            intent = new Intent(this, SignupActivity.class);
+            intent = new Intent(this, SplashScreenActivity.class);
         }
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

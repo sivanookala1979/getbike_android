@@ -26,7 +26,15 @@ public class OpenRidesActivity extends BaseActivity {
         setContentView(R.layout.activity_open_rides);
         addToolbarView();
         openRidesListView = (ListView) findViewById(R.id.openRides);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadOpenRides();
+    }
+
+    private void reloadOpenRides() {
         new GetBikeAsyncTask(OpenRidesActivity.this) {
 
             @Override

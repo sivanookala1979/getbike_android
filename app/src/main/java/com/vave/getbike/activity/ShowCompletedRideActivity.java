@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.RideSyncher;
@@ -34,6 +35,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GetBikePreferences.setPreferences(getApplicationContext());
         setContentView(R.layout.trip_details_screen);
         //
         addToolbarView();
