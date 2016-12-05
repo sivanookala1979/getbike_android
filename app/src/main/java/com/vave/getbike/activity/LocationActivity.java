@@ -22,25 +22,33 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
-import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
@@ -51,8 +59,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.vave.getbike.activity.GiveRideTakeRideActivity.GPS_PERMISSION_REQUEST_CODE;
 
 /**
  * Getting Location Updates.
@@ -69,7 +75,7 @@ import static com.vave.getbike.activity.GiveRideTakeRideActivity.GPS_PERMISSION_
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
 public class LocationActivity extends BaseActivity implements
-        android.location.LocationListener, View.OnClickListener, OnMapReadyCallback {
+        LocationListener, View.OnClickListener, OnMapReadyCallback {
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -110,6 +116,11 @@ public class LocationActivity extends BaseActivity implements
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
     protected String mLastUpdateTimeLabel;
+
+    protected Button callCustomerButton;
+    protected Button reachedCustomerButton;
+    protected LinearLayout linearLayoutPannel1;
+    protected LinearLayout getLinearLayoutPannel2;
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
@@ -123,7 +134,13 @@ public class LocationActivity extends BaseActivity implements
     List<RideLocation> locations = new ArrayList<>();
     LocationManager locationManager;
     private GoogleMap mMap;
+    Ride ride = null;
     private long rideId;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,14 +148,35 @@ public class LocationActivity extends BaseActivity implements
         setContentView(R.layout.activity_location);
         addToolbarView();
         rideId = getIntent().getLongExtra("rideId", 0L);
+
+        new GetBikeAsyncTask(LocationActivity.this) {
+
+            @Override
+            public void process() {
+                RideSyncher rideSyncher = new RideSyncher();
+                ride = rideSyncher.getRideById(rideId);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (ride.getStartLatitude()!=null && ride.getStartLongitude()!=null){
+                    LatLng destination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
+                    mMap.addMarker(new MarkerOptions().position(destination).title("Customer Location"));
+                }
+            }
+        }.execute();
+
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mCloseRideButton = (Button) findViewById(R.id.closeRide);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
-        TextView tripIdTextView = (TextView) findViewById(R.id.tripId);
-        tripIdTextView.setText("Trip ID : " + rideId);
+        linearLayoutPannel1=(LinearLayout)findViewById(R.id.linear_layout_pannel1);
+        getLinearLayoutPannel2=(LinearLayout)findViewById(R.id.linear_layout_pannel2);
+        callCustomerButton=(Button)findViewById(R.id.call_customer_button);
+        reachedCustomerButton=(Button)findViewById(R.id.reached_customer_button);
+
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -149,9 +187,72 @@ public class LocationActivity extends BaseActivity implements
         mStopUpdatesButton.setOnClickListener(this);
 
         mCloseRideButton.setOnClickListener(this);
+        callCustomerButton.setOnClickListener(this);
+        reachedCustomerButton.setOnClickListener(this);
+
+//        listView = (ListView) findViewById(R.id.locationsList);
+//        adapter = new LocationAdapter(getApplicationContext(), R.id.latitude, locations);
+//        listView.setAdapter(adapter);
+
+        // Update values using data stored in the Bundle.
+        updateValuesFromBundle(savedInstanceState);
+
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
+        // API.
+        buildGoogleApiClient();
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    /**
+     * Updates fields based on data stored in the bundle.
+     *
+     * @param savedInstanceState The activity state saved in the Bundle.
+     */
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        Log.i(TAG, "Updating values from bundle");
+        if (savedInstanceState != null) {
+            // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
+            // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
+            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+                mRequestingLocationUpdates = savedInstanceState.getBoolean(
+                        REQUESTING_LOCATION_UPDATES_KEY);
+                setButtonsEnabledState();
+            }
+
+            // Update the value of mCurrentLocation from the Bundle and update the UI to show the
+            // correct latitude and longitude.
+            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+                // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
+                // is not null.
+                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+            }
+
+            // Update the value of mLastUpdateTime from the Bundle and update the UI.
+            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
+                mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
+            }
+            updateUI();
+        }
+    }
+
+    /**
+     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
+     * LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        Log.i(TAG, "Building GoogleApiClient");
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API)
+//                .build();
+
+        //createLocationRequest();
     }
 
     /**
@@ -252,6 +353,7 @@ public class LocationActivity extends BaseActivity implements
             dataSource.insert(rideId, mLastUpdateTimeAsDate, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
             locations = dataSource.getRideLocations(rideId);
             dataSource.close();
+            Log.d("Tag","latitude from te update UI is:"+locations.get(0).getLatitude()+"  "+locations.get(0).getLongitude());
 
             if (mMap != null) {
                 PolylineOptions polylineOptions = new PolylineOptions();
@@ -266,8 +368,9 @@ public class LocationActivity extends BaseActivity implements
                         .add(latLngs)
                         .width(5)
                         .color(Color.RED));
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 20.0f);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
                 mMap.animateCamera(cameraUpdate);
+
             }
             mLocationCountTextView.setText("Number Of Locations : " + locations.size());
         }
@@ -357,6 +460,16 @@ public class LocationActivity extends BaseActivity implements
 
     }
 
+    /**
+     * Stores activity data in the Bundle.
+     */
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -371,6 +484,8 @@ public class LocationActivity extends BaseActivity implements
                         RideLocationSyncher locationSyncher = new RideLocationSyncher();
                         locationSyncher.setDataSource(dataSource);
                         RideSyncher rideSyncher = new RideSyncher();
+                        // TODO: 01/11/16 : This needs to be removed. Accepting should be done from different place.
+                        rideSyncher.acceptRide(rideId);
                         locationSyncher.storePendingLocations(rideId);
                         dataSource.close();
                     }
@@ -401,6 +516,26 @@ public class LocationActivity extends BaseActivity implements
                     }
                 }.execute();
                 break;
+            case R.id.call_customer_button:
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
+                if (ActivityCompat.checkSelfPermission(LocationActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(intent);
+                break;
+            case R.id.reached_customer_button:
+                linearLayoutPannel1.setVisibility(View.GONE);
+                getLinearLayoutPannel2.setVisibility(View.VISIBLE);
+                mMap.clear();
+                break;
+
         }
     }
 
@@ -408,37 +543,58 @@ public class LocationActivity extends BaseActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    GPS_PERMISSION_REQUEST_CODE);
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        animateToLocation();
-    }
-
-    public void animateToLocation() {
-        Location startLocation = LocationDetails.getLocationOrShowToast(LocationActivity.this, locationManager);
-        if (mMap != null && LocationDetails.isValid(startLocation)) {
+        Location startLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (mMap != null && startLocation != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
         }
+        assert mMap != null;
+        mMap.setMyLocationEnabled(true);
+
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Location Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case GPS_PERMISSION_REQUEST_CODE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    animateToLocation();
+    public void onStart() {
+        super.onStart();
 
-                } else {
-
-                }
-                return;
-            }
-        }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }
