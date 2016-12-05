@@ -39,7 +39,6 @@ import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
-    static int notificationCount = 0;
 
     /**
      * Called when message is received.
@@ -132,7 +131,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
             notification.flags |= Notification.FLAG_INSISTENT;
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(notificationCount++ /* ID of notification */, notification);
+            notificationManager.notify(0, notification);
         }
     }
 }
