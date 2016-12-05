@@ -89,6 +89,7 @@ public class AcceptRejectRideActivityTest {
         onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
         onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
         onView(withId(R.id.acceptRide)).perform(click());
+        onView(withId(R.id.reached_customer_button)).perform(click());
         onView(withId(R.id.start_updates_button)).check(matches(isDisplayed()));
     }
 

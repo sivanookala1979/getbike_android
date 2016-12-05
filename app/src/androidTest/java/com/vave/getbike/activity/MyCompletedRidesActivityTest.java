@@ -2,7 +2,6 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -24,7 +23,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
 import static org.hamcrest.Matchers.anything;
 
 /**
@@ -53,7 +51,7 @@ public class MyCompletedRidesActivityTest {
         Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
-        onView(withId(R.id.totalDistance)).check(matches(isDisplayed()));
+        onView(withId(R.id.totalBill)).check(matches(withText("₹ 21.0")));
     }
 
     @Test
@@ -73,9 +71,7 @@ public class MyCompletedRidesActivityTest {
         Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
-        onView(withId(R.id.totalDistance)).check(matches(isPositive()));
-        onView(withId(R.id.locationCount)).check(matches(withText((ShowCompletedRideActivityTest.LAT_LONGS.length/2)+"")));
-        SystemClock.sleep(6000);
+        onView(withId(R.id.totalBill)).check(matches(withText("₹ 21.0")));
     }
 
 }
