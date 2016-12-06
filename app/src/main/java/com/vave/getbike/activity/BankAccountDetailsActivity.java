@@ -20,6 +20,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
     EditText accountHoldername, accountNumber, ifscCode, bankName, branchName;
     Button update;
     WalletSyncher walletSyncher = new WalletSyncher();
+    BankAccount bankDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,30 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
         bankName = (EditText) findViewById(R.id.bankName);
         branchName = (EditText) findViewById(R.id.branchName);
         update = (Button) findViewById(R.id.updateBankDetails);
-        update.setOnClickListener(this); 
-        //getBankDetails();
+        update.setOnClickListener(this);
+        getBankDetails();
+    }
+
+    private void getBankDetails() {
+        new GetBikeAsyncTask(BankAccountDetailsActivity.this) {
+            SaveResult saveResult;
+
+            @Override
+            public void process() {
+                bankDetails = walletSyncher.getbankAccountDetails();
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (bankDetails!=null) {
+                    accountHoldername.setText(""+bankDetails.getAccountHoldername());
+                    accountNumber.setText(""+bankDetails.getAccountNumber());
+                    ifscCode.setText(""+bankDetails.getIfscCode());
+                    bankName.setText(""+bankDetails.getBankName());
+                    branchName.setText(""+bankDetails.getBranchName());
+                }
+            }
+        }.execute();
     }
 
     @Override

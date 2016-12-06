@@ -56,4 +56,14 @@ public class WalletSyncher extends BaseSyncher{
         result.setValid(true);
         return  result;
     }
+
+    public BankAccount getbankAccountDetails() {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountHoldername("Adarsh");
+        bankAccount.setAccountNumber("126554354");
+        bankAccount.setIfscCode("AXISAP100034");
+        bankAccount.setBranchName("Axis");
+        bankAccount.setBranchName("Kavali");
+        return bankAccount;
+    }
 }

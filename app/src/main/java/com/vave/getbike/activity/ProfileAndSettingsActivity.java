@@ -46,4 +46,5 @@ public class ProfileAndSettingsActivity extends BaseActivity implements View.OnC
                 break;
         }
     }
+
 }

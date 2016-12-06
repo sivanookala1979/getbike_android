@@ -44,6 +44,6 @@ public class ProfileAndSettingsActivityTest {
         onView(withId(R.id.userMobileNumber)).perform(typeText("9949257729"), closeSoftKeyboard());
         onView(withId(R.id.update)).perform(click());
 //        onView(withId(R.id.personalDetails)).check(matches(isDisplayed()));
-        SystemClock.sleep(40000);
+        SystemClock.sleep(400000);
     }
 }

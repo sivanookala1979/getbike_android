@@ -1,20 +1,22 @@
 package com.vave.getbike.model;
 
+import com.vave.getbike.utils.StringUtils;
+
 /**
  * Created by adarsht on 05/12/16.
  */
 
 public class UserProfile {
 
-    String name;
-    String email;
-    String occupation;
-    String city;
-    String yearOfBirth;
-    String homeLocation;
-    String officeLocation;
-    String phoneNumber;
-    String profileImage;
+    String name="";
+    String email="";
+    String occupation="";
+    String city="";
+    String yearOfBirth="";
+    String homeLocation="";
+    String officeLocation="";
+    String phoneNumber="";
+    String profileImage="";
     boolean mobileVerified;
     char gender;
 
@@ -108,39 +110,42 @@ public class UserProfile {
 
     public SaveResult isDataValid() {
         SaveResult result = new SaveResult();
-        if (!getName().isEmpty()) {
-            if (!getEmail().isEmpty()) {
-                if (!getOccupation().isEmpty()) {
-                    if (!getCity().isEmpty()) {
-                        if (!getYearOfBirth().isEmpty()) {
-                            if (!getHomeLocation().isEmpty()) {
-                                if (!getOfficeLocation().isEmpty()) {
-                                    if (!getPhoneNumber().isEmpty()) {
-                                        result.setValid(true);
+        if (StringUtils.isStringValid(getProfileImage())) {
+            if (StringUtils.isStringValid(getName())) {
+                if (StringUtils.isStringValid(getEmail())) {
+                    if (StringUtils.isStringValid(getOccupation())) {
+                        if (StringUtils.isStringValid(getCity())) {
+                            if (StringUtils.isStringValid(getYearOfBirth())) {
+                                if (StringUtils.isStringValid(getHomeLocation())) {
+                                    if (StringUtils.isStringValid(getOfficeLocation())) {
+                                        if (StringUtils.isStringValid(getPhoneNumber())) {
+                                            result.setValid(true);
+                                        } else {
+                                            result.setErrorMessage("mobile");
+                                        }
                                     } else {
-                                        result.setErrorMessage("mobile");
+                                        result.setErrorMessage("office location");
                                     }
                                 } else {
-                                    result.setErrorMessage("office location");
+                                    result.setErrorMessage("home location");
                                 }
                             } else {
-                                result.setErrorMessage("home location");
+                                result.setErrorMessage("year of birth");
                             }
                         } else {
-                            result.setErrorMessage("year of birth");
+                            result.setErrorMessage("city");
                         }
                     } else {
-                        result.setErrorMessage("city");
+                        result.setErrorMessage("occupation");
                     }
                 } else {
-                    result.setErrorMessage("occupation");
+                    result.setErrorMessage("email");
                 }
             } else {
-                result.setErrorMessage("email");
-
+                result.setErrorMessage("name");
             }
-        } else {
-            result.setErrorMessage("name");
+        }else {
+            result.setErrorMessage("profile image");
         }
         return result;
     }
