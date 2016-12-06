@@ -59,13 +59,17 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
             @Override
             public void afterPostExecute() {
                 if (ride != null) {
-                    rideRequestedBy.setText(ride.getRequestorName());
-                    rideRequestAddress.setText(ride.getSourceAddress());
-                    rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
-                    rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
-                    rideDestination.setText(ride.getDestinationAddress());
+                    if ("RideAccepted".equals(ride.getRideStatus())) {
+                        showOpenRides(R.string.error_ride_is_already_allocated);
+                    } else {
+                        rideRequestedBy.setText(ride.getRequestorName());
+                        rideRequestAddress.setText(ride.getSourceAddress());
+                        rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
+                        rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
+                        rideDestination.setText(ride.getDestinationAddress());
+                    }
                 } else {
-                    ToastHelper.redToast(AcceptRejectRideActivity.this, R.string.error_ride_is_not_valid);
+                    showOpenRides(R.string.error_ride_is_not_valid);
                 }
             }
         }.execute();
@@ -94,14 +98,13 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                             startActivity(intent);
                             finish();
                         } else {
-                            ToastHelper.redToast(AcceptRejectRideActivity.this, R.string.error_failed_to_accept_ride);
+                            showOpenRides(R.string.error_failed_to_accept_ride);
                         }
-                        finish();
                     }
                 }.execute();
                 break;
             case R.id.rejectRide:
-                finish();
+                showOpenRides(R.string.error_ride_is_rejected);
                 break;
             case R.id.callRideRequestor: {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
@@ -119,5 +122,12 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                 break;
             }
         }
+    }
+
+    public void showOpenRides(int errorId) {
+        ToastHelper.redToast(AcceptRejectRideActivity.this, errorId);
+        finish();
+        Intent intent = new Intent(AcceptRejectRideActivity.this, OpenRidesActivity.class);
+        startActivity(intent);
     }
 }
