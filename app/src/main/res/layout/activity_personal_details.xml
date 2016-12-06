@@ -5,6 +5,7 @@
     android:id="@+id/activity_personal_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.vave.getbike.activity.PersonalDetailsActivity">
 
@@ -37,6 +38,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@color/get_bike_orange" />
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/circle_shape_style"
+                    android:src="@drawable/male_profile_icon" />
+            </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,9 +81,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border_style"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                    android:maxLines="1"
                     android:minHeight="40dp"
                     android:padding="5dp"
-                    android:maxLines="1"
                     android:textColor="@color/get_bike_black"
                     android:textSize="@dimen/text_size_intermediate" />
             </LinearLayout>
@@ -92,9 +112,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border_style"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                    android:maxLines="1"
                     android:minHeight="40dp"
                     android:padding="5dp"
-                    android:maxLines="1"
                     android:textColor="@color/get_bike_black"
                     android:textSize="@dimen/text_size_intermediate" />
             </LinearLayout>
@@ -123,9 +143,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border_style"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                    android:maxLines="1"
                     android:minHeight="40dp"
                     android:padding="5dp"
-                    android:maxLines="1"
                     android:textColor="@color/get_bike_black"
                     android:textSize="@dimen/text_size_intermediate" />
             </LinearLayout>
@@ -161,10 +181,10 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_border_style"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                        android:maxLines="1"
                         android:minHeight="40dp"
                         android:padding="5dp"
                         android:textColor="@color/get_bike_black"
-                        android:maxLines="1"
                         android:textSize="@dimen/text_size_intermediate" />
                 </LinearLayout>
 
@@ -193,10 +213,10 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_border_style"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                        android:minHeight="40dp"
-                        android:padding="5dp"
                         android:inputType="number"
                         android:maxLines="1"
+                        android:minHeight="40dp"
+                        android:padding="5dp"
                         android:textColor="@color/get_bike_black"
                         android:textSize="@dimen/text_size_intermediate" />
                 </LinearLayout>
@@ -234,10 +254,10 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_border_style"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                        android:maxLines="1"
                         android:minHeight="40dp"
                         android:padding="5dp"
                         android:textColor="@color/get_bike_black"
-                        android:maxLines="1"
                         android:textSize="@dimen/text_size_intermediate" />
                 </LinearLayout>
 
@@ -266,10 +286,10 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_border_style"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                        android:maxLines="1"
                         android:minHeight="40dp"
                         android:padding="5dp"
                         android:textColor="@color/get_bike_black"
-                        android:maxLines="1"
                         android:textSize="@dimen/text_size_intermediate" />
                 </LinearLayout>
             </LinearLayout>
@@ -301,16 +321,16 @@
                         android:textSize="@dimen/text_size_small" />
 
                     <EditText
-                        android:padding="5dp"
                         android:id="@+id/userMobileNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_border_style"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                         android:inputType="number"
-                        android:minHeight="40dp"
-                        android:textColor="@color/get_bike_black"
                         android:maxLines="1"
+                        android:minHeight="40dp"
+                        android:padding="5dp"
+                        android:textColor="@color/get_bike_black"
                         android:textSize="@dimen/text_size_intermediate" />
                 </LinearLayout>
 
@@ -325,15 +345,15 @@
 
             <Button
                 android:id="@+id/update"
-                android:background="@drawable/black_button_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="20dp"
+                android:background="@drawable/black_button_style"
                 android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                 android:padding="10dp"
                 android:text="UPDATE"
                 android:textColor="@color/white"
-                android:layout_margin="20dp"
                 android:textSize="@dimen/text_size_intermediate" />
         </LinearLayout>
     </ScrollView>

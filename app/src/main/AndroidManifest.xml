@@ -115,10 +115,10 @@
         <activity android:name=".activity.RiderProfileActivity"/>
         <activity android:name=".activity.WaitForRiderAfterAcceptanceActivity"/>
         <activity android:name=".activity.HailCustomerActivity"/>
-        <activity android:name=".activity.ProfileAndSettingsActivity">
-        </activity>
-        <activity android:name=".activity.PersonalDetailsActivity">
-        </activity>
+        <activity android:name=".activity.ProfileAndSettingsActivity"/>
+        <activity android:name=".activity.RedeemAmountActivity"/>
+        <activity android:name=".activity.PersonalDetailsActivity"/>
+        <activity android:name=".activity.GetbikeWalletHome"/>
     </application>
 
 </manifest>

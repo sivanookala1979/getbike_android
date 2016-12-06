@@ -39,6 +39,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+    public String getCurrencySymbol(){
+        return getApplicationContext().getResources().getString(R.string.Rs);
+    }
     public void addNavigationMenu(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
