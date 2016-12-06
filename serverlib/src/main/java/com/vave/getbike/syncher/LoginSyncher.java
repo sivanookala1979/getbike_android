@@ -8,6 +8,9 @@ import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by sivanookala on 25/10/16.
  */
@@ -155,13 +158,37 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    //TODO SIVA
-    public UserProfile getUserProfile(){
-        UserProfile userProfile = new UserProfile();
-        return  userProfile;
+    public boolean storeLastKnownLocation(final Date lastLocationTime, final Double latitude, final Double longitude) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+        new JsonPostHandler("/storeLastKnownLocation") {
+
+            @Override
+            protected void prepareRequest() {
+                put("lastLocationTime", dateFormat.format(lastLocationTime));
+                put("lastKnownLatitude", latitude);
+                put("lastKnownLongitude", longitude);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
     }
-    public SaveResult updateUserProfile(UserProfile userProfile){
+
+    //TODO SIVA
+    public UserProfile getUserProfile() {
+        UserProfile userProfile = new UserProfile();
+        return userProfile;
+    }
+
+    public SaveResult updateUserProfile(UserProfile userProfile) {
         SaveResult result = new SaveResult();
-        return  result;
+        return result;
     }
 }

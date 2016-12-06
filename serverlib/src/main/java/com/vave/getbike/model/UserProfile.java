@@ -5,6 +5,7 @@ package com.vave.getbike.model;
  */
 
 public class UserProfile {
+
     String name;
     String email;
     String occupation;
@@ -12,17 +13,17 @@ public class UserProfile {
     String yearOfBirth;
     String homeLocation;
     String officeLocation;
-    String mobile;
-    String image;
-    boolean verified;
-    boolean male;
+    String phoneNumber;
+    String profileImage;
+    boolean mobileVerified;
+    char gender;
 
-    public boolean isVerified() {
-        return verified;
+    public boolean isMobileVerified() {
+        return mobileVerified;
     }
 
-    public void setVerified(boolean verified) {
-        this.verified = verified;
+    public void setMobileVerified(boolean mobileVerified) {
+        this.mobileVerified = mobileVerified;
     }
 
     public String getName() {
@@ -81,12 +82,28 @@ public class UserProfile {
         this.officeLocation = officeLocation;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
     }
 
     public SaveResult isDataValid() {
@@ -98,7 +115,7 @@ public class UserProfile {
                         if (!getYearOfBirth().isEmpty()) {
                             if (!getHomeLocation().isEmpty()) {
                                 if (!getOfficeLocation().isEmpty()) {
-                                    if (!getMobile().isEmpty()) {
+                                    if (!getPhoneNumber().isEmpty()) {
                                         result.setValid(true);
                                     } else {
                                         result.setErrorMessage("mobile");

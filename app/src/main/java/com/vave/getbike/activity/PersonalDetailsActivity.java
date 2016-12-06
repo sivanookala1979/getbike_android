@@ -1,7 +1,6 @@
 package com.vave.getbike.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -59,8 +58,8 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
         userProfile.setYearOfBirth(yearOfBirth.getText().toString());
         userProfile.setHomeLocation(homeLocation.getText().toString());
         userProfile.setOfficeLocation(officeLocation.getText().toString());
-        userProfile.setMobile(mobile.getText().toString());
-        userProfile.setVerified(verification.isChecked());
+        userProfile.setPhoneNumber(mobile.getText().toString());
+        userProfile.setMobileVerified(verification.isChecked());
         return userProfile;
     }
 }
