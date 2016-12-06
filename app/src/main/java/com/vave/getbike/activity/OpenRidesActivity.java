@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.adapter.RideAdapter2;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -19,6 +21,7 @@ public class OpenRidesActivity extends BaseActivity {
     // UI Widgets
     ListView openRidesListView;
     List<Ride> result = null;
+    Button refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,13 @@ public class OpenRidesActivity extends BaseActivity {
         setContentView(R.layout.activity_open_rides);
         addToolbarView();
         openRidesListView = (ListView) findViewById(R.id.openRides);
+        refreshButton = (Button) findViewById(R.id.refreshOpenRides);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadOpenRides();
+            }
+        });
     }
 
     @Override
@@ -47,6 +57,9 @@ public class OpenRidesActivity extends BaseActivity {
             public void afterPostExecute() {
                 if (result != null) {
                     openRidesListView.setAdapter(new RideAdapter2(OpenRidesActivity.this, result));
+                    if (result.size() == 0) {
+                        ToastHelper.blueToast(OpenRidesActivity.this, R.string.message_no_open_rides);
+                    }
                 }
             }
         }.execute();
