@@ -13,7 +13,9 @@ public class UserProfile {
     String homeLocation;
     String officeLocation;
     String mobile;
+    String image;
     boolean verified;
+    boolean male;
 
     public boolean isVerified() {
         return verified;

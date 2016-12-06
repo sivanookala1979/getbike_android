@@ -2,6 +2,8 @@ package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.model.Profile;
+import com.vave.getbike.model.SaveResult;
+import com.vave.getbike.model.UserProfile;
 import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONObject;
@@ -151,5 +153,15 @@ public class LoginSyncher extends BaseSyncher {
             }
         }.handle();
         return result.getValue();
+    }
+
+    //TODO SIVA
+    public UserProfile getUserProfile(){
+        UserProfile userProfile = new UserProfile();
+        return  userProfile;
+    }
+    public SaveResult updateUserProfile(UserProfile userProfile){
+        SaveResult result = new SaveResult();
+        return  result;
     }
 }
