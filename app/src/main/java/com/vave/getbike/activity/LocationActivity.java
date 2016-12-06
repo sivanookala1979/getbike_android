@@ -391,6 +391,10 @@ public class LocationActivity extends BaseActivity implements
                 }.execute();
                 break;
             case R.id.call_customer_button:
+                if (ride == null || ride.getRequestorPhoneNumber() == null) {
+                    ToastHelper.redToast(getApplicationContext(), "Ride is not loaded. This is an error. Please try restarting the application.");
+                    return;
+                }
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ride.getRequestorPhoneNumber()));
                 if (ActivityCompat.checkSelfPermission(LocationActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
