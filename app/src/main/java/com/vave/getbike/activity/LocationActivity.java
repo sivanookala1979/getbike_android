@@ -47,6 +47,7 @@ import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
+import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideLocationSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -241,6 +242,7 @@ public class LocationActivity extends BaseActivity implements
             dataSource.insert(rideId, mLastUpdateTimeAsDate, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
             locations = dataSource.getRideLocations(rideId);
             dataSource.close();
+            postLastKnownLocation();
 
             if (mMap != null) {
                 PolylineOptions polylineOptions = new PolylineOptions();
@@ -259,6 +261,23 @@ public class LocationActivity extends BaseActivity implements
                 mMap.animateCamera(cameraUpdate);
             }
             mLocationCountTextView.setText("Number Of Locations : " + locations.size());
+        }
+    }
+
+    private void postLastKnownLocation() {
+        if (locations.size() > 0 && locations.size() % 10 == 0) {
+            new GetBikeAsyncTask(LocationActivity.this) {
+
+                @Override
+                public void process() {
+                    LoginSyncher loginSyncher = new LoginSyncher();
+                    loginSyncher.storeLastKnownLocation(new Date(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                }
+
+                @Override
+                public void afterPostExecute() {
+                }
+            }.execute();
         }
     }
 
