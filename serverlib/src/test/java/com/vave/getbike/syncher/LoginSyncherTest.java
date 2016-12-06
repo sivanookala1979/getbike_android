@@ -2,6 +2,7 @@ package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.model.Profile;
+import com.vave.getbike.model.UserProfile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +64,35 @@ public class LoginSyncherTest {
         String gcmCode = "cdcszGene8c:APA91bHQYHdw6Y1rM0JfWrtb_P36-OtE9_wYQb2hDxfPhZhDLYM9DKZipd2fT6QQnV1BUnkJUTZqbuuvotukeixEiMblhLCjQhVgeg9O91PrMxkBYJrnsCdJe3NpeAHGFGpzKbhuSvWz";
         boolean actual = sut.storeGcmCode(gcmCode);
         assertTrue(actual);
+    }
+
+    @Test
+    public void getUserProfileTESTHappyFlow() {
+        // Setup
+        BaseSyncher.testSetup();
+        // Execute
+        UserProfile actual = sut.getUserProfile();
+        // Verify
+        assertEquals("Siva Nookala", actual.getName());
+        assertEquals("9949287789", actual.getPhoneNumber());
+    }
+
+    @Test
+    public void updateUserProfileTESTHappyFlow() {
+        // Setup
+        BaseSyncher.testSetup();
+        UserProfile userProfile = new UserProfile();
+        userProfile.setName("Siva Nookala");
+        userProfile.setEmail("siva.nookala@gmail.com");
+        userProfile.setOccupation("Software Testing");
+        userProfile.setCity("Kavali");
+        // Execute
+        sut.updateUserProfile(userProfile, "aGVsbG8gaGVsbG8gaGVsbG8=");
+        // Verify
+        UserProfile actual = sut.getUserProfile();
+        assertEquals("Siva Nookala", actual.getName());
+        assertEquals("Software Testing", actual.getOccupation());
+        assertEquals("Kavali", actual.getCity());
     }
 
     @Test

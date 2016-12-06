@@ -1,5 +1,6 @@
 package com.vave.getbike.syncher;
 
+import com.google.gson.Gson;
 import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.SaveResult;
@@ -181,14 +182,43 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    //TODO SIVA
     public UserProfile getUserProfile() {
-        UserProfile userProfile = new UserProfile();
-        return userProfile;
+        final GetBikePointer<UserProfile> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/getPrivateProfile") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    UserProfile userProfile = GsonUtils.getGson().fromJson(jsonResult.get("privateProfile").toString(), UserProfile.class);
+                    result.setValue(userProfile);
+                }
+            }
+        }.handle();
+        return result.getValue();
     }
 
-    public SaveResult updateUserProfile(UserProfile userProfile) {
-        SaveResult result = new SaveResult();
+    public SaveResult updateUserProfile(final UserProfile userProfile, final String imageData) {
+        final SaveResult result = new SaveResult();
+        new JsonPostHandler("/updatePrivateProfile") {
+
+            @Override
+            protected void prepareRequest() {
+                try {
+                    JSONObject userJsonObject = new JSONObject(new Gson().toJson(userProfile));
+                    jsonRequest.put("user", userJsonObject);
+                    put("imageData", imageData);
+                } catch (Exception ex) {
+                    handleException(ex);
+                }
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValid(true);
+                }
+            }
+        }.handle();
         return result;
     }
 }
