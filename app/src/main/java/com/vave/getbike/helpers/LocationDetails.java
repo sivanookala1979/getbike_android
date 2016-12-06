@@ -24,12 +24,15 @@ public class LocationDetails {
     }
 
     public static Location getLocationOrShowToast(Context context, LocationManager locationManager) throws SecurityException {
-        Location result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (result == null) {
-            result = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        if (result == null) {
-            result = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        Location result = null;
+        if (locationManager != null) {
+            result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (result == null) {
+                result = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            if (result == null) {
+                result = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            }
         }
         if (!isValid(result)) {
             ToastHelper.gpsToast(context);
