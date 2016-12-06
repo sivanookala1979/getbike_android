@@ -48,8 +48,6 @@ public class LocationSyncher {
     public List<String> getLocations() {
         List<String> list = new ArrayList<String>();
         try {
-            String data = HTTPUtils.getDataFromServer(URL, "GET");
-            System.out.println(data);
             JSONObject json = HTTPUtils.getJSONFromUrl(URL);
             if (json != null) {
                 JSONArray contacts;
@@ -58,11 +56,9 @@ public class LocationSyncher {
                     for (int i = 0; i < contacts.length(); i++) {
                         JSONObject c = contacts.getJSONObject(i);
                         String description = c.getString(KEY_DESCRIPTION);
-                        // Log.d(KEY_DESCRIPTION, description);
                         list.add(description);
                     }
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

@@ -131,6 +131,8 @@ public class HTTPUtils {
         URL url = new URL(urlData);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(requestedMethod);
+        con.setConnectTimeout(60000);
+        con.setReadTimeout(60000);
         if (BaseSyncher.getAccessToken() != null) {
             con.setRequestProperty("Authorization", BaseSyncher.getAccessToken());
             System.out.println("BaseSyncher AccessToken = " + BaseSyncher.getAccessToken());
@@ -173,6 +175,8 @@ public class HTTPUtils {
         try {
             URL url1 = new URL(url);
             urlConnection = (HttpURLConnection) url1.openConnection();
+            urlConnection.setReadTimeout(60000);
+            urlConnection.setConnectTimeout(60000);
             urlConnection.connect();
             inputStream = urlConnection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
