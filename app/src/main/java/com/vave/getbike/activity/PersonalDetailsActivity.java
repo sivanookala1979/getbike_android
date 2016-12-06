@@ -22,7 +22,7 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_details);
-        name = (EditText) findViewById(R.id.userName);
+        name = (EditText) findViewById(R.id.profileUserName);
         email = (EditText) findViewById(R.id.userEmail);
         occupation = (EditText) findViewById(R.id.userOccupation);
         city = (EditText) findViewById(R.id.userCity);

@@ -34,7 +34,7 @@ public class ProfileAndSettingsActivityTest {
     public void testUpdateProfile() {
         BaseSyncher.testSetup();
         onView(withId(R.id.personalDetails)).perform(click());
-      //  onView(withId(R.id.userName)).perform(typeText("Adarsh T"), closeSoftKeyboard());
+        onView(withId(R.id.profileUserName)).perform(typeText("Adarsh T"), closeSoftKeyboard());
         onView(withId(R.id.userEmail)).perform(typeText("Tadarsh401@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.userOccupation)).perform(typeText("Apps Developer"), closeSoftKeyboard());
         onView(withId(R.id.userCity)).perform(typeText("Kavali"), closeSoftKeyboard());
