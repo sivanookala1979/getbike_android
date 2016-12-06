@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.iid.InstanceID;
@@ -23,10 +22,12 @@ import com.vave.getbike.helpers.GetBikePreferences;
  */
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    public  ImageView userProfileImage;
+
+    public ImageView userProfileImage;
     public TextView occupation;
     public TextView friendsCount;
     public TextView userAddress;
+
     public void addToolbarView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -39,10 +40,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-    public String getCurrencySymbol(){
+
+    public String getCurrencySymbol() {
         return getApplicationContext().getResources().getString(R.string.Rs);
     }
-    public void addNavigationMenu(){
+
+    public void addNavigationMenu() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,13 +61,23 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         friendsCount = (TextView) headerView.findViewById(R.id.friendsCount);
         userAddress = (TextView) headerView.findViewById(R.id.userAddress);
     }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
 
-        switch(id){
+        switch (id) {
             case R.id.profilAndSettings:
                 startActivity(new Intent(this, ProfileAndSettingsActivity.class));
+                break;
+            case R.id.earnFreeRides:
+                startActivity(new Intent(this, ShareActivity.class));
+                break;
+            case R.id.friends:
+                startActivity(new Intent(this, GetBikeFriendsActivity.class));
+                break;
+            case R.id.support:
+                startActivity(new Intent(this, FAQActivity.class));
                 break;
             case R.id.logout:
                 startActivity(new Intent(this, LogoScreenActivity.class));

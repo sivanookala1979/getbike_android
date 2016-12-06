@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -120,6 +121,9 @@
         <activity android:name=".activity.PersonalDetailsActivity"/>
         <activity android:name=".activity.GetbikeWalletHome"/>
         <activity android:name=".activity.BankAccountDetailsActivity"/>
+        <activity android:name=".activity.FAQActivity"></activity>
+        <activity android:name=".activity.GetBikeFriendsActivity"></activity>
+        <activity android:name=".activity.ShareActivity"></activity>
     </application>
 
 </manifest>

@@ -2,7 +2,6 @@ package com.vave.getbike.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -20,6 +19,7 @@ import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.RideSyncher;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +30,13 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     private Ride ride = null;
     private long rideId;
     private List<RideLocation> locations = new ArrayList<>();
-    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GetBikePreferences.setPreferences(getApplicationContext());
         setContentView(R.layout.trip_details_screen);
-        //
+
         addToolbarView();
         tripDateTime = (TextView) findViewById(R.id.tipDateTime);
         tripId = (TextView) findViewById(R.id.tripId);
@@ -63,18 +62,26 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     public void updateRideDetails() {
         String indianRupee = getApplicationContext().getResources().getString(R.string.Rs);
         if (ride != null) {
+            SimpleDateFormat onlyTimeFormat = new SimpleDateFormat("h:mm a");
+            SimpleDateFormat fullDateFormat = new SimpleDateFormat("EEE, MMM dd,h:mm a");
             userName.setText("" + ride.getRequestorName());
-            totalFare.setText(indianRupee+" " + ride.getTotalFare());
-            taxAndFee.setText(indianRupee+" " + ride.getTaxesAndFees());
-            subTotal.setText(indianRupee+" " + ride.getSubTotal());
-            roundingOff.setText(indianRupee+" " + ride.getRoundingOff());
-            totalBill.setText(indianRupee+" " + ride.getTotalBill());
-            cash.setText(indianRupee+" " + ride.getTotalBill());
+            totalFare.setText(indianRupee + " " + ride.getTotalFare());
+            taxAndFee.setText(indianRupee + " " + ride.getTaxesAndFees());
+            subTotal.setText(indianRupee + " " + ride.getSubTotal());
+            roundingOff.setText(indianRupee + " " + ride.getRoundingOff());
+            totalBill.setText(indianRupee + " " + ride.getTotalBill());
+            cash.setText(indianRupee + " " + ride.getTotalBill());
             fromAddress.setText(ride.getSourceAddress());
             toAddress.setText(ride.getDestinationAddress());
             tripId.setText("Trip ID : " + ride.getId());
-            tripDateTime.setText(ride.getRideStartedAt() + "");
-            Log.d("adarsh",""+ride.getRideStartedAt());
+            if (ride.getRideStartedAt() != null) {
+                fromTime.setText(onlyTimeFormat.format(ride.getRideStartedAt()));
+                tripDateTime.setText(fullDateFormat.format(ride.getRideStartedAt()));
+            }
+            if (ride.getRideEndedAt() != null) {
+                toTime.setText(onlyTimeFormat.format(ride.getRideEndedAt()));
+            }
+
         }
     }
 
