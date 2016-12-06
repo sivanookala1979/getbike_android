@@ -34,6 +34,10 @@ public class ToastHelper {
         }
     }
 
+    public static void blueToast(Context context, int id) {
+        blueToast(context, context.getResources().getString(id));
+    }
+
     public static void redToast(Context context, int id) {
         redToast(context, context.getResources().getString(id));
     }
@@ -60,7 +64,7 @@ public class ToastHelper {
             toast.getView().setBackgroundColor(context.getResources().getColor(R.color.black));
             toast.show();
             /*Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-			toast.getView().setBackgroundColor(Color.RED);
+            toast.getView().setBackgroundColor(Color.RED);
 			toast.show();*/
         }
     }

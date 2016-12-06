@@ -32,13 +32,13 @@ import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.ShowCompletedRideActivity;
 import com.vave.getbike.activity.SignupActivity;
+import com.vave.getbike.activity.SplashScreenActivity;
 import com.vave.getbike.activity.WaitForRiderAfterAcceptanceActivity;
 import com.vave.getbike.activity.WaitForRiderAllocationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
-    static int notificationCount = 0;
 
     /**
      * Called when message is received.
@@ -107,7 +107,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 intent.putExtra("rideId", rideId);
             }
         } else {
-            intent = new Intent(this, SignupActivity.class);
+            intent = new Intent(this, SplashScreenActivity.class);
         }
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -131,7 +131,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
             notification.flags |= Notification.FLAG_INSISTENT;
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(notificationCount++ /* ID of notification */, notification);
+            notificationManager.notify(0, notification);
         }
     }
 }

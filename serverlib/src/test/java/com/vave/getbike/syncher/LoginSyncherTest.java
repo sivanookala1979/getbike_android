@@ -10,7 +10,9 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
@@ -25,6 +27,11 @@ import static org.junit.Assert.assertTrue;
 public class LoginSyncherTest {
 
     LoginSyncher sut;
+
+    @Test
+    public void isReachable() throws Exception {
+        assertTrue(InetAddress.getByName("videos.meritcampus.com").isReachable(1000));
+    }
 
     @Test
     public void signupTESTHappyFlow() {
@@ -55,6 +62,13 @@ public class LoginSyncherTest {
         BaseSyncher.testSetup();
         String gcmCode = "cdcszGene8c:APA91bHQYHdw6Y1rM0JfWrtb_P36-OtE9_wYQb2hDxfPhZhDLYM9DKZipd2fT6QQnV1BUnkJUTZqbuuvotukeixEiMblhLCjQhVgeg9O91PrMxkBYJrnsCdJe3NpeAHGFGpzKbhuSvWz";
         boolean actual = sut.storeGcmCode(gcmCode);
+        assertTrue(actual);
+    }
+
+    @Test
+    public void storeLastKnownLocationTESTHappyFlow() {
+        BaseSyncher.testSetup();
+        boolean actual = sut.storeLastKnownLocation(new Date(), 3.87, 19.87);
         assertTrue(actual);
     }
 

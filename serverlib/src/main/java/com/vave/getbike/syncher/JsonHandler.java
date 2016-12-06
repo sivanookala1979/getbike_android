@@ -4,6 +4,8 @@ import com.vave.getbike.exception.GetBikeException;
 
 import org.json.JSONObject;
 
+import java.util.Date;
+
 /**
  * Created by sivanookala on 26/10/16.
  */
@@ -38,6 +40,13 @@ public abstract class JsonHandler {
     }
 
     protected void put(String key, double value) {
+        try {
+            jsonRequest.put(key, value);
+        } catch (Exception e) {
+            throw new GetBikeException(e);
+        }
+    }
+    protected void put(String key, Date value) {
         try {
             jsonRequest.put(key, value);
         } catch (Exception e) {

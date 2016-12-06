@@ -45,7 +45,23 @@ public class OpenRidesActivityTest {
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.openRides)).atPosition(0).perform(click());
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
+        onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
+    }
+
+    @Test
+    public void testRefreshTESTHappyFlow() {
+        BaseSyncher.testSetup();
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, OpenRidesActivity.class);
+        mActivityTestRule.launchActivity(intent);
+        RideSyncher rideSyncher = new RideSyncher();
+        rideSyncher.requestRide(21.34, 54.67);
+        onView(withId(R.id.refreshOpenRides)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.openRides)).atPosition(0).perform(click());
+        onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
         onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
     }
 }
