@@ -40,10 +40,10 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
             case R.id.update:
                 UserProfile userProfile = collectData();
                 SaveResult dataValid = userProfile.isDataValid();
-                if(dataValid.isValid()){
+                if (dataValid.isValid()) {
                     finish();
-                }else {
-                    ToastHelper.redToast(getApplicationContext(),"Please enter valid "+dataValid.getErrorMessage());
+                } else {
+                    ToastHelper.redToast(getApplicationContext(), "Please enter valid " + dataValid.getErrorMessage());
                 }
                 break;
         }

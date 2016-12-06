@@ -119,6 +119,7 @@
         <activity android:name=".activity.RedeemAmountActivity"/>
         <activity android:name=".activity.PersonalDetailsActivity"/>
         <activity android:name=".activity.GetbikeWalletHome"/>
+        <activity android:name=".activity.BankAccountDetailsActivity"/>
     </application>
 
 </manifest>

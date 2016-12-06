@@ -23,6 +23,7 @@ public class GetbikeWalletHome extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wallet_home_screen);
+        addToolbarView();
         promoBalance = (TextView)findViewById(R.id.promoBalance);
         cashBalance = (TextView)findViewById(R.id.cashBalance);
         yourBalance = (TextView)findViewById(R.id.yourBalance);
@@ -31,7 +32,6 @@ public class GetbikeWalletHome extends BaseActivity implements View.OnClickListe
         addMoney = (Button)findViewById(R.id.addMoney);
         redeem.setOnClickListener(this);
         addMoney.setOnClickListener(this);
-
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.vave.getbike.model;
 
+import android.util.Log;
+
 import com.vave.getbike.utils.StringUtils;
 
 import org.json.JSONException;
@@ -31,10 +33,10 @@ public class MobileRecharge extends Recharge {
 
     public SaveResult isValid() {
         SaveResult result = new SaveResult();
-        if (!StringUtils.isStringValid(getMobileNumber())) {
+        if (StringUtils.isStringValid(getMobileNumber())) {
             if (getAmount() > 0) {
-                if (!StringUtils.isStringValid(getOperator())) {
-                    if (!StringUtils.isStringValid(getCircle())) {
+                if (StringUtils.isStringValid(getOperator())) {
+                    if (StringUtils.isStringValid(getCircle())) {
                         result.setValid(true);
                     } else {
                         result.setErrorMessage("circle");

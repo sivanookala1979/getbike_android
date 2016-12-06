@@ -22,9 +22,9 @@ public class RedeemWallet extends Recharge {
 
     public SaveResult isValid() {
         SaveResult result = new SaveResult();
-        if (!StringUtils.isStringValid(getMobileNumber())) {
+        if (StringUtils.isStringValid(getMobileNumber())) {
             if (getAmount() > 0) {
-                if (!StringUtils.isStringValid(getWalletName())) {
+                if (StringUtils.isStringValid(getWalletName())) {
                     result.setValid(true);
                 } else {
                     result.setErrorMessage("wallet name");

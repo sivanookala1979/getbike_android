@@ -11,13 +11,14 @@ import android.widget.LinearLayout;
 
 import com.vave.getbike.R;
 
-public class ProfileAndSettingsActivity extends AppCompatActivity implements View.OnClickListener{
+public class ProfileAndSettingsActivity extends BaseActivity implements View.OnClickListener{
 
     Button personalDetailsButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_and_settings);
+        addToolbarView();
         setOnclickListeners(R.id.personalDetails,R.id.ridersProfile,R.id.bankAccountDetails,R.id.settings);
     }
 
@@ -39,6 +40,7 @@ public class ProfileAndSettingsActivity extends AppCompatActivity implements Vie
                 startActivity(new Intent(this, RiderProfileActivity.class));
                 break;
             case R.id.bankAccountDetails:
+                startActivity(new Intent(this, BankAccountDetailsActivity.class));
                 break;
             case R.id.settings:
                 break;

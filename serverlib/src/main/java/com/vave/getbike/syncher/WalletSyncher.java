@@ -17,31 +17,43 @@ public class WalletSyncher extends BaseSyncher{
     public SaveResult rechargeMobile(MobileRecharge recharge){
         SaveResult result = new SaveResult();
         JSONObject jsonObject = recharge.getJson();
+        result.setValid(true);
         return  result;
     }
 
     public SaveResult redeemeToWallet(RedeemWallet redeem){
         SaveResult result = new SaveResult();
         JSONObject jsonObject = redeem.getJson();
+        result.setValid(true);
         return  result;
     }
 
     public SaveResult redeemtoBank(double amount){
         SaveResult result = new SaveResult();
+        result.setValid(true);
         return  result;
     }
     public SaveResult addMoneyToWallet(double amount){
         //TODO CCAVENUE INTEGREATION
         SaveResult result = new SaveResult();
+        result.setValid(true);
+
         return  result;
     }
     public Wallet getWalletDetails(){
         Wallet wallet = new Wallet();
+        wallet.setCashBalance(20.0);
+        wallet.setMinimumDeposit(1000.0);
+        wallet.setCashBalance(500.0);
+        wallet.setPromoBalance(50.0);
+        wallet.setUserBalance(500.0);
+        wallet.setRedeemableAmount(60.0);
         return  wallet;
     }
     public SaveResult updateUserBankAccountDetails(BankAccount bankDetails){
         SaveResult result = new SaveResult();
         JSONObject jsonObject = bankDetails.getJson();
+        result.setValid(true);
         return  result;
-    } 
+    }
 }

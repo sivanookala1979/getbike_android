@@ -64,7 +64,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         switch(id){
             case R.id.profilAndSettings:
-                startActivity(new Intent(this, RiderProfileActivity.class));
+                startActivity(new Intent(this, ProfileAndSettingsActivity.class));
                 break;
             case R.id.logout:
                 startActivity(new Intent(this, LogoScreenActivity.class));
@@ -76,6 +76,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 GetBikePreferences.reset();
                 finish();
                 break;
+            case R.id.wallet:
+                startActivity(new Intent(this, GetbikeWalletHome.class));
+                break;
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

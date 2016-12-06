@@ -58,11 +58,11 @@ public class BankAccount {
 
     public SaveResult isDataValid() {
         SaveResult saveResult = new SaveResult();
-        if (!StringUtils.isStringValid(getAccountHoldername())) {
-            if (!StringUtils.isStringValid(getAccountNumber())) {
-                if (!StringUtils.isStringValid(getIfscCode())) {
-                    if (!StringUtils.isStringValid(getBankName())) {
-                        if (!StringUtils.isStringValid(getBranchName())) {
+        if (StringUtils.isStringValid(getAccountHoldername())) {
+            if (StringUtils.isStringValid(getAccountNumber())) {
+                if (StringUtils.isStringValid(getIfscCode())) {
+                    if (StringUtils.isStringValid(getBankName())) {
+                        if (StringUtils.isStringValid(getBranchName())) {
                             saveResult.setValid(true);
                         } else {
                             saveResult.setErrorMessage("branch name");
