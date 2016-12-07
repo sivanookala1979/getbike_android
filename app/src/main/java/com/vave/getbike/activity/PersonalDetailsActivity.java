@@ -65,37 +65,27 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
         update.setOnClickListener(this);
         profileImage.setOnClickListener(this);
         verification = (CheckBox) findViewById(R.id.verification);
-        getuserDetails();
+        userProfile = GetBikePreferences.getUserProfile();
+        updateProfileDetails();
+
     }
 
-    private void getuserDetails() {
-        new GetBikeAsyncTask(PersonalDetailsActivity.this) {
-
-            @Override
-            public void process() {
-                userProfile = loginSyncher.getUserProfile();
-            }
-
-            @Override
-            public void afterPostExecute() {
-                if(userProfile!= null) {
-                    name.setText(userProfile.getName());
-                    email.setText(userProfile.getEmail());
-                    occupation.setText(userProfile.getOccupation());
-                    city.setText(userProfile.getCity());
-                    yearOfBirth.setText(userProfile.getYearOfBirth());
-                    homeLocation.setText(userProfile.getHomeLocation());
-                    officeLocation.setText(userProfile.getOfficeLocation());
-                    mobile.setText(userProfile.getPhoneNumber());
-                   // Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).placeholder(R.drawable.male_profile_icon).into(profileImage);
-                    Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(profileImage);
-                    verification.setChecked(userProfile.isMobileVerified());
-                }else{
-                    userProfile = new UserProfile();
-                }
-            }
-        }.execute();
+    private void updateProfileDetails() {
+        if(userProfile!=null){
+            GetBikePreferences.setUserProfile(userProfile);
+            name.setText(userProfile.getName());
+            email.setText(userProfile.getEmail());
+            occupation.setText(userProfile.getOccupation());
+            city.setText(userProfile.getCity());
+            yearOfBirth.setText(userProfile.getYearOfBirth());
+            homeLocation.setText(userProfile.getHomeLocation());
+            officeLocation.setText(userProfile.getOfficeLocation());
+            mobile.setText(userProfile.getPhoneNumber());
+            Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(profileImage);
+            verification.setChecked(userProfile.isMobileVerified());
+        }
     }
+
 
     @Override
     public void onClick(View view) {

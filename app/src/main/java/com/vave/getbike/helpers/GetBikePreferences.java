@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vave.getbike.model.Profile;
+import com.vave.getbike.model.UserProfile;
 
 /**
  * Created by sivanookala on 25/11/16.
@@ -16,6 +17,9 @@ public class GetBikePreferences {
     private static final String LOGGED_IN = "loggedIn";
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String PUBLICPROFILE = "publicProfile";
+    private static final String USER_PROFILE = "userProfile";
+
+    //UserProfile
 
     public static SharedPreferences preferences;
 
@@ -58,6 +62,17 @@ public class GetBikePreferences {
     public static void setPublicProfile(Profile profile) {
         String addressDetails = new Gson().toJson(profile);
         preferences.edit().putString(PUBLICPROFILE, addressDetails).commit();
+    }
+
+    public static UserProfile getUserProfile() {
+        java.lang.reflect.Type type = new TypeToken<UserProfile>() {
+        }.getType();
+        return new Gson().fromJson(preferences.getString(USER_PROFILE, ""), type);
+    }
+
+    public static void setUserProfile(UserProfile profile) {
+        String addressDetails = new Gson().toJson(profile);
+        preferences.edit().putString(USER_PROFILE, addressDetails).commit();
     }
 
 }
