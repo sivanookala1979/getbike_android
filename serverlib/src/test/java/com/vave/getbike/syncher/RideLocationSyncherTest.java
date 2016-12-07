@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
  * Created by sivanookala on 01/11/16.
  */
 
-public class RideLocationSyncerTest {
+public class RideLocationSyncherTest {
 
     RideLocationSyncher sut;
 
@@ -41,6 +41,10 @@ public class RideLocationSyncerTest {
         sut = new RideLocationSyncher();
         BaseSyncher.testSetup();
         AndroidStubsFactory.IS_TEST = true;
+        Long previousRideId = new LoginSyncher().getCurrentRide();
+        if (previousRideId != null) {
+            new RideSyncher().closeRide(previousRideId);
+        }
     }
 
     @After
