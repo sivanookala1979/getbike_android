@@ -73,7 +73,7 @@ public class LoginActivityTest {
         onView(withId(R.id.login)).perform(click());
         onView(withId(R.id.requestRide)).perform(click());
         onView(withId(R.id.getBikeResult)).check(matches(isPositive()));
-        onView(withId(R.id.startRide)).perform(click());
+        //onView(withId(R.id.startRide)).perform(click());
         onView(withId(R.id.start_updates_button)).perform(click());
         SystemClock.sleep(20000);
         onView(withId(R.id.stop_updates_button)).perform(click());

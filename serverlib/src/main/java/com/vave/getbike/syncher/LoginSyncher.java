@@ -159,6 +159,20 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
+    public Long getCurrentRide() {
+        final GetBikePointer<Long> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/getCurrentRide") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success") && jsonResult.has("rideId")) {
+                    result.setValue(jsonResult.getLong("rideId"));
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
     public boolean storeLastKnownLocation(final Date lastLocationTime, final Double latitude, final Double longitude) {
         final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

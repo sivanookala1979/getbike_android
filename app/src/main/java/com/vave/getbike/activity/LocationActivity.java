@@ -378,7 +378,6 @@ public class LocationActivity extends BaseActivity implements
                         dataSource.setUpdataSource();
                         RideLocationSyncher locationSyncher = new RideLocationSyncher();
                         locationSyncher.setDataSource(dataSource);
-                        RideSyncher rideSyncher = new RideSyncher();
                         locationSyncher.storePendingLocations(rideId);
                         dataSource.close();
                     }

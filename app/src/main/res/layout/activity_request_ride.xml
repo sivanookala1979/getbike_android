@@ -35,6 +35,17 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/showCurrentRide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/get_bike_orange"
+            android:text="Show Current Ride"
+            android:textColor="@color/white"
+            android:visibility="visible"/>
+
+
+        <Button
             android:id="@+id/home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,14 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Please click on Get Bike"/>
-
-        <Button
-            android:id="@+id/startRide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="Start Ride"/>
+            android:text="Please click on Home"/>
 
         <Button
             android:id="@+id/myCompletedRides"
@@ -77,12 +81,6 @@
             android:layout_margin="5dp"
             android:text="Rides Given"/>
 
-        <Button
-            android:id="@+id/requestRide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="Get Bike"/>
 
         <Button
             android:id="@+id/logout"

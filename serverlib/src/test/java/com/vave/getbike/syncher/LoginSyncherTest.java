@@ -2,6 +2,7 @@ package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.model.Profile;
+import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.UserProfile;
 
 import org.junit.After;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -78,6 +80,34 @@ public class LoginSyncherTest {
     }
 
     @Test
+    public void getCurrentRideTESTHappyFlow() {
+        // Setup
+        BaseSyncher.testSetup();
+        RideSyncher rideSyncher = new RideSyncher();
+        Ride ride = rideSyncher.requestRide(21.34, 32.56, "Chennai", "Mumbai");
+        rideSyncher.acceptRide(ride.getId());
+        // Execute
+        Long rideId = sut.getCurrentRide();
+        // Verify
+        assertEquals(ride.getId(), rideId);
+    }
+
+    @Test
+    public void getCurrentRideTESTNoRide() {
+        // Setup
+        BaseSyncher.testSetup();
+        Long previousRideId = sut.getCurrentRide();
+        if (previousRideId != null) {
+            RideSyncher rideSyncher = new RideSyncher();
+            rideSyncher.closeRide(previousRideId);
+        }
+        // Execute
+        Long rideId = sut.getCurrentRide();
+        // Verify
+        assertNull(rideId);
+    }
+
+    @Test
     public void updateUserProfileTESTHappyFlow() {
         // Setup
         BaseSyncher.testSetup();
@@ -105,7 +135,7 @@ public class LoginSyncherTest {
     @Test
     public void getPublicProfileTESTHappyFlow() {
         BaseSyncher.testSetup();
-        Profile actual = sut.getPublicProfile(3L);
+        Profile actual = sut.getPublicProfile(2L);
         assertEquals("Siva Nookala", actual.getName());
         assertEquals("9949287789", actual.getPhoneNumber());
     }
