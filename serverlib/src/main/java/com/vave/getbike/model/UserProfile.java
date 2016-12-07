@@ -18,7 +18,16 @@ public class UserProfile {
     String phoneNumber="";
     String profileImage="";
     boolean mobileVerified;
+    boolean profileImageUpdated;
     char gender;
+
+    public boolean isProfileImageUpdated() {
+        return profileImageUpdated;
+    }
+
+    public void setProfileImageUpdated(boolean profileImageUpdated) {
+        this.profileImageUpdated = profileImageUpdated;
+    }
 
     public boolean isMobileVerified() {
         return mobileVerified;
@@ -110,7 +119,7 @@ public class UserProfile {
 
     public SaveResult isDataValid() {
         SaveResult result = new SaveResult();
-        if (StringUtils.isStringValid(getProfileImage())) {
+        if (isProfileImageUpdated()) {
             if (StringUtils.isStringValid(getName())) {
                 if (StringUtils.isStringValid(getEmail())) {
                     if (StringUtils.isStringValid(getOccupation())) {

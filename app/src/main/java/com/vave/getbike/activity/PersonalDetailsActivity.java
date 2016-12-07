@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -17,12 +22,14 @@ import android.widget.ListView;
 
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.CircleTransform;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.SaveResult;
 import com.vave.getbike.model.UserProfile;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.utils.HTTPUtils;
 
@@ -44,6 +51,7 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_details);
+        addToolbarView();
         name = (EditText) findViewById(R.id.profileUserName);
         email = (EditText) findViewById(R.id.userEmail);
         occupation = (EditText) findViewById(R.id.userOccupation);
@@ -57,7 +65,7 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
         update.setOnClickListener(this);
         profileImage.setOnClickListener(this);
         verification = (CheckBox) findViewById(R.id.verification);
-       // getuserDetails();
+        getuserDetails();
     }
 
     private void getuserDetails() {
@@ -79,7 +87,8 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
                     homeLocation.setText(userProfile.getHomeLocation());
                     officeLocation.setText(userProfile.getOfficeLocation());
                     mobile.setText(userProfile.getPhoneNumber());
-                    Picasso.with(getApplicationContext()).load(userProfile.getProfileImage()).placeholder(R.drawable.male_profile_icon).into(profileImage);
+                   // Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).placeholder(R.drawable.male_profile_icon).into(profileImage);
+                    Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(profileImage);
                     verification.setChecked(userProfile.isMobileVerified());
                 }else{
                     userProfile = new UserProfile();
@@ -160,6 +169,12 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
         userProfile.setOfficeLocation(officeLocation.getText().toString());
         userProfile.setPhoneNumber(mobile.getText().toString());
         userProfile.setMobileVerified(verification.isChecked());
+        if(!userProfile.isProfileImageUpdated()){
+            profileImage.buildDrawingCache();
+            Bitmap bmap = profileImage.getDrawingCache();
+            userProfile.setProfileImage(HTTPUtils.BitMapToString(bmap));
+            userProfile.setProfileImageUpdated(true);
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -171,14 +186,38 @@ public class PersonalDetailsActivity extends BaseActivity implements View.OnClic
                 bitmap = (Bitmap) data.getExtras().get("data");
                  customerImageBitmapToString = HTTPUtils.BitMapToString(bitmap);
                 userProfile.setProfileImage(customerImageBitmapToString);
-                profileImage.setImageBitmap(bitmap);
+                userProfile.setProfileImageUpdated(true);
+                profileImage.setImageBitmap(getCroppedBitmap(bitmap,profileImage.getWidth()));
             }
             if (requestCode == GALLERY_REQUET_CODE && resultCode == Activity.RESULT_OK) {
                 bitmap = HTTPUtils.getBitmapFromCameraData(data, getApplicationContext());
                 customerImageBitmapToString = HTTPUtils.BitMapToString(bitmap);
                 userProfile.setProfileImage(customerImageBitmapToString);
-                profileImage.setImageBitmap(bitmap);
+                userProfile.setProfileImageUpdated(true);
+                profileImage.setImageBitmap(getCroppedBitmap(bitmap,profileImage.getWidth()));
             }
         }
+    }
+
+    public Bitmap getCroppedBitmap(Bitmap bitmap,int width) {
+        Bitmap output = Bitmap.createBitmap(width,
+                width, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, width, width);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(width / 2, width / 2,
+                width / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        //return _bmp;
+        return output;
     }
 }

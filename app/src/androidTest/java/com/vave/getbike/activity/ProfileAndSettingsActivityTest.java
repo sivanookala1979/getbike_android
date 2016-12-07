@@ -34,16 +34,15 @@ public class ProfileAndSettingsActivityTest {
     public void testUpdateProfile() {
         BaseSyncher.testSetup();
         onView(withId(R.id.personalDetails)).perform(click());
-        onView(withId(R.id.profileUserName)).perform(typeText("Adarsh T"), closeSoftKeyboard());
-        onView(withId(R.id.userEmail)).perform(typeText("Tadarsh401@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.userOccupation)).perform(typeText("Apps Developer"), closeSoftKeyboard());
-        onView(withId(R.id.userCity)).perform(typeText("Kavali"), closeSoftKeyboard());
-        onView(withId(R.id.userYearOfBirth)).perform(typeText("1992"), closeSoftKeyboard());
-        onView(withId(R.id.userHomeLocation)).perform(typeText("Kavali"), closeSoftKeyboard());
-        onView(withId(R.id.userOfficeLocation)).perform(typeText("Kavali"), closeSoftKeyboard());
-        onView(withId(R.id.userMobileNumber)).perform(typeText("9949257729"), closeSoftKeyboard());
-        onView(withId(R.id.update)).perform(click());
-//        onView(withId(R.id.personalDetails)).check(matches(isDisplayed()));
+//        onView(withId(R.id.profileUserName)).perform(typeText("Adarsh T"), closeSoftKeyboard());
+//        onView(withId(R.id.userEmail)).perform(typeText("Tadarsh401@gmail.com"), closeSoftKeyboard());
+//        onView(withId(R.id.userOccupation)).perform(typeText("Apps Developer"), closeSoftKeyboard());
+//        onView(withId(R.id.userCity)).perform(typeText("Kavali"), closeSoftKeyboard());
+//        onView(withId(R.id.userYearOfBirth)).perform(typeText("1992"), closeSoftKeyboard());
+//        onView(withId(R.id.userHomeLocation)).perform(typeText("Kavali"), closeSoftKeyboard());
+//        onView(withId(R.id.userOfficeLocation)).perform(typeText("Kavali"), closeSoftKeyboard());
+//        onView(withId(R.id.userMobileNumber)).perform(typeText("9949257729"), closeSoftKeyboard());
+//        onView(withId(R.id.update)).perform(click());
         SystemClock.sleep(400000);
     }
 }
