@@ -27,4 +27,8 @@ public class StringUtils {
         }
         return data;
     }
+
+    public static String getTwodigitString(int hourOfDay) {
+        return (hourOfDay>9)? hourOfDay+"" : "0"+hourOfDay;
+    }
 }
