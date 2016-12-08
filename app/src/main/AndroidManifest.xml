@@ -124,6 +124,7 @@
         <activity android:name=".activity.FAQActivity"></activity>
         <activity android:name=".activity.GetBikeFriendsActivity"></activity>
         <activity android:name=".activity.ShareActivity"></activity>
+        <activity android:name=".activity.ScheduleRideActivity"/>
     </application>
 
 </manifest>
