@@ -15,11 +15,15 @@
     <color name="login">#999999</color>
     <color name="color_heading">#CCCCCC</color>
     <color name="dark_red">#B71C1C</color>
+    <color name="red">#f02b2b</color>
     <color name="transparent">#50ffffff</color>
     <color name="get_bike_black">#263338</color>
     <color name="get_bike_transparent">#50263338</color>
     <color name="get_bike_orange">#FF9500</color>
     <color name="background">#e5e5e5</color>
+    <color name="gray">#f2f2f2</color>
+
+
 
 
 </resources>

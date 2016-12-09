@@ -2,9 +2,10 @@ package com.vave.getbike.syncher;
 
 import com.vave.getbike.model.BankAccount;
 import com.vave.getbike.model.MobileRecharge;
-import com.vave.getbike.model.SaveResult;
 import com.vave.getbike.model.RedeemWallet;
+import com.vave.getbike.model.SaveResult;
 import com.vave.getbike.model.Wallet;
+import com.vave.getbike.utils.GsonUtils;
 
 import org.json.JSONObject;
 
@@ -12,35 +13,37 @@ import org.json.JSONObject;
  * Created by adarsht on 06/12/16.
  */
 
-public class WalletSyncher extends BaseSyncher{
+public class WalletSyncher extends BaseSyncher {
     //TODO NEED TO WRITE PROPER CALLS
-    public SaveResult rechargeMobile(MobileRecharge recharge){
+    public SaveResult rechargeMobile(MobileRecharge recharge) {
         SaveResult result = new SaveResult();
         JSONObject jsonObject = recharge.getJson();
         result.setValid(true);
-        return  result;
+        return result;
     }
 
-    public SaveResult redeemeToWallet(RedeemWallet redeem){
+    public SaveResult redeemeToWallet(RedeemWallet redeem) {
         SaveResult result = new SaveResult();
         JSONObject jsonObject = redeem.getJson();
         result.setValid(true);
-        return  result;
+        return result;
     }
 
-    public SaveResult redeemtoBank(double amount){
+    public SaveResult redeemtoBank(double amount) {
         SaveResult result = new SaveResult();
         result.setValid(true);
-        return  result;
+        return result;
     }
-    public SaveResult addMoneyToWallet(double amount){
+
+    public SaveResult addMoneyToWallet(double amount) {
         //TODO CCAVENUE INTEGREATION
         SaveResult result = new SaveResult();
         result.setValid(true);
 
-        return  result;
+        return result;
     }
-    public Wallet getWalletDetails(){
+
+    public Wallet getWalletDetails() {
         Wallet wallet = new Wallet();
         wallet.setCashBalance(20.0);
         wallet.setMinimumDeposit(1000.0);
@@ -48,22 +51,45 @@ public class WalletSyncher extends BaseSyncher{
         wallet.setPromoBalance(50.0);
         wallet.setUserBalance(500.0);
         wallet.setRedeemableAmount(60.0);
-        return  wallet;
-    }
-    public SaveResult updateUserBankAccountDetails(BankAccount bankDetails){
-        SaveResult result = new SaveResult();
-        JSONObject jsonObject = bankDetails.getJson();
-        result.setValid(true);
-        return  result;
+        return wallet;
     }
 
-    public BankAccount getbankAccountDetails() {
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setAccountHoldername("Adarsh");
-        bankAccount.setAccountNumber("126554354");
-        bankAccount.setIfscCode("AXISAP100034");
-        bankAccount.setBranchName("Axis");
-        bankAccount.setBranchName("Kavali");
-        return bankAccount;
+    public SaveResult updateBankAccountDetails(final BankAccount bankDetails) {
+        final SaveResult result = new SaveResult();
+        new JsonPostHandler("/profile/saveAccountDetails") {
+
+            @Override
+            protected void prepareRequest() {
+                put("accountHolderName", bankDetails.getAccountHolderName());
+                put("accountNumber", bankDetails.getAccountNumber());
+                put("ifscCode", bankDetails.getIfscCode());
+                put("bankName", bankDetails.getBankName());
+                put("branchName", bankDetails.getBranchName());
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValid(true);
+                }
+            }
+        }.handle();
+        return result;
+    }
+
+    public BankAccount getBankAccountDetails() {
+        final GetBikePointer<BankAccount> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/profile/getAccountDetails") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    BankAccount bankAccount = GsonUtils.getGson().fromJson(jsonResult.get("accountDetails").toString(), BankAccount.class);
+                    result.setValue(bankAccount);
+                }
+            }
+        }.handle();
+        return result.getValue();
     }
 }
+

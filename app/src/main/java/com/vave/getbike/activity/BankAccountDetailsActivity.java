@@ -43,13 +43,13 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
 
             @Override
             public void process() {
-                bankDetails = walletSyncher.getbankAccountDetails();
+                bankDetails = walletSyncher.getBankAccountDetails();
             }
 
             @Override
             public void afterPostExecute() {
                 if (bankDetails!=null) {
-                    accountHoldername.setText(""+bankDetails.getAccountHoldername());
+                    accountHoldername.setText(""+bankDetails.getAccountHolderName());
                     accountNumber.setText(""+bankDetails.getAccountNumber());
                     ifscCode.setText(""+bankDetails.getIfscCode());
                     bankName.setText(""+bankDetails.getBankName());
@@ -78,7 +78,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
 
             @Override
             public void process() {
-                saveResult = walletSyncher.updateUserBankAccountDetails(bankDetails);
+                saveResult = walletSyncher.updateBankAccountDetails(bankDetails);
             }
 
             @Override
@@ -94,7 +94,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
 
     private BankAccount collectAccountDetaila() {
         BankAccount bankDetails = new BankAccount();
-        bankDetails.setAccountHoldername(accountHoldername.getText().toString());
+        bankDetails.setAccountHolderName(accountHoldername.getText().toString());
         bankDetails.setAccountNumber(accountNumber.getText().toString());
         bankDetails.setIfscCode(ifscCode.getText().toString());
         bankDetails.setBankName(bankName.getText().toString());

@@ -27,9 +27,6 @@ public class ProfileAndSettingsActivity extends BaseActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_and_settings);
-        //TODO FOR TESTING NEED TO REMOVE
-//        GetBikePreferences.setPreferences(getApplicationContext());
-//        BaseSyncher.testSetup();
         addToolbarView();
         profileImage = (ImageView)findViewById(R.id.profileIcon);
         setOnclickListeners(R.id.personalDetails, R.id.ridersProfile, R.id.bankAccountDetails, R.id.settings);

@@ -10,18 +10,18 @@ import org.json.JSONObject;
  */
 
 public class BankAccount {
-    String accountHoldername;
+    String accountHolderName;
     String accountNumber;
     String ifscCode;
     String bankName;
     String branchName;
 
-    public String getAccountHoldername() {
-        return accountHoldername;
+    public String getAccountHolderName() {
+        return accountHolderName;
     }
 
-    public void setAccountHoldername(String accountHoldername) {
-        this.accountHoldername = accountHoldername;
+    public void setAccountHolderName(String accountHolderName) {
+        this.accountHolderName = accountHolderName;
     }
 
     public String getAccountNumber() {
@@ -58,7 +58,7 @@ public class BankAccount {
 
     public SaveResult isDataValid() {
         SaveResult saveResult = new SaveResult();
-        if (StringUtils.isStringValid(getAccountHoldername())) {
+        if (StringUtils.isStringValid(getAccountHolderName())) {
             if (StringUtils.isStringValid(getAccountNumber())) {
                 if (StringUtils.isStringValid(getIfscCode())) {
                     if (StringUtils.isStringValid(getBankName())) {
@@ -84,7 +84,7 @@ public class BankAccount {
     public JSONObject getJson() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("accountHoldername", getAccountHoldername());
+            jsonObject.put("accountHolderName", getAccountHolderName());
             jsonObject.put("accountNumber", getAccountNumber());
             jsonObject.put("ifscCode", getIfscCode());
             jsonObject.put("bankName", getBankName());
