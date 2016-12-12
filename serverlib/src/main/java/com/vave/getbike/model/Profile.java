@@ -12,6 +12,7 @@ public class Profile {
     String drivingLicenseNumber;
     String name;
     String phoneNumber;
+    String promoCode;
 
     public String getVehiclePlateImageName() {
         return vehiclePlateImageName;
@@ -59,5 +60,13 @@ public class Profile {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 }

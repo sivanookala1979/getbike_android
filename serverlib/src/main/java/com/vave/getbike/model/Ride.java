@@ -29,6 +29,7 @@ public class Ride {
     Double roundingOff;
     Double totalBill;
     String rideStatus;
+    Integer rating;
 
     public String getRiderName() {
         return riderName;
@@ -203,5 +204,13 @@ public class Ride {
 
     public void setRideStatus(String rideStatus) {
         this.rideStatus = rideStatus;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }
