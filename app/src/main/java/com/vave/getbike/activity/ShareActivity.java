@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.Profile;
+import com.vave.getbike.syncher.LoginSyncher;
 
 public class ShareActivity extends BaseActivity implements View.OnClickListener {
 
@@ -28,9 +32,25 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
         messageTextButton = (Button) findViewById(R.id.message_button);
         shareCodeTextView = (TextView) findViewById(R.id.share_code);
         shareOnSocialMediaTextView = (TextView) findViewById(R.id.share_on_social_media);
-        shareCode = "ramkoti0565"; //This value need to be retrived from DB.
+        new GetBikeAsyncTask(ShareActivity.this) {
 
-        shareCodeTextView.setText(shareCode);
+            Profile publicProfile;
+
+            @Override
+            public void process() {
+                publicProfile = new LoginSyncher().getPublicProfile(0l);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (publicProfile != null) {
+                    shareCode = publicProfile.getPromoCode();
+                    shareCodeTextView.setText(shareCode);
+                } else {
+                    ToastHelper.serverToast(ShareActivity.this);
+                }
+            }
+        }.execute();
 
         whatsAppButton.setOnClickListener(this);
         emailButton.setOnClickListener(this);

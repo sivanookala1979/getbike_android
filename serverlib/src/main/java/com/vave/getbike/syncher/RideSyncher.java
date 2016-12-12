@@ -82,6 +82,21 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
+    public boolean rateRide(long rideId, int rating) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/rateRide?rideId=" + rideId + "&rating=" + rating) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
     public Ride closeRide(long rideId) {
         final GetBikePointer<Ride> result = new GetBikePointer<>(null);
         new JsonGetHandler("/closeRide?rideId=" + rideId) {
@@ -140,7 +155,7 @@ public class RideSyncher extends BaseSyncher {
     private Ride createRideFromJson(JSONObject jsonResult) throws JSONException {
         JSONObject jsonRideObject = (JSONObject) jsonResult.get("ride");
         Ride ride = GsonUtils.getGson().fromJson(jsonRideObject.toString(), Ride.class);
-        if (jsonResult.has("requestorName") && !jsonResult.isNull("requestorName") ) {
+        if (jsonResult.has("requestorName") && !jsonResult.isNull("requestorName")) {
             ride.setRequestorName(jsonResult.getString("requestorName"));
         }
         ride.setRequestorPhoneNumber(jsonResult.getString("requestorPhoneNumber"));

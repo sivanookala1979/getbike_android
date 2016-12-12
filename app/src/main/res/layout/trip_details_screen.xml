@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -25,26 +25,26 @@
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ellipsize="end"
                 android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                android:lines="1"
                 android:text="Date TIme"
                 android:textColor="@color/white"
-                android:lines="1"
-                android:ellipsize="end"
-                android:textSize="@dimen/text_size_intermediate" />
+                android:textSize="@dimen/text_size_intermediate"/>
 
             <TextView
                 android:id="@+id/tripId"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                android:layout_gravity="center"
                 android:text="Trip id : XXXX"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_small" />
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -66,7 +66,7 @@
                     android:id="@+id/map"
                     class="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"/>
 
             </LinearLayout>
 
@@ -86,7 +86,7 @@
                         android:id="@+id/profileImage"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:background="@drawable/profileicon" />
+                        android:background="@drawable/profileicon"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -104,34 +104,28 @@
                         android:padding="5dp"
                         android:text="Name"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/ratingCount"
+                            android:id="@+id/currentRatingStatus"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                            android:gravity="center_vertical"
-                            android:padding="5dp"
-                            android:text="You Rated "
+                            android:text="You Rated"
                             android:textColor="@color/gray_holo_light"
-                            android:textSize="@dimen/text_size_intermediate" />
+                            />
 
                         <RatingBar
                             android:id="@+id/ratingBar"
-                            style="?android:attr/ratingBarStyleIndicator"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:minHeight="40dp"
+                            android:layout_height="45dp"
                             android:numStars="5"
-                            android:rating="3" />
+                            android:stepSize="1"/>
                     </LinearLayout>
 
 
@@ -142,7 +136,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray_holo_light" />
+                android:background="@color/gray_holo_light"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -155,7 +149,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
-                    android:background="@drawable/bike" />
+                    android:background="@drawable/bike"/>
 
                 <TextView
                     android:id="@+id/bikeType"
@@ -166,14 +160,14 @@
                     android:padding="5dp"
                     android:text="Bike . Activa"
                     android:textColor="@color/get_bike_black"
-                    android:textSize="@dimen/text_size_intermediate" />s
+                    android:textSize="@dimen/text_size_intermediate"/>s
 
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray_holo_light" />
+                android:background="@color/gray_holo_light"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -197,7 +191,7 @@
                         android:padding="2dp"
                         android:text="08:10 AM"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_small" />
+                        android:textSize="@dimen/text_size_small"/>
 
                     <TextView
                         android:id="@+id/toTime"
@@ -209,7 +203,7 @@
                         android:padding="2dp"
                         android:text="10:10 AM"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_small" />
+                        android:textSize="@dimen/text_size_small"/>
                 </LinearLayout>
 
                 <ImageView
@@ -217,7 +211,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:layout_weight="0.5"
-                    android:background="@drawable/from_to_icon" />
+                    android:background="@drawable/from_to_icon"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -235,7 +229,7 @@
                         android:padding="2dp"
                         android:text="From address"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_small" />
+                        android:textSize="@dimen/text_size_small"/>
 
                     <TextView
                         android:id="@+id/toAddress"
@@ -247,7 +241,7 @@
                         android:padding="2dp"
                         android:text="To address"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_small" />
+                        android:textSize="@dimen/text_size_small"/>
 
                 </LinearLayout>
 
@@ -256,7 +250,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray_holo_light" />
+                android:background="@color/gray_holo_light"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -267,7 +261,7 @@
                 android:padding="4dp"
                 android:text="Bill Details"
                 android:textColor="@color/get_bike_black"
-                android:textSize="@dimen/text_size_large" />
+                android:textSize="@dimen/text_size_large"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -291,7 +285,7 @@
                         android:padding="2dp"
                         android:text="Total Fare"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/totalFare"
@@ -303,7 +297,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 
@@ -323,7 +317,7 @@
                         android:padding="2dp"
                         android:text="Taxed And Fees"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/taxFee"
@@ -335,7 +329,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 
@@ -343,7 +337,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_margin="5dp"
-                    android:background="@color/gray_holo_light" />
+                    android:background="@color/gray_holo_light"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -361,7 +355,7 @@
                         android:padding="2dp"
                         android:text="Sub Total"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/subTotal"
@@ -373,7 +367,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 
@@ -393,7 +387,7 @@
                         android:padding="2dp"
                         android:text="Rounding Off"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/roundingOff"
@@ -405,7 +399,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 
@@ -413,7 +407,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_margin="5dp"
-                    android:background="@color/gray_holo_light" />
+                    android:background="@color/gray_holo_light"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -431,7 +425,7 @@
                         android:padding="2dp"
                         android:text="Total Bill"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/totalBill"
@@ -443,7 +437,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 
@@ -451,7 +445,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_margin="5dp"
-                    android:background="@color/gray_holo_light" />
+                    android:background="@color/gray_holo_light"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -462,7 +456,7 @@
                     android:padding="4dp"
                     android:text="Payment"
                     android:textColor="@color/get_bike_black"
-                    android:textSize="@dimen/text_size_large" />
+                    android:textSize="@dimen/text_size_large"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -480,7 +474,7 @@
                         android:padding="2dp"
                         android:text="Cash"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                     <TextView
                         android:id="@+id/cashAmount"
@@ -492,7 +486,7 @@
                         android:padding="2dp"
                         android:text="0.0"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"/>
 
                 </LinearLayout>
 

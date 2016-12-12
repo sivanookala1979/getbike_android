@@ -2,6 +2,7 @@ package com.vave.getbike.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,7 +26,8 @@ import java.util.List;
 
 public class ShowCompletedRideActivity extends BaseActivity implements OnMapReadyCallback {
 
-    TextView tripDateTime, tripId, userName, rating, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash;
+    TextView tripDateTime, tripId, userName, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash, currentRatingStatus;
+    RatingBar ratingBar;
     private GoogleMap mMap;
     private Ride ride = null;
     private long rideId;
@@ -40,8 +42,8 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         addToolbarView();
         tripDateTime = (TextView) findViewById(R.id.tipDateTime);
         tripId = (TextView) findViewById(R.id.tripId);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         userName = (TextView) findViewById(R.id.userName);
-        rating = (TextView) findViewById(R.id.ratingCount);
         bikeType = (TextView) findViewById(R.id.bikeType);
         fromTime = (TextView) findViewById(R.id.fromTime);
         toTime = (TextView) findViewById(R.id.toTime);
@@ -53,10 +55,27 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         roundingOff = (TextView) findViewById(R.id.roundingOff);
         totalBill = (TextView) findViewById(R.id.totalBill);
         cash = (TextView) findViewById(R.id.cashAmount);
+        currentRatingStatus = (TextView) findViewById(R.id.currentRatingStatus);
         rideId = getIntent().getLongExtra("rideId", 0L);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, final float rating, boolean fromUser) {
+                new GetBikeAsyncTask(ShowCompletedRideActivity.this) {
+
+                    @Override
+                    public void process() {
+                        new RideSyncher().rateRide(rideId, (int) rating);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                    }
+                }.execute();
+            }
+        });
     }
 
     public void updateRideDetails() {
@@ -81,7 +100,12 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
             if (ride.getRideEndedAt() != null) {
                 toTime.setText(onlyTimeFormat.format(ride.getRideEndedAt()));
             }
-
+            if (ride.getRating() != null && ride.getRating() > 0) {
+                ratingBar.setRating(ride.getRating());
+                currentRatingStatus.setText("You rated");
+            } else {
+                currentRatingStatus.setText("Please rate your ride");
+            }
         }
     }
 
