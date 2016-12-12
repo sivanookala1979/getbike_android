@@ -1,7 +1,10 @@
 package com.vave.getbike.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class SignupActivity extends BaseActivity implements View.OnClickListener {
 
-    TextView resultUserId;
+    TextView loginTextView;
     RadioGroup genderGroup;
     EditText name;
     EditText mobile;
@@ -31,7 +34,9 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        addToolbarView();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         Button signup = (Button) findViewById(R.id.signup);
         assert signup != null;
         signup.setBackgroundResource(R.mipmap.register);
@@ -45,11 +50,8 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         gmaps.setOnClickListener(this);
         Button redirectButton = (Button) findViewById(R.id.redirectButton);
         redirectButton.setOnClickListener(this);
-        resultUserId = (TextView) findViewById(R.id.resultUserId);
-        Button login = (Button) findViewById(R.id.login);
-        assert login != null;
-        login.setBackgroundResource(R.mipmap.sign_in);
-        login.setOnClickListener(this);
+        loginTextView = (TextView) findViewById(R.id.login_text_view);
+        loginTextView.setOnClickListener(this);
         Button requestRide = (Button) findViewById(R.id.requestRide);
         requestRide.setOnClickListener(this);
         genderGroup = (RadioGroup) findViewById(R.id.gender);
@@ -75,12 +77,14 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                 mobile.setError(null);
                 final String EMAIL_REGEX = "^(.+)@(.+)$";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
+                final Pattern pattern2 = Pattern.compile("[^a-z A-Z]");
+                final Boolean stringCheck1 = pattern2.matcher(name.getText().toString()).find();
                 boolean patternCheck = pattern1.matcher(mobile.getText().toString()).find();
-                if (name.getText().toString().length() == 0) {
-                    name.setError("Required");
+                if ((name.getText().toString().length() == 0) || (stringCheck1)) {
+                    name.setError("Required only alphabets");
                     name.requestFocus();
                 } else if ((email.getText().toString().length() <= 0) || (!(Pattern.matches(EMAIL_REGEX, email.getText().toString())))) {
-                    email.setError("Required");
+                    email.setError("Required valid email id");
                     email.requestFocus();
                 } else if ((mobile.getText().toString().length() != 10) || (patternCheck)) {
                     mobile.setError("Required 10 digit number");
@@ -105,7 +109,19 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                             if (callStatus != null) {
                                 if (callStatus.isSuccess()) {
                                     Log.d("TAG", "call status for signup is:" + callStatus);
-                                    resultUserId.setText("Success");
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle("SIGN UP");
+                                    builder.setMessage("Successfully Registered, SIGN IN now");
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    builder.show();
                                 } else if (callStatus.getErrorCode() == 9901) {
                                     Log.d("TAG", "call status for signup is:" + callStatus);
                                     ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
@@ -118,7 +134,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                 }
 
                 break;
-            case R.id.login: {
+            case R.id.login_text_view: {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();

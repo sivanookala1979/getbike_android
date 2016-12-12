@@ -16,10 +16,10 @@
         android:id="@+id/imageView"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:src="@mipmap/getbike_logo"
+        android:src="@mipmap/getbike_logo_main"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="49dp" />
+        android:layout_marginTop="120dp" />
 
     <Button
         android:id="@+id/login_button"

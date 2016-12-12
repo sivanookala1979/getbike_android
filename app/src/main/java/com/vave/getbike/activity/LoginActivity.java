@@ -2,10 +2,11 @@ package com.vave.getbike.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -23,10 +24,11 @@ import java.util.regex.Pattern;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static LoginActivity inst;
-    TextView receivedOtp;
+    EditText receivedOtp;
     SMSListener smsListener;
-    TextView mobileNumberTextView;
-    TextView otpTextView;
+    EditText mobileNumberTextView;
+    EditText otpTextView;
+    TextView signUpTextView;
 
     public static LoginActivity instance() {
         return inst;
@@ -48,12 +50,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        addToolbarView();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         Button sendOtp = (Button) findViewById(R.id.send_otp);
         assert sendOtp != null;
         sendOtp.setOnClickListener(this);
-        mobileNumberTextView = (TextView) findViewById(R.id.mobile);
-        otpTextView = (TextView) findViewById(R.id.received_otp);
+        mobileNumberTextView = (EditText) findViewById(R.id.mobile);
+        otpTextView = (EditText) findViewById(R.id.received_otp);
         try {
             //TODO This should be placed in logout as well.
             InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
@@ -62,22 +66,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
         Button login = (Button) findViewById(R.id.login);
         assert login != null;
-        login.setBackgroundResource(R.mipmap.sign_in);
         login.setOnClickListener(this);
-        Button register = (Button) findViewById(R.id.register);
-        assert register != null;
-        register.setBackgroundResource(R.mipmap.register);
-        register.setOnClickListener(this);
-        receivedOtp = (TextView) findViewById(R.id.received_otp);
+
+        signUpTextView = (TextView) findViewById(R.id.sign_up_text_view);
+        signUpTextView.setOnClickListener(this);
+        receivedOtp = (EditText) findViewById(R.id.received_otp);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case  R.id.register:
-                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-                finish();
-                break;
             case R.id.send_otp: {
                 final String mobileNumber = ((TextView) findViewById(R.id.mobile)).getText() + "";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
@@ -158,6 +156,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
             }
             break;
+            case R.id.sign_up_text_view:
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+                finish();
+                break;
         }
     }
 

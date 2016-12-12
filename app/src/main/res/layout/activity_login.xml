@@ -13,17 +13,20 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        app:theme="@style/ToolbarColoredBackArrow"
         app:titleTextColor="@android:color/white">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
             android:id="@+id/toolbar_title"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-            android:text="Login"
+            android:text="  getbike"
             android:textColor="@android:color/white" />
     </android.support.v7.widget.Toolbar>
 
@@ -40,12 +43,11 @@
             android:id="@+id/mobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="26dp"
             android:hint="Enter Mobile Number"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:id="@+id/received_otp"
@@ -57,35 +59,42 @@
             android:hint="Enter OTP"
             android:inputType="number" />
 
-        <Button
-            android:id="@+id/send_otp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/mobile"
-            android:layout_toEndOf="@+id/mobile"
-            android:text="Send OTP" />
 
         <LinearLayout
-            android:layout_margin="10dp"
-            android:layout_below="@+id/received_otp"
+            android:id="@+id/optionsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="38dp"
+            android:layout_below="@+id/received_otp"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/send_otp"
+                android:background="@mipmap/send_otp_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"/>
 
             <Button
                 android:id="@+id/login"
+                android:background="@mipmap/sign_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"/>
-
-            <Button
-                android:id="@+id/register"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"/>
+                android:layout_margin="10dp"/>
 
         </LinearLayout>
+
+        <TextView
+            android:text="Not a member? Sign Up now"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:id="@+id/sign_up_text_view"
+            android:layout_marginBottom="200dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
 
     </RelativeLayout>

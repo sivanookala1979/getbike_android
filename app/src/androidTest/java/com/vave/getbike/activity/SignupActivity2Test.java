@@ -42,7 +42,7 @@ public class SignupActivity2Test {
                 .perform(click());
         onView(withId(R.id.signup)).perform(click());
         // Check that the text was changed.
-        onView(withId(R.id.resultUserId)).check(matches(withText("Success")));
+        // TODO: 01/11/16 Validate that the popup shows the message 'User already exists'
     }
 
     @Test

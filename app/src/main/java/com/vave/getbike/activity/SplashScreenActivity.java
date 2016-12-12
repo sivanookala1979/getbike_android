@@ -12,7 +12,7 @@ import com.vave.getbike.syncher.BaseSyncher;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    public static final long DELAY_MILLIS = 40L;
+    public static final long DELAY_MILLIS = 4000L;
     Handler timerHandler; // global instance
     Runnable getmiRunnable; // global instance
 
@@ -28,12 +28,14 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (GetBikePreferences.isLoggedIn()) {
+                    System.out.println("Control in the splash screen activity");
                     BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
                     startActivity(new Intent(SplashScreenActivity.this, RequestRideActivity.class));
+                    finish();
                 } else {
                     startActivity(new Intent(SplashScreenActivity.this, LogoScreenActivity.class));
+                    finish();
                 }
-                finish();
             }
         };
         timerHandler.postDelayed(getmiRunnable, DELAY_MILLIS);
