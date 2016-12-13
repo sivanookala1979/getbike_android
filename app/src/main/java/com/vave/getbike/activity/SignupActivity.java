@@ -111,8 +111,8 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                                     Log.d("TAG", "call status for signup is:" + callStatus);
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                                     builder.setCancelable(false);
-                                    builder.setTitle("SIGN UP");
-                                    builder.setMessage("Successfully Registered, SIGN IN now");
+                                    builder.setTitle("Success");
+                                    builder.setMessage("Successfully registered, Sign in now");
                                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -124,7 +124,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                                     builder.show();
                                 } else if (callStatus.getErrorCode() == 9901) {
                                     Log.d("TAG", "call status for signup is:" + callStatus);
-                                    ToastHelper.yellowToast(getApplicationContext(), "User already exists. Please try logging in.");
+                                    ToastHelper.redToast(getApplicationContext(), R.string.error_user_already_exists);
                                 }
                             } else {
                                 ToastHelper.serverToast(getApplicationContext());

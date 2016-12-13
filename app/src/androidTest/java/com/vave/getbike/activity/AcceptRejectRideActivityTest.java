@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AcceptRejectRideActivityTest {
+public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<AcceptRejectRideActivity> mActivityTestRule = new ActivityTestRule<>(AcceptRejectRideActivity.class);
@@ -47,9 +47,9 @@ public class AcceptRejectRideActivityTest {
         intent.putExtra("rideId", "200");
 
         mActivityTestRule.launchActivity(intent);
-        onView(withText(R.string.error_ride_is_not_valid)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
+        assertToast(R.string.error_ride_is_not_valid, mActivityTestRule);
     }
+
 
     @Test
     public void withValidRide() {

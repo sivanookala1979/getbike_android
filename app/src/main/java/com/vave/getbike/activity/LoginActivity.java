@@ -43,7 +43,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onStop() {
         super.onStop();
-        inst = null;
+        if (inst == this) {
+            inst = null;
+        }
     }
 
     @Override

@@ -41,11 +41,10 @@ import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SplashScreenActivityTest {
+public class SplashScreenActivityTest extends BaseGetBikeActivityTest{
 
     @Rule
     public ActivityTestRule<SplashScreenActivity> mActivityTestRule = new ActivityTestRule<>(SplashScreenActivity.class);
-    private Activity currentActivity;
 
     @Test
     public void testWithLoginAndLogout() {
@@ -62,10 +61,10 @@ public class SplashScreenActivityTest {
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.requestRide)).check(matches(isDisplayed()));
         onView(withId(R.id.logout)).perform(click());
         onView(withId(R.id.login_button)).check(matches(isDisplayed()));
         Espresso.unregisterIdlingResources(smsIdlingResource);
+        GetBikePreferences.reset();
     }
 
     @Test
@@ -82,28 +81,15 @@ public class SplashScreenActivityTest {
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.requestRide)).check(matches(isDisplayed()));
+        onView(withId(R.id.home)).check(matches(isDisplayed()));
         Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         mActivityTestRule.launchActivity(new Intent(targetContext, SplashScreenActivity.class));
         SystemClock.sleep(SplashScreenActivity.DELAY_MILLIS + 1000);
-        onView(withId(R.id.requestRide)).check(matches(isDisplayed()));
+        onView(withId(R.id.home)).check(matches(isDisplayed()));
         Espresso.unregisterIdlingResources(smsIdlingResource);
     }
 
-    private Activity getActivityInstance() {
-        getInstrumentation().runOnMainSync(new Runnable() {
-            public void run() {
-                Collection<Activity> resumedActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-                for (Activity act : resumedActivity) {
-                    currentActivity = act;
-                    break;
-                }
 
-            }
-        });
-
-        return currentActivity;
-    }
 
     @Before
     public void setUp() {

@@ -5,29 +5,35 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.vave.getbike.R;
-import com.vave.getbike.syncher.BaseSyncher;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.UUID;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SignupActivity2Test {
+public class SignupActivity2Test extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<SignupActivity> mActivityTestRule = new ActivityTestRule<>(SignupActivity.class);
+
+    public static String generateRandomPhoneNumber() {
+        int size = 10;
+        StringBuilder generatedToken = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            generatedToken.append(((int) (Math.random() * 10)) % 10);
+        }
+        return generatedToken.toString();
+    }
 
     @Test
     public void signupTESTHappyFlow() {
@@ -41,8 +47,10 @@ public class SignupActivity2Test {
         onView(withId(R.id.male))
                 .perform(click());
         onView(withId(R.id.signup)).perform(click());
-        // Check that the text was changed.
-        // TODO: 01/11/16 Validate that the popup shows the message 'User already exists'
+        onView(withText("Success")).check(matches(isDisplayed()));
+        onView(withText("Successfully registered, Sign in now")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.mobile)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -57,16 +65,7 @@ public class SignupActivity2Test {
         onView(withId(R.id.male))
                 .perform(click());
         onView(withId(R.id.signup)).perform(click());
-        // TODO: 01/11/16 Validate that the popup shows the message 'User already exists'
-    }
-
-    public static String generateRandomPhoneNumber() {
-        int size = 10;
-        StringBuilder generatedToken = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            generatedToken.append(((int) (Math.random() * 10)) % 10);
-        }
-        return generatedToken.toString();
+        assertToast(R.string.error_user_already_exists, mActivityTestRule);
     }
 
 }
