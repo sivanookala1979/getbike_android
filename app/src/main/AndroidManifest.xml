@@ -125,6 +125,7 @@
         <activity android:name=".activity.GetBikeFriendsActivity"></activity>
         <activity android:name=".activity.ShareActivity"></activity>
         <activity android:name=".activity.ScheduleRideActivity"/>
+        <activity android:name=".activity.ScheduledRidesAndHistoryActivity"/>
     </application>
 
 </manifest>

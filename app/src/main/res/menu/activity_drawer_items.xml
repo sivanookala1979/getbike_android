@@ -19,17 +19,9 @@
             android:icon="@drawable/earnings"
             android:title="Earn Free Rides" />
         <item
-            android:id="@+id/aboutUs"
-            android:icon="@drawable/how_icon"
-            android:title="How Getbike Works" />
-        <item
             android:id="@+id/profilAndSettings"
             android:icon="@drawable/settings"
             android:title="Profile And Settings" />
-        <item
-            android:id="@+id/friends"
-            android:icon="@drawable/friends_icon"
-            android:title="Friends" />
         <item
             android:id="@+id/support"
             android:icon="@drawable/support_icon_hands"

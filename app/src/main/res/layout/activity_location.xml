@@ -92,7 +92,7 @@
             android:background="@color/get_bike_black"
             android:gravity="center"
             android:onClick="startUpdatesButtonHandler"
-            android:text="Start Tracking"
+            android:text="START TRIP"
             android:textColor="@color/white"/>
 
         <Button
@@ -103,21 +103,10 @@
             android:layout_weight="1"
             android:background="@color/get_bike_black"
             android:gravity="center"
-            android:text="STOP TRACKING"
+            android:text="STOP TRIP"
             android:textColor="@color/white"
             android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/closeRide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:background="@color/get_bike_black"
-            android:text="CLOSE RIDE"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            />
     </LinearLayout>
 
     <LinearLayout

@@ -17,7 +17,9 @@
 package com.vave.getbike.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -105,7 +107,6 @@ public class LocationActivity extends BaseActivity implements
     // UI Widgets.
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
-    protected Button mCloseRideButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLocationCountTextView;
     protected Button callCustomerButton;
@@ -143,7 +144,6 @@ public class LocationActivity extends BaseActivity implements
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
-        mCloseRideButton = (Button) findViewById(R.id.closeRide);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
         TextView tripIdTextView = (TextView) findViewById(R.id.tripId);
@@ -160,7 +160,6 @@ public class LocationActivity extends BaseActivity implements
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
         mStopUpdatesButton.setOnClickListener(this);
-        mCloseRideButton.setOnClickListener(this);
         callCustomerButton.setOnClickListener(this);
         reachedCustomerButton.setOnClickListener(this);
 
@@ -180,7 +179,8 @@ public class LocationActivity extends BaseActivity implements
     public void startUpdatesButtonHandler(View view) {
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
+            mStartUpdatesButton.setVisibility(View.GONE);
+            mStopUpdatesButton.setVisibility(View.VISIBLE);
             startLocationUpdates();
         }
     }
@@ -192,7 +192,6 @@ public class LocationActivity extends BaseActivity implements
     public void stopUpdatesButtonHandler(View view) {
         if (mRequestingLocationUpdates) {
             mRequestingLocationUpdates = false;
-            setButtonsEnabledState();
             stopLocationUpdates();
         }
 
@@ -212,21 +211,6 @@ public class LocationActivity extends BaseActivity implements
         } catch (SecurityException ex) {
             ex.printStackTrace();
             ToastHelper.redToast(getApplicationContext(), "Could not request location updates");
-        }
-    }
-
-    /**
-     * Ensures that only one button is enabled at any time. The Start Updates button is enabled
-     * if the user is not requesting location updates. The Stop Updates button is enabled if the
-     * user is requesting location updates.
-     */
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setVisibility(View.GONE);
-            mStopUpdatesButton.setVisibility(View.VISIBLE);
-        } else {
-            mStopUpdatesButton.setVisibility(View.GONE);
-            mCloseRideButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -366,47 +350,50 @@ public class LocationActivity extends BaseActivity implements
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.stop_updates_button:
-                stopUpdatesButtonHandler(v);
-                new GetBikeAsyncTask(LocationActivity.this) {
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(LocationActivity.this);
+                builder.setCancelable(false);
+                builder.setTitle("STOP TRIP");
+                builder.setMessage("Do you want to stop a Trip");
+                builder.setPositiveButton("Stop Trip", new DialogInterface.OnClickListener() {
                     @Override
-                    public void process() {
-                        RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
-                        dataSource.setUpdataSource();
-                        RideLocationSyncher locationSyncher = new RideLocationSyncher();
-                        locationSyncher.setDataSource(dataSource);
-                        locationSyncher.storePendingLocations(rideId);
-                        dataSource.close();
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        stopUpdatesButtonHandler(v);
+                        new GetBikeAsyncTask(LocationActivity.this) {
+                            Ride closedRide = null;
+                            @Override
+                            public void process() {
+                                RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
+                                dataSource.setUpdataSource();
+                                RideLocationSyncher locationSyncher = new RideLocationSyncher();
+                                locationSyncher.setDataSource(dataSource);
+                                locationSyncher.storePendingLocations(rideId);
+                                dataSource.close();
+                                RideSyncher sut = new RideSyncher();
+                                closedRide = sut.closeRide(rideId);
+                            }
+                            @Override
+                            public void afterPostExecute() {
+                                if (closedRide != null) {
+                                    Intent intent = new Intent(LocationActivity.this, ShowCompletedRideActivity.class);
+                                    intent.putExtra("rideId", closedRide.getId());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        }.execute();
                     }
-
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void afterPostExecute() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                     }
-                }.execute();
-                break;
-            case R.id.closeRide:
-                new GetBikeAsyncTask(LocationActivity.this) {
-                    Ride closedRide = null;
-
-                    @Override
-                    public void process() {
-                        RideSyncher sut = new RideSyncher();
-                        closedRide = sut.closeRide(rideId);
-                    }
-
-                    @Override
-                    public void afterPostExecute() {
-                        if (closedRide != null) {
-                            Intent intent = new Intent(LocationActivity.this, ShowCompletedRideActivity.class);
-                            intent.putExtra("rideId", closedRide.getId());
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                }.execute();
+                });
+                builder.show();
                 break;
             case R.id.call_customer_button:
                 if (ride == null || ride.getRequestorPhoneNumber() == null) {

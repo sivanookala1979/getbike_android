@@ -116,7 +116,7 @@
 
             android:id="@+id/contact_us_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@mipmap/contact_us_button"/>

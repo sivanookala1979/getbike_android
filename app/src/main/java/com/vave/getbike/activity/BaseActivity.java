@@ -70,11 +70,11 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             case R.id.profilAndSettings:
                 startActivity(new Intent(this, ProfileAndSettingsActivity.class));
                 break;
+            case R.id.ridesAndHistory:
+                startActivity(new Intent(this,ScheduledRidesAndHistoryActivity.class));
+                break;
             case R.id.earnFreeRides:
                 startActivity(new Intent(this, ShareActivity.class));
-                break;
-            case R.id.friends:
-                startActivity(new Intent(this, GetBikeFriendsActivity.class));
                 break;
             case R.id.support:
                 startActivity(new Intent(this, FAQActivity.class));
