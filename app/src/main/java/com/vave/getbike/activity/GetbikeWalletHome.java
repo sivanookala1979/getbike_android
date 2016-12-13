@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +13,7 @@ import com.vave.getbike.R;
  * Created by adarsht on 06/12/16.
  */
 
-public class GetbikeWalletHome extends BaseActivity implements View.OnClickListener{
+public class GetBikeWalletHome extends BaseActivity implements View.OnClickListener{
     TextView promoBalance,cashBalance,yourBalance;
     ListView history;
     Button redeem,addMoney;
@@ -38,11 +36,11 @@ public class GetbikeWalletHome extends BaseActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case  R.id.redeem:
-                startActivity(new Intent(GetbikeWalletHome.this,RedeemAmountActivity.class));
+                startActivity(new Intent(GetBikeWalletHome.this,RedeemAmountActivity.class));
                 break;
             case R.id.addMoney:
                 break;
         }
     }
 }
-//GetbikeWalletHome
+//GetBikeWalletHome

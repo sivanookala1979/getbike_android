@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.vave.getbike.R;
-import com.vave.getbike.activity.ProfileAndSettingsActivity;
 import com.vave.getbike.syncher.BaseSyncher;
 
 import org.junit.Rule;
@@ -15,8 +14,6 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
@@ -24,10 +21,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class GetbikeWalletHomeTest {
+public class GetBikeWalletHomeTest {
 
     @Rule
-    public ActivityTestRule<GetbikeWalletHome> mActivityTestRule = new ActivityTestRule<>(GetbikeWalletHome.class);
+    public ActivityTestRule<GetBikeWalletHome> mActivityTestRule = new ActivityTestRule<>(GetBikeWalletHome.class);
 
     @Test
     public void tesShowHideWalletDetails() {
