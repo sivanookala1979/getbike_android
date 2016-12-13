@@ -62,7 +62,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.updateBankDetails) {
-            BankAccount bankDetails = collectAccountDetaila();
+            BankAccount bankDetails = collectAccountDetails();
             SaveResult result = bankDetails.isDataValid();
             if (result.isValid()) {
                 updateBankDetails(bankDetails);
@@ -74,7 +74,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
 
     private void updateBankDetails(final BankAccount bankDetails) {
         new GetBikeAsyncTask(BankAccountDetailsActivity.this) {
-            SaveResult saveResult;
+            SaveResult saveResult = null;
 
             @Override
             public void process() {
@@ -85,6 +85,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
             public void afterPostExecute() {
                 if (saveResult.isValid()) {
                     ToastHelper.redToast(getApplicationContext(), "Account details successfully updated.");
+                    finish();
                 } else {
                     ToastHelper.redToast(getApplicationContext(), saveResult.getErrorMessage());
                 }
@@ -92,13 +93,13 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
         }.execute();
     }
 
-    private BankAccount collectAccountDetaila() {
-        BankAccount bankDetails = new BankAccount();
-        bankDetails.setAccountHolderName(accountHoldername.getText().toString());
-        bankDetails.setAccountNumber(accountNumber.getText().toString());
-        bankDetails.setIfscCode(ifscCode.getText().toString());
-        bankDetails.setBankName(bankName.getText().toString());
-        bankDetails.setBranchName(branchName.getText().toString());
-        return bankDetails;
+    private BankAccount collectAccountDetails() {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountHolderName(accountHoldername.getText().toString());
+        bankAccount.setAccountNumber(accountNumber.getText().toString());
+        bankAccount.setIfscCode(ifscCode.getText().toString());
+        bankAccount.setBankName(bankName.getText().toString());
+        bankAccount.setBranchName(branchName.getText().toString());
+        return bankAccount;
     }
 }

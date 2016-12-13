@@ -90,7 +90,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
             case R.id.wallet:
-                startActivity(new Intent(this, GetbikeWalletHome.class));
+                startActivity(new Intent(this, GetBikeWalletHome.class));
                 break;
 
         }

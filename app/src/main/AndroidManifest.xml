@@ -119,7 +119,7 @@
         <activity android:name=".activity.ProfileAndSettingsActivity"/>
         <activity android:name=".activity.RedeemAmountActivity"/>
         <activity android:name=".activity.PersonalDetailsActivity"/>
-        <activity android:name=".activity.GetbikeWalletHome"/>
+        <activity android:name=".activity.GetBikeWalletHome"/>
         <activity android:name=".activity.BankAccountDetailsActivity"/>
         <activity android:name=".activity.FAQActivity"></activity>
         <activity android:name=".activity.GetBikeFriendsActivity"></activity>
