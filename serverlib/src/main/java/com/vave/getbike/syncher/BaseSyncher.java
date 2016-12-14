@@ -13,7 +13,8 @@ public class BaseSyncher {
 
     //public static String BASE_URL = "http://localhost:9000";
     //public static String BASE_URL = "http://192.168.10.18:9000";
-    public static String BASE_URL = "http://videos.meritcampus.com:9000";
+    //public static String BASE_URL = "http://videos.meritcampus.com:9000";
+    public static String BASE_URL = "http://server.getbike.co.in";
 
     public static String accessToken = null;
 
