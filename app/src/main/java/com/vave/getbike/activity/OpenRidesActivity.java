@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.adapter.RideAdapter2;
@@ -30,6 +31,7 @@ public class OpenRidesActivity extends BaseActivity {
 
     // UI Widgets
     ListView openRidesListView;
+    TextView hailModelTextView;
     List<Ride> result = null;
     Button refreshButton;
     ScheduledFuture<?> s = null;
@@ -45,6 +47,9 @@ public class OpenRidesActivity extends BaseActivity {
         addToolbarView();
         openRidesListView = (ListView) findViewById(R.id.openRides);
         refreshButton = (Button) findViewById(R.id.refreshOpenRides);
+        final double latitude = getIntent().getDoubleExtra("latitude", 0);
+        final double longitude = getIntent().getDoubleExtra("longitude", 0);
+        hailModelTextView=(TextView)findViewById(R.id.hail_model_text_view);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +66,17 @@ public class OpenRidesActivity extends BaseActivity {
                     intent.putExtra("rideId", result.get(position).getId());
                     startActivity(intent);
                 }
+            }
+        });
+
+        hailModelTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OpenRidesActivity.this, HailCustomerActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                startActivity(intent);
+                finish();
             }
         });
 

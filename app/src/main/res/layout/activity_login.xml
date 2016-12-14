@@ -44,10 +44,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
             android:hint="Enter Mobile Number"
             android:inputType="phone"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/sign_up_text_view" />
 
         <EditText
             android:id="@+id/received_otp"
@@ -70,13 +71,6 @@
             android:layout_centerHorizontal="true">
 
             <Button
-                android:id="@+id/send_otp"
-                android:background="@mipmap/send_otp_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"/>
-
-            <Button
                 android:id="@+id/login"
                 android:background="@mipmap/sign_in"
                 android:layout_width="wrap_content"
@@ -95,6 +89,16 @@
             android:layout_marginBottom="200dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <Button
+            android:text="SEND OTP"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/send_otp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>

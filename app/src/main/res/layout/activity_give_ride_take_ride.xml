@@ -49,7 +49,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="65"
-                android:background="@color/transparent"></LinearLayout>
+                android:background="@color/transparent">
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:background="@color/get_bike_orange"
+                android:text="SHOW CURRENT RIDE"
+                android:id="@+id/show_current_ride_button"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,6 +68,8 @@
                 android:layout_weight="35"
                 android:background="@color/transparent"
                 android:orientation="vertical"
+                android:id="@+id/give_ride_take_ride_linear_layout"
+                android:visibility="visible"
                 android:padding="5dp">
 
                 <ImageButton

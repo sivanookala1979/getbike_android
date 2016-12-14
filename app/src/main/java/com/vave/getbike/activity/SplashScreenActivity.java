@@ -30,7 +30,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (GetBikePreferences.isLoggedIn()) {
                     System.out.println("Control in the splash screen activity");
                     BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
-                    startActivity(new Intent(SplashScreenActivity.this, RequestRideActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, GiveRideTakeRideActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(SplashScreenActivity.this, LogoScreenActivity.class));

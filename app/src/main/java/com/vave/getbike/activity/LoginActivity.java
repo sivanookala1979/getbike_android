@@ -147,7 +147,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         @Override
                         public void afterPostExecute() {
                             if (result) {
-                                Intent intent = new Intent(getApplicationContext(), RequestRideActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), GiveRideTakeRideActivity.class);
                                 startActivity(intent);
                                 finish();
                             } else {

@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/activity_request_ride"
+        layout="@layout/activity_give_ride_take_ride"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
