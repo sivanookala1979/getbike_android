@@ -20,12 +20,9 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -50,7 +47,6 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
         assertToast(R.string.error_ride_is_not_valid, mActivityTestRule);
     }
 
-
     @Test
     public void withValidRide() {
         BaseSyncher.testSetup();
@@ -74,6 +70,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
     @Test
     public void clickOnAcceptRide() {
         BaseSyncher.testSetup();
+        closeCurrentRide();
         RideSyncher rideSyncher = new RideSyncher();
         Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
 

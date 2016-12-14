@@ -119,7 +119,6 @@ public class GiveRideTakeRideActivityTest {
         onView(withId(R.id.start_updates_button)).perform(click());
         SystemClock.sleep(4000);
         onView(withId(R.id.stop_updates_button)).perform(click());
-        onView(withId(R.id.closeRide)).perform(click());
         SystemClock.sleep(1000);
         onView(withId(R.id.tripId)).check(matches(withText(rideIdCapture.get())));
     }

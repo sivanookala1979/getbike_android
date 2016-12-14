@@ -5,6 +5,9 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
 
+import com.vave.getbike.syncher.LoginSyncher;
+import com.vave.getbike.syncher.RideSyncher;
+
 import java.util.Collection;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -23,6 +26,13 @@ import static org.hamcrest.Matchers.not;
 public class BaseGetBikeActivityTest {
 
     protected Activity currentActivity;
+
+    public static void closeCurrentRide() {
+        Long previousRideId = new LoginSyncher().getCurrentRide();
+        if (previousRideId != null) {
+            new RideSyncher().closeRide(previousRideId);
+        }
+    }
 
     protected void assertToast(int errorId, ActivityTestRule mActivityTestRule) {
         onView(withText(errorId)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));

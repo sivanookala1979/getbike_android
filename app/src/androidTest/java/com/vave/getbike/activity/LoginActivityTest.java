@@ -77,7 +77,6 @@ public class LoginActivityTest {
         onView(withId(R.id.start_updates_button)).perform(click());
         SystemClock.sleep(20000);
         onView(withId(R.id.stop_updates_button)).perform(click());
-        onView(withId(R.id.closeRide)).perform(click());
         onView(withId(R.id.totalDistance)).check(matches(isPositive()));
         SystemClock.sleep(10000);
 

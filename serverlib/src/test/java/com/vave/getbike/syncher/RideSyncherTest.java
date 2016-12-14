@@ -205,9 +205,13 @@ public class RideSyncherTest {
         sut = new RideSyncher();
         BaseSyncher.testSetup();
         AndroidStubsFactory.IS_TEST = true;
+        closeCurrentRide();
+    }
+
+    public static void closeCurrentRide() {
         Long previousRideId = new LoginSyncher().getCurrentRide();
         if (previousRideId != null) {
-            sut.closeRide(previousRideId);
+            new RideSyncher().closeRide(previousRideId);
         }
     }
 
