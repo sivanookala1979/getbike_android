@@ -2,6 +2,7 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -42,6 +43,7 @@ public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
     public void testKavaliToMungamur() {
         BaseSyncher.testSetup();
         closeCurrentRide();
+        setupMockLocation((LocationManager) mActivityTestRule.getActivity().getSystemService(Context.LOCATION_SERVICE));
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, GiveRideTakeRideActivity.class);
@@ -68,7 +70,7 @@ public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
                 .check(matches(withText("Mungamur, Andhra Pradesh, India")));
         manualReview(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 89.4 for 12.34 km")));
+                .check(matches(withText("Estimated ₹ 89.3 for 12.33 km")));
     }
 
     @Test
@@ -95,7 +97,7 @@ public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
                 .check(matches(withText("Hyderabad, Telangana, India")));
         manualReview(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
+                .check(matches(withText("Estimated ₹ 2515.9 for 358.98 km")));
     }
 
     @Test
@@ -124,7 +126,7 @@ public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
                 .check(matches(withText("Hyderabad, Telangana, India")));
         manualReview(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
+                .check(matches(withText("Estimated ₹ 2515.9 for 358.98 km")));
         onView(withId(R.id.giveRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
         onView(withId(R.id.tripId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));

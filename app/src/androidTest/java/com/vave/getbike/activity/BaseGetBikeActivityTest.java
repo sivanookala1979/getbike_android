@@ -1,6 +1,9 @@
 package com.vave.getbike.activity;
 
 import android.app.Activity;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
@@ -10,6 +13,7 @@ import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 import java.util.Collection;
+import java.util.Date;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -70,5 +74,57 @@ public class BaseGetBikeActivityTest {
 
     public void waitForever() {
         SystemClock.sleep(3828228);
+    }
+
+    public void setupMockLocation(LocationManager mLocationManager) {
+        try {
+            mLocationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+
+        }
+        mLocationManager.addTestProvider
+                (
+                        LocationManager.GPS_PROVIDER,
+                        "requiresNetwork" == "",
+                        "requiresSatellite" == "",
+                        "requiresCell" == "",
+                        "hasMonetaryCost" == "",
+                        "supportsAltitude" == "",
+                        "supportsSpeed" == "",
+                        "supportsBearing" == "",
+
+                        android.location.Criteria.POWER_LOW,
+                        android.location.Criteria.ACCURACY_FINE
+                );
+
+        Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+
+        newLocation.setLatitude(14.90266817);
+        newLocation.setLongitude(79.99396721);
+//        newLocation.setLatitude(17.4257212708051);
+//        newLocation.setLongitude(78.42207347165521);
+        newLocation.setTime(new Date().getTime());
+        newLocation.setElapsedRealtimeNanos(new Date().getTime());
+        newLocation.setAccuracy(500);
+
+        mLocationManager.setTestProviderEnabled
+                (
+                        LocationManager.GPS_PROVIDER,
+                        true
+                );
+
+        mLocationManager.setTestProviderStatus
+                (
+                        LocationManager.GPS_PROVIDER,
+                        LocationProvider.AVAILABLE,
+                        null,
+                        System.currentTimeMillis()
+                );
+
+        mLocationManager.setTestProviderLocation
+                (
+                        LocationManager.GPS_PROVIDER,
+                        newLocation
+                );
     }
 }
