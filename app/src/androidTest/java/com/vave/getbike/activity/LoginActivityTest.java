@@ -3,20 +3,15 @@ package com.vave.getbike.activity;
 import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingPolicies;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.widget.TextView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.RideSyncher;
 import com.vave.getbike.utils.SMSIdlingResource;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,25 +34,10 @@ import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LoginActivityTest {
+public class LoginActivityTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-
-    public static Matcher<View> textCapture(final AtomicReference<String> ref) {
-        return new BoundedMatcher<View, TextView>(TextView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with text: ");
-            }
-
-            @Override
-            public boolean matchesSafely(TextView textView) {
-                ref.set(textView.getText().toString());
-                return true;
-            }
-        };
-    }
 
     public void loginTESTHappyFlow_OldTest() {
         SMSIdlingResource smsIdlingResource = new SMSIdlingResource();
@@ -117,8 +97,7 @@ public class LoginActivityTest {
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.showOpenRides)).perform(click());
-        onView(withId(R.id.openRides)).check(matches(isDisplayed()));
+        onView(withId(R.id.giveRide)).check(matches(isDisplayed()));
         Espresso.unregisterIdlingResources(smsIdlingResource);
     }
 

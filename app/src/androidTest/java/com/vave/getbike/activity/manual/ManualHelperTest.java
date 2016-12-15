@@ -37,6 +37,7 @@ import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.vave.getbike.activity.BaseGetBikeActivityTest.textCapture;
 import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
@@ -101,7 +102,7 @@ public class ManualHelperTest {
         SystemClock.sleep(3000);
         onView(withId(R.id.takeRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
-        onView(withId(R.id.generatedRideId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));
+        onView(withId(R.id.generatedRideId)).check(matches(textCapture(rideIdCapture)));
         RideSyncher rideSyncher = new RideSyncher();
         SystemClock.sleep(3000);
         rideSyncher.acceptRide(Long.parseLong(rideIdCapture.get()));

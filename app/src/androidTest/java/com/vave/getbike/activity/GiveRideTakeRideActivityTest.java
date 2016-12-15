@@ -129,7 +129,7 @@ public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
                 .check(matches(withText("Estimated ₹ 2515.9 for 358.98 km")));
         onView(withId(R.id.giveRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
-        onView(withId(R.id.tripId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));
+        onView(withId(R.id.tripId)).check(matches(textCapture(rideIdCapture)));
         onView(withId(R.id.start_updates_button)).perform(click());
         manualReview(2000);
         onView(withId(R.id.stop_updates_button)).perform(click());

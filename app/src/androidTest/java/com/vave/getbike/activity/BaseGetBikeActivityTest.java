@@ -5,15 +5,22 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
+import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
+import android.view.View;
+import android.widget.TextView;
 
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -126,5 +133,20 @@ public class BaseGetBikeActivityTest {
                         LocationManager.GPS_PROVIDER,
                         newLocation
                 );
+    }
+
+    public static Matcher<View> textCapture(final AtomicReference<String> ref) {
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with text: ");
+            }
+
+            @Override
+            public boolean matchesSafely(TextView textView) {
+                ref.set(textView.getText().toString());
+                return true;
+            }
+        };
     }
 }

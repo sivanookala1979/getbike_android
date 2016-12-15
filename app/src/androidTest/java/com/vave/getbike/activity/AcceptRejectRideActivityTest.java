@@ -2,6 +2,7 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -38,6 +39,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
     public void clickOnAcceptRide() {
         BaseSyncher.testSetup();
         closeCurrentRide();
+        setupMockLocation((LocationManager) mActivityTestRule.getActivity().getSystemService(Context.LOCATION_SERVICE));
         RideSyncher rideSyncher = new RideSyncher();
         Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
         Context targetContext = InstrumentationRegistry.getInstrumentation()
