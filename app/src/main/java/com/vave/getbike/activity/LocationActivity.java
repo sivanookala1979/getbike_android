@@ -357,7 +357,7 @@ public class LocationActivity extends BaseActivity implements
                 AlertDialog.Builder builder = new AlertDialog.Builder(LocationActivity.this);
                 builder.setCancelable(false);
                 builder.setTitle("STOP TRIP");
-                builder.setMessage("Do you want to stop a Trip");
+                builder.setMessage("Do you want to stop the trip?");
                 builder.setPositiveButton("Stop Trip", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

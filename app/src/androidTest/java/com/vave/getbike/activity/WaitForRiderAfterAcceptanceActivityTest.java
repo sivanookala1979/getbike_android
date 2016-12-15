@@ -2,7 +2,6 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -21,7 +20,7 @@ import org.junit.runner.RunWith;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class WaitForRiderAfterAcceptanceActivityTest {
+public class WaitForRiderAfterAcceptanceActivityTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<WaitForRiderAfterAcceptanceActivity> mActivityTestRule = new ActivityTestRule<>(WaitForRiderAfterAcceptanceActivity.class);
@@ -37,7 +36,7 @@ public class WaitForRiderAfterAcceptanceActivityTest {
         intent.putExtra("rideId", ride.getId());
         rideSyncher.acceptRide(ride.getId());
         mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(10000);
+        manualReview(2000);
     }
 
 }

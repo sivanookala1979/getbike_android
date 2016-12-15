@@ -1,6 +1,5 @@
 package com.vave.getbike.activity;
 
-import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -21,7 +20,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class GetBikeWalletHomeTest {
+public class GetBikeWalletHomeTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<GetBikeWalletHome> mActivityTestRule = new ActivityTestRule<>(GetBikeWalletHome.class);
@@ -30,20 +29,18 @@ public class GetBikeWalletHomeTest {
     public void tesShowHideWalletDetails() {
         BaseSyncher.testSetup();
         onView(withId(R.id.redeem)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.rechargeMobile)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.rechargeMobile)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.redeemToWallet)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.redeemToWallet)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.redeemToBank)).perform(click());
-        SystemClock.sleep(1000);
+        manualReview(1000);
         onView(withId(R.id.redeemToBank)).perform(click());
-        SystemClock.sleep(1000);
-//        onView(withId(R.id.personalDetails)).check(matches(isDisplayed()));
-        SystemClock.sleep(40000);
+        manualReview(1000);
     }
 }

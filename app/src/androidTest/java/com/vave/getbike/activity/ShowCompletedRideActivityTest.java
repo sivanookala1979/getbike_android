@@ -24,6 +24,7 @@ import java.util.Date;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.vave.getbike.utils.GetBikeTestUtils.isPositive;
@@ -47,9 +48,8 @@ public class ShowCompletedRideActivityTest {
         Intent intent = new Intent(targetContext, ShowCompletedRideActivity.class);
         intent.putExtra("rideId", ride.getId());
         mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(12000);
-        onView(withId(R.id.totalDistance)).check(matches(isPositive()));
-        onView(withId(R.id.locationCount)).check(matches(withText((ShowCompletedRideActivityTest.LAT_LONGS.length/2)+"")));
+        onView(withId(R.id.tripId)).check(matches(withText("Trip ID : " + ride.getId())));
+        onView(withId(R.id.fromAddress)).check(matches(withText("Source Not Provided")));
     }
 
     @NonNull

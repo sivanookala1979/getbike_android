@@ -48,31 +48,33 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         rejectRide = (Button) findViewById(R.id.rejectRide);
         callRequestorButton = (Button) findViewById(R.id.callRideRequestor);
         callRequestorButton.setOnClickListener(this);
-        new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
+        if (rideId > 0) {
+            new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
 
-            @Override
-            public void process() {
-                RideSyncher rideSyncher = new RideSyncher();
-                ride = rideSyncher.getRideById(rideId);
-            }
-
-            @Override
-            public void afterPostExecute() {
-                if (ride != null) {
-                    if ("RideAccepted".equals(ride.getRideStatus())) {
-                        showOpenRides(R.string.error_ride_is_already_allocated);
-                    } else {
-                        rideRequestedBy.setText(ride.getRequestorName());
-                        rideRequestAddress.setText(ride.getSourceAddress());
-                        rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
-                        rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
-                        rideDestination.setText(ride.getDestinationAddress());
-                    }
-                } else {
-                    showOpenRides(R.string.error_ride_is_not_valid);
+                @Override
+                public void process() {
+                    RideSyncher rideSyncher = new RideSyncher();
+                    ride = rideSyncher.getRideById(rideId);
                 }
-            }
-        }.execute();
+
+                @Override
+                public void afterPostExecute() {
+                    if (ride != null) {
+                        if ("RideAccepted".equals(ride.getRideStatus())) {
+                            showOpenRides(R.string.error_ride_is_already_allocated);
+                        } else {
+                            rideRequestedBy.setText(ride.getRequestorName());
+                            rideRequestAddress.setText(ride.getSourceAddress());
+                            rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
+                            rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
+                            rideDestination.setText(ride.getDestinationAddress());
+                        }
+                    } else {
+                        showOpenRides(R.string.error_ride_is_not_valid);
+                    }
+                }
+            }.execute();
+        }
         acceptRide.setOnClickListener(this);
         rejectRide.setOnClickListener(this);
     }

@@ -51,7 +51,7 @@ public class MyCompletedRidesActivityTest {
         Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
-        onView(withId(R.id.totalBill)).check(matches(withText("₹ 21.0")));
+        onView(withId(R.id.totalBill)).check(matches(withText("₹ 20.0")));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class MyCompletedRidesActivityTest {
         Intent intent = new Intent(targetContext, MyCompletedRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.myCompletedRides)).atPosition(0).perform(click());
-        onView(withId(R.id.totalBill)).check(matches(withText("₹ 21.0")));
+        onView(withId(R.id.totalBill)).check(matches(withText("₹ 20.0")));
     }
 
 }

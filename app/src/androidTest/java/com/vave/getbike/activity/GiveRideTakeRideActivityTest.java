@@ -1,6 +1,8 @@
 package com.vave.getbike.activity;
 
-import android.os.SystemClock;
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -31,42 +33,49 @@ import static org.hamcrest.core.IsNot.not;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class GiveRideTakeRideActivityTest {
+public class GiveRideTakeRideActivityTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<GiveRideTakeRideActivity> mActivityTestRule = new ActivityTestRule<>(GiveRideTakeRideActivity.class);
 
     @Test
-    public void testKavaliToMusunur() {
+    public void testKavaliToMungamur() {
         BaseSyncher.testSetup();
+        closeCurrentRide();
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, GiveRideTakeRideActivity.class);
+        mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.takeRide)).perform(click());
         onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
-        onView(withId(R.id.destination)).perform(typeText("Musunur"), ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.destination)).perform(typeText("Mungamur"), ViewActions.closeSoftKeyboard());
         GiveRideTakeRideActivity mActivity = mActivityTestRule.getActivity();
 
-        onView(withText("Musunuru, Andhra Pradesh, India"))
+        onView(withText("Mungamur, Andhra Pradesh, India"))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-        onView(withText("Musunur, Andhra Pradesh, India"))
+        onView(withText("Mungamur Road, Ongole, Andhra Pradesh, India"))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
         // Tap on a suggestion.
-        onView(withText("Musunur, Andhra Pradesh, India"))
+        onView(withText("Mungamur, Andhra Pradesh, India"))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .perform(click());
 
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
-                .check(matches(withText("Musunur, Andhra Pradesh, India")));
-        SystemClock.sleep(2000);
+                .check(matches(withText("Mungamur, Andhra Pradesh, India")));
+        manualReview(2000);
         onView(withId(R.id.rideEstimate))
-                .check(matches(withText("Estimated ₹ 25.3 for 3.19 km")));
+                .check(matches(withText("Estimated ₹ 89.4 for 12.34 km")));
     }
 
     @Test
     public void testKavaliToHyderabad() {
         BaseSyncher.testSetup();
+        closeCurrentRide();
+
         onView(withId(R.id.takeRide)).perform(click());
         onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
         onView(withId(R.id.destination)).perform(typeText("Hyderabad"), ViewActions.closeSoftKeyboard());
@@ -84,7 +93,7 @@ public class GiveRideTakeRideActivityTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Hyderabad, Telangana, India")));
-        SystemClock.sleep(2000);
+        manualReview(2000);
         onView(withId(R.id.rideEstimate))
                 .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
     }
@@ -92,7 +101,10 @@ public class GiveRideTakeRideActivityTest {
     @Test
     public void giveRideToKnownUser() {
         BaseSyncher.testSetup();
+        closeCurrentRide();
+
         onView(withId(R.id.giveRide)).perform(click());
+        onView(withId(R.id.hail_model_text_view)).perform(click());
         onView(withId(R.id.yourLocation)).check(matches(withText("Pullareddy Nagar Main Road, Rama Murthy Peta, Kavali, Andhra Pradesh 524201")));
         onView(withId(R.id.customerMobileNumber)).perform(typeText("9949257729"));
         onView(withId(R.id.destination)).perform(typeText("Hyderabad"), ViewActions.closeSoftKeyboard());
@@ -110,16 +122,19 @@ public class GiveRideTakeRideActivityTest {
         // By clicking on the auto complete term, the text should be filled in.
         onView(withId(R.id.destination))
                 .check(matches(withText("Hyderabad, Telangana, India")));
-        SystemClock.sleep(2000);
+        manualReview(2000);
         onView(withId(R.id.rideEstimate))
                 .check(matches(withText("Estimated ₹ 2515.8 for 358.97 km")));
         onView(withId(R.id.giveRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
         onView(withId(R.id.tripId)).check(matches(LoginActivityTest.textCapture(rideIdCapture)));
         onView(withId(R.id.start_updates_button)).perform(click());
-        SystemClock.sleep(4000);
+        manualReview(2000);
         onView(withId(R.id.stop_updates_button)).perform(click());
-        SystemClock.sleep(1000);
+        onView(withText("STOP TRIP")).check(matches(isDisplayed()));
+        onView(withText("Do you want to stop the trip?")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button1)).perform(click());
+        manualReview(2000);
         onView(withId(R.id.tripId)).check(matches(withText(rideIdCapture.get())));
     }
 

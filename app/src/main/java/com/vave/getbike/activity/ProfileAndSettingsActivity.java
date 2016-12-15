@@ -22,15 +22,15 @@ public class ProfileAndSettingsActivity extends BaseActivity implements View.OnC
     LoginSyncher loginSyncher = new LoginSyncher();
     ImageView profileImage;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GetBikePreferences.setPreferences(getApplicationContext());
         setContentView(R.layout.activity_profile_and_settings);
         addToolbarView();
-        profileImage = (ImageView)findViewById(R.id.profileIcon);
+        profileImage = (ImageView) findViewById(R.id.profileIcon);
         setOnclickListeners(R.id.personalDetails, R.id.ridersProfile, R.id.bankAccountDetails, R.id.settings);
-        userProfile = GetBikePreferences.getUserProfile();
+        getProfileDetails();
     }
 
     @Override
@@ -40,22 +40,23 @@ public class ProfileAndSettingsActivity extends BaseActivity implements View.OnC
     }
 
     private void getProfileDetails() {
-            new GetBikeAsyncTask(ProfileAndSettingsActivity.this) {
+        new GetBikeAsyncTask(ProfileAndSettingsActivity.this) {
 
-                @Override
-                public void process() {
-                    userProfile = loginSyncher.getUserProfile();
+            @Override
+            public void process() {
+                userProfile = loginSyncher.getUserProfile();
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (userProfile != null) {
+                    Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/" + userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(profileImage);
+                } else {
+                    userProfile = new UserProfile();
                 }
-                @Override
-                public void afterPostExecute() {
-                    if (userProfile != null) {
-                        GetBikePreferences.setUserProfile(userProfile);
-                        Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL+"/"+userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(profileImage);
-                    } else {
-                        userProfile = new UserProfile();
-                    }
-                }
-            }.execute();
+                GetBikePreferences.setUserProfile(userProfile);
+            }
+        }.execute();
     }
 
     private void setOnclickListeners(int... ids) {

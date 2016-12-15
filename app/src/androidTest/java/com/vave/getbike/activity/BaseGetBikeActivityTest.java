@@ -1,6 +1,7 @@
 package com.vave.getbike.activity;
 
 import android.app.Activity;
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
@@ -36,6 +37,12 @@ public class BaseGetBikeActivityTest {
 
     protected void assertToast(int errorId, ActivityTestRule mActivityTestRule) {
         onView(withText(errorId)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        compulsoryWait(2000);
+    }
+
+    protected void assertToast(String errorMessage, ActivityTestRule mActivityTestRule) {
+        onView(withText(errorMessage)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        compulsoryWait(2000);
     }
 
     protected Activity getActivityInstance() {
@@ -51,5 +58,17 @@ public class BaseGetBikeActivityTest {
         });
 
         return currentActivity;
+    }
+
+    public void manualReview(int milliSeconds) {
+        SystemClock.sleep(milliSeconds);
+    }
+
+    public void compulsoryWait(int milliSeconds) {
+        SystemClock.sleep(milliSeconds);
+    }
+
+    public void waitForever() {
+        SystemClock.sleep(3828228);
     }
 }

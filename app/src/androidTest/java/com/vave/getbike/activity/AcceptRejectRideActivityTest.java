@@ -2,7 +2,6 @@ package com.vave.getbike.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -36,49 +35,15 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
     public ActivityTestRule<AcceptRejectRideActivity> mActivityTestRule = new ActivityTestRule<>(AcceptRejectRideActivity.class);
 
     @Test
-    public void withInvalidRideId() {
-
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
-        intent.putExtra("rideId", "200");
-
-        mActivityTestRule.launchActivity(intent);
-        assertToast(R.string.error_ride_is_not_valid, mActivityTestRule);
-    }
-
-    @Test
-    public void withValidRide() {
-        BaseSyncher.testSetup();
-        RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
-
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
-        intent.putExtra("rideId", ride.getId());
-
-        mActivityTestRule.launchActivity(intent);
-        SystemClock.sleep(3000);
-        onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
-        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
-        onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
-        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
-        onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
-    }
-
-    @Test
     public void clickOnAcceptRide() {
         BaseSyncher.testSetup();
         closeCurrentRide();
         RideSyncher rideSyncher = new RideSyncher();
         Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
-
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
         intent.putExtra("rideId", ride.getId());
-
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
         onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
@@ -88,6 +53,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
         onView(withId(R.id.acceptRide)).perform(click());
         onView(withId(R.id.reached_customer_button)).perform(click());
         onView(withId(R.id.start_updates_button)).check(matches(isDisplayed()));
+        cleanUpOpenRidesActivity();
     }
 
     @Test
@@ -109,6 +75,42 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
         onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
         onView(withId(R.id.rejectRide)).perform(click());
         assertTrue(mActivityTestRule.getActivity().isFinishing());
+        cleanUpOpenRidesActivity();
+    }
+
+    @Test
+    public void withValidRide() {
+        BaseSyncher.testSetup();
+        RideSyncher rideSyncher = new RideSyncher();
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
+
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
+        intent.putExtra("rideId", ride.getId());
+        mActivityTestRule.launchActivity(intent);
+        onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));
+        onView(withId(R.id.rideRequestedBy)).check(matches(withText("Siva Nookala")));
+        onView(withId(R.id.rideRequestMobileNumber)).check(matches(withText("9949287789")));
+        onView(withId(R.id.rideRequestAddress)).check(matches(withText("Kavali")));
+        onView(withId(R.id.rideDestinationAddress)).check(matches(withText("Ongole")));
+        cleanUpOpenRidesActivity();
+    }
+
+    @Test
+    public void withInvalidRideId() {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
+        intent.putExtra("rideId", 3726262l);
+        mActivityTestRule.launchActivity(intent);
+        assertToast(R.string.error_ride_is_not_valid, mActivityTestRule);
+        cleanUpOpenRidesActivity();
+    }
+
+    public void cleanUpOpenRidesActivity() {
+        getActivityInstance().finish();
+        compulsoryWait(2000);
     }
 
 }

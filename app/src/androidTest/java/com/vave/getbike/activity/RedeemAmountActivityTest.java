@@ -1,6 +1,5 @@
 package com.vave.getbike.activity;
 
-import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -23,12 +22,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RedeemAmountActivityTest {
+public class RedeemAmountActivityTest extends BaseGetBikeActivityTest {
+
     @Rule
     public ActivityTestRule<RedeemAmountActivity> mActivityTestRule = new ActivityTestRule<>(RedeemAmountActivity.class);
 
     @Test
-    public void tesRechargeMobileHappyFlow() {
+    public void testRechargeMobileHappyFlow() {
         BaseSyncher.testSetup();
         onView(withId(R.id.rechargeMobile)).perform(click());
         onView(withId(R.id.rechargeMobileNumber))
@@ -36,23 +36,21 @@ public class RedeemAmountActivityTest {
         onView(withId(R.id.rechargeAmount))
                 .perform(typeText("50"), closeSoftKeyboard());
         onView(withId(R.id.rechargeSubmit)).perform(click());
-        SystemClock.sleep(5000);
-//        onView(withId(R.id.personalDetails)).check(matches(isDisplayed()));
+        assertToast("Recharge successful", mActivityTestRule);
     }
 
     @Test
-    public void tesRechargeMobileWithEmptyAmount() {
+    public void testRechargeMobileWithEmptyAmount() {
         BaseSyncher.testSetup();
         onView(withId(R.id.rechargeMobile)).perform(click());
         onView(withId(R.id.rechargeMobileNumber))
                 .perform(typeText("9949257729"), closeSoftKeyboard());
         onView(withId(R.id.rechargeSubmit)).perform(click());
-        SystemClock.sleep(5000);
-
+        assertToast("Please enter valid amount", mActivityTestRule);
     }
 
     @Test
-    public void tesRedeemWalletHappyFlow() {
+    public void testRedeemWalletHappyFlow() {
         BaseSyncher.testSetup();
         onView(withId(R.id.redeemToWallet)).perform(click());
         onView(withId(R.id.redeemMobileNumber))
@@ -60,35 +58,34 @@ public class RedeemAmountActivityTest {
         onView(withId(R.id.redeemAmount))
                 .perform(typeText("20.0"), closeSoftKeyboard());
         onView(withId(R.id.redeemSubmit)).perform(click());
-        SystemClock.sleep(5000);
+        assertToast("transaction successful.", mActivityTestRule);
     }
 
     @Test
-    public void tesRedeemWalletEmptyMobileNumber() {
+    public void testRedeemWalletEmptyMobileNumber() {
         BaseSyncher.testSetup();
         onView(withId(R.id.redeemToWallet)).perform(click());
         onView(withId(R.id.redeemAmount))
                 .perform(typeText("50.0"), closeSoftKeyboard());
         onView(withId(R.id.redeemSubmit)).perform(click());
-        SystemClock.sleep(5000);
-
+        assertToast("Please enter valid mobile number", mActivityTestRule);
     }
 
     @Test
-    public void tesRedeemBankHappyFlow() {
+    public void testRedeemBankHappyFlow() {
         BaseSyncher.testSetup();
         onView(withId(R.id.redeemToBank)).perform(click());
         onView(withId(R.id.bankAmount))
                 .perform(typeText("20.0"), closeSoftKeyboard());
         onView(withId(R.id.redeemBankSubmit)).perform(click());
-        SystemClock.sleep(5000);
+        assertToast("transaction successful.", mActivityTestRule);
     }
 
     @Test
-    public void tesRedeemBankInvalidAmount() {
+    public void testRedeemBankInvalidAmount() {
         BaseSyncher.testSetup();
         onView(withId(R.id.redeemToBank)).perform(click());
         onView(withId(R.id.redeemBankSubmit)).perform(click());
-        SystemClock.sleep(5000);
+        assertToast("Please enter valid amount.", mActivityTestRule);
     }
 }

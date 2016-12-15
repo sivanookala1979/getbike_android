@@ -84,7 +84,7 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
             @Override
             public void afterPostExecute() {
                 if (saveResult.isValid()) {
-                    ToastHelper.redToast(getApplicationContext(), "Account details successfully updated.");
+                    ToastHelper.blueToast(getApplicationContext(), R.string.success_account_details);
                     finish();
                 } else {
                     ToastHelper.redToast(getApplicationContext(), saveResult.getErrorMessage());
