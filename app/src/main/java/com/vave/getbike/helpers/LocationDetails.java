@@ -14,6 +14,7 @@ import android.location.LocationManager;
  */
 public class LocationDetails {
 
+    public static final int LOCATION_EXPIRY_TIME_IN_MILLI_SECONDS = 60000;
     String address;
     double latitude;
     double longitude;
@@ -27,6 +28,9 @@ public class LocationDetails {
         Location result = null;
         if (locationManager != null) {
             result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (result != null && isExpired(result)) {
+                result = null;
+            }
             if (result == null) {
                 result = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
@@ -38,6 +42,10 @@ public class LocationDetails {
             ToastHelper.gpsToast(context);
         }
         return result;
+    }
+
+    public static boolean isExpired(Location result) {
+        return (System.currentTimeMillis() - result.getTime()) > LOCATION_EXPIRY_TIME_IN_MILLI_SECONDS;
     }
 
     public String getCity() {
