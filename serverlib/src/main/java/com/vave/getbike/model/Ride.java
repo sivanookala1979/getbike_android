@@ -30,6 +30,24 @@ public class Ride {
     Double totalBill;
     String rideStatus;
     Integer rating;
+    String actualSourceAddress;
+    String actualDestinationAddress;
+
+    public String getActualSourceAddress() {
+        return actualSourceAddress;
+    }
+
+    public void setActualSourceAddress(String actualSourceAddress) {
+        this.actualSourceAddress = actualSourceAddress;
+    }
+
+    public String getActualDestinationAddress() {
+        return actualDestinationAddress;
+    }
+
+    public void setActualDestinationAddress(String actualDestinationAddress) {
+        this.actualDestinationAddress = actualDestinationAddress;
+    }
 
     public String getRiderName() {
         return riderName;

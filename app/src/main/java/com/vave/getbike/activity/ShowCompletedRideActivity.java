@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vave.getbike.utils.StringUtils.isStringValid;
+
 public class ShowCompletedRideActivity extends BaseActivity implements OnMapReadyCallback {
 
     TextView tripDateTime, tripId, userName, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash, currentRatingStatus;
@@ -90,8 +92,16 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
             roundingOff.setText(indianRupee + " " + ride.getRoundingOff());
             totalBill.setText(indianRupee + " " + ride.getTotalBill());
             cash.setText(indianRupee + " " + ride.getTotalBill());
-            fromAddress.setText(ride.getSourceAddress());
-            toAddress.setText(ride.getDestinationAddress());
+            if (isStringValid(ride.getActualSourceAddress())) {
+                fromAddress.setText(ride.getActualSourceAddress());
+            } else {
+                fromAddress.setText(ride.getSourceAddress());
+            }
+            if (isStringValid(ride.getActualDestinationAddress())) {
+                toAddress.setText(ride.getActualDestinationAddress());
+            } else {
+                toAddress.setText(ride.getDestinationAddress());
+            }
             tripId.setText("Trip ID : " + ride.getId());
             if (ride.getRideStartedAt() != null) {
                 fromTime.setText(onlyTimeFormat.format(ride.getRideStartedAt()));

@@ -31,12 +31,12 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public static final int GPS_PERMISSION_REQUEST_CODE = 8;
     GoogleMap googleMap;
     Long rideID = null;
+    Button showCurrentRideButton;
+    LinearLayout giveRideTakeRideLinearLayout;
     private Location mCurrentLocation;
     private LocationManager locationManager;
     private ImageButton takeRide;
     private ImageButton giveRide;
-    Button showCurrentRideButton;
-    LinearLayout giveRideTakeRideLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
-        showCurrentRideButton=(Button)findViewById(R.id.show_current_ride_button);
-        giveRideTakeRideLinearLayout=(LinearLayout)findViewById(R.id.give_ride_take_ride_linear_layout);
+        showCurrentRideButton = (Button) findViewById(R.id.show_current_ride_button);
+        giveRideTakeRideLinearLayout = (LinearLayout) findViewById(R.id.give_ride_take_ride_linear_layout);
         takeRide = (ImageButton) findViewById(R.id.takeRide);
         takeRide.setOnClickListener(this);
         giveRide = (ImageButton) findViewById(R.id.giveRide);
@@ -57,7 +57,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         showCurrentRideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Tag","clicked on show currnet ride button");
+                Log.d("Tag", "clicked on show currnet ride button");
                 Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
                 intent.putExtra("rideId", rideID);
                 startActivity(intent);
@@ -82,10 +82,11 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         mCurrentLocation = LocationDetails.getLocationOrShowToast(GiveRideTakeRideActivity.this, locationManager);
 
         if (googleMap != null && mCurrentLocation != null) {
+            googleMap.clear();
             googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
+            googleMap.setMyLocationEnabled(true);
         }
-        googleMap.setMyLocationEnabled(true);
     }
 
     @Override
@@ -128,11 +129,11 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         updateCurrentRideId();
+        resetLocation();
     }
 
     public void updateCurrentRideId() {

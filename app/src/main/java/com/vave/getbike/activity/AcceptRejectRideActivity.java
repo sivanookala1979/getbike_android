@@ -15,6 +15,7 @@ import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 public class AcceptRejectRideActivity extends BaseActivity implements View.OnClickListener {
@@ -36,6 +37,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GetBikePreferences.setPreferences(getApplicationContext());
+        BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
         setContentView(R.layout.activity_accept_reject_ride);
         addToolbarView();
         rideId = getIntent().getLongExtra("rideId", 0L);
