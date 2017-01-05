@@ -36,6 +36,10 @@ public class GetBikeWalletHome extends BaseActivity implements View.OnClickListe
         addMoney = (Button) findViewById(R.id.addMoney);
         redeem.setOnClickListener(this);
         addMoney.setOnClickListener(this);
+
+    }
+
+    private void updateWalletAmount() {
         new GetBikeAsyncTask(GetBikeWalletHome.this) {
             Wallet wallet = null;
 
@@ -55,7 +59,6 @@ public class GetBikeWalletHome extends BaseActivity implements View.OnClickListe
                 }
             }
         }.execute();
-
     }
 
     @Override
@@ -68,6 +71,12 @@ public class GetBikeWalletHome extends BaseActivity implements View.OnClickListe
                 startActivity(new Intent(GetBikeWalletHome.this, PayUPaymentActivity.class));
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateWalletAmount();
     }
 }
 //GetBikeWalletHome

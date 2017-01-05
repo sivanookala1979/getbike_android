@@ -1,5 +1,8 @@
 package com.vave.getbike.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -13,6 +16,9 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
@@ -42,5 +48,22 @@ public class GetBikeWalletHomeTest extends BaseGetBikeActivityTest {
         manualReview(1000);
         onView(withId(R.id.redeemToBank)).perform(click());
         manualReview(1000);
+    }
+
+    @Test
+    public void testAddMoneyFromPayU() {
+        BaseSyncher.testSetup();
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, GetBikeWalletHome.class);
+        mActivityTestRule.launchActivity(intent);
+        onView(withId(R.id.addMoney)).perform(click());
+        onView(withId(R.id.amountRadioButton100)).check(matches(isChecked()));
+        onView(withId(R.id.amountRadioButton200)).perform(click());
+        onView(withId(R.id.btnPayNow)).perform(click());
+        onView(withId(R.id.edit_text_card_number)).perform(typeText("5123456789012346"));
+        onView(withId(R.id.edit_text_card_cvv)).perform(typeText("123"));
+        onView(withId(R.id.edit_text_expiry_month)).perform(click());
+        waitForever();
     }
 }
