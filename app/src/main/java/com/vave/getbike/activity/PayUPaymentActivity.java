@@ -4,16 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.payu.india.CallBackHandler.OnetapCallback;
@@ -29,6 +24,11 @@ import com.payu.india.Payu.PayuConstants;
 import com.payu.india.Payu.PayuErrors;
 import com.payu.payuui.Activity.PayUBaseActivity;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.UserProfile;
+import com.vave.getbike.syncher.BaseSyncher;
+import com.vave.getbike.syncher.LoginSyncher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,22 +51,20 @@ import java.util.Iterator;
  */
 public class PayUPaymentActivity extends AppCompatActivity implements OneClickPaymentListener {
 
+    UserProfile userProfile = null;
+    RadioButton radioButton100, radioButton200, radioButton500;
     private String merchantKey, userCredentials;
-
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
-
     // This sets the configuration
     private PayuConfig payuConfig;
-
-
     // Used when generating hash from SDK
     private PayUChecksum checksum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_payu_payment);
 
         //TODO Must write this code if integrating One Tap payments
         OnetapCallback.setOneTapCallback(this);
@@ -74,17 +72,25 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         //TODO Must write below code in your activity to set up initial context for PayU
         Payu.setInstance(this);
 
-        // lets set up the tool bar;
-        Toolbar toolBar = (Toolbar) findViewById(R.id.app_bar);
-        toolBar.setTitle("PayU Demo App");
-        toolBar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolBar);
-
         // lets tell the people what version of sdk we are using
-        PayUSdkDetails payUSdkDetails = new PayUSdkDetails();
+//        PayUSdkDetails payUSdkDetails = new PayUSdkDetails();
+//
+//        Toast.makeText(this, "Build No: " + payUSdkDetails.getSdkBuildNumber() + "\n Build Type: " + payUSdkDetails.getSdkBuildType() + " \n Build Flavor: " + payUSdkDetails.getSdkFlavor() + "\n Application Id: " + payUSdkDetails.getSdkApplicationId() + "\n Version Code: " + payUSdkDetails.getSdkVersionCode() + "\n Version Name: " + payUSdkDetails.getSdkVersionName(), Toast.LENGTH_LONG).show();
+        radioButton100 = (RadioButton) findViewById(R.id.amountRadioButton100);
+        radioButton200 = (RadioButton) findViewById(R.id.amountRadioButton200);
+        radioButton500 = (RadioButton) findViewById(R.id.amountRadioButton500);
 
-        Toast.makeText(this, "Build No: " + payUSdkDetails.getSdkBuildNumber() + "\n Build Type: " + payUSdkDetails.getSdkBuildType() + " \n Build Flavor: " + payUSdkDetails.getSdkFlavor() + "\n Application Id: " + payUSdkDetails.getSdkApplicationId() + "\n Version Code: " + payUSdkDetails.getSdkVersionCode() + "\n Version Name: " + payUSdkDetails.getSdkVersionName(), Toast.LENGTH_LONG).show();
+        new GetBikeAsyncTask(PayUPaymentActivity.this) {
 
+            @Override
+            public void process() {
+                userProfile = new LoginSyncher().getUserProfile();
+            }
+
+            @Override
+            public void afterPostExecute() {
+            }
+        }.execute();
 
     }
 
@@ -108,6 +114,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
                                 dialog.dismiss();
                             }
                         }).show();
+                finish();
 
             } else {
                 Toast.makeText(this, getString(R.string.could_not_receive_data), Toast.LENGTH_LONG).show();
@@ -119,10 +126,21 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
      * This method prepares all the payments params to be sent to PayuBaseActivity.java
      */
     public void navigateToBaseActivity(View view) {
+        if (userProfile == null) {
+            ToastHelper.blueToast(PayUPaymentActivity.this, "Failed to load the profile");
+            return;
+        }
         merchantKey = "gtKFFx";
 
         String amount = "100";
-        String email = "siva.nookala@gmail.com";
+        if (radioButton500.isChecked()) {
+            amount = "500";
+        } else if (radioButton200.isChecked()) {
+            amount = "200";
+        } else if (radioButton100.isChecked()) {
+            amount = "100";
+        }
+        String email = userProfile.getEmail();
 
         int environment = PayuConstants.STAGING_ENV;
 
@@ -137,8 +155,8 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         mPaymentParams.setKey(merchantKey);
         mPaymentParams.setAmount(amount);
         mPaymentParams.setProductInfo("Get Bike Wallet");
-        mPaymentParams.setFirstName("Siva Nookala");
-        mPaymentParams.setEmail(email);
+        mPaymentParams.setFirstName(userProfile.getName());
+        mPaymentParams.setEmail(userProfile.getEmail());
 
         /*
         * Transaction Id should be kept unique for each transaction.
@@ -158,7 +176,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
          * udf1 to udf5 are options params where you can pass additional information related to transaction.
          * If you don't want to use it, then send them as empty string like, udf1=""
          * */
-        mPaymentParams.setUdf1("52172def-0572-4923-a642-7c50a143e13e");
+        mPaymentParams.setUdf1(BaseSyncher.getAccessToken());
         mPaymentParams.setUdf2("udf2");
         mPaymentParams.setUdf3("udf3");
         mPaymentParams.setUdf4("udf4");
@@ -180,7 +198,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         payuConfig.setEnvironment(environment);
 
         //TODO It is recommended to generate hash from server only. Keep your key and salt in server side hash generation code.
-       // generateHashFromServer(mPaymentParams);
+        // generateHashFromServer(mPaymentParams);
 
         /**
          * Below approach for generating hash is not recommended. However, this approach can be used to test in PRODUCTION_ENV
@@ -314,181 +332,8 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         getHashesFromServerTask.execute(postParams);
     }
 
-
     protected String concatParams(String key, String value) {
         return key + "=" + value + "&";
-    }
-
-    /**
-     * This AsyncTask generates hash from server.
-     */
-    private class GetHashesFromServerTask extends AsyncTask<String, String, PayuHashes> {
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(PayUPaymentActivity.this);
-            progressDialog.setMessage("Please wait...");
-            progressDialog.show();
-        }
-
-        @Override
-        protected PayuHashes doInBackground(String... postParams) {
-            PayuHashes payuHashes = new PayuHashes();
-            try {
-
-                //TODO Below url is just for testing purpose, merchant needs to replace this with their server side hash generation url
-                URL url = new URL("https://payu.herokuapp.com/get_hash");
-
-                // get the payuConfig first
-                String postParam = postParams[0];
-
-                byte[] postParamsByte = postParam.getBytes("UTF-8");
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestProperty("Content-Length", String.valueOf(postParamsByte.length));
-                conn.setDoOutput(true);
-                conn.getOutputStream().write(postParamsByte);
-
-                InputStream responseInputStream = conn.getInputStream();
-                StringBuffer responseStringBuffer = new StringBuffer();
-                byte[] byteContainer = new byte[1024];
-                for (int i; (i = responseInputStream.read(byteContainer)) != -1; ) {
-                    responseStringBuffer.append(new String(byteContainer, 0, i));
-                }
-
-                JSONObject response = new JSONObject(responseStringBuffer.toString());
-
-                Iterator<String> payuHashIterator = response.keys();
-                while (payuHashIterator.hasNext()) {
-                    String key = payuHashIterator.next();
-                    switch (key) {
-                        //TODO Below three hashes are mandatory for payment flow and needs to be generated at merchant server
-                        /**
-                         * Payment hash is one of the mandatory hashes that needs to be generated from merchant's server side
-                         * Below is formula for generating payment_hash -
-                         *
-                         * sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
-                         *
-                         */
-                        case "payment_hash":
-                            payuHashes.setPaymentHash(response.getString(key));
-                            break;
-                        /**
-                         * vas_for_mobile_sdk_hash is one of the mandatory hashes that needs to be generated from merchant's server side
-                         * Below is formula for generating vas_for_mobile_sdk_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be "default"
-                         *
-                         */
-                        case "vas_for_mobile_sdk_hash":
-                            payuHashes.setVasForMobileSdkHash(response.getString(key));
-                            break;
-                        /**
-                         * payment_related_details_for_mobile_sdk_hash is one of the mandatory hashes that needs to be generated from merchant's server side
-                         * Below is formula for generating payment_related_details_for_mobile_sdk_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
-                         *
-                         */
-                        case "payment_related_details_for_mobile_sdk_hash":
-                            payuHashes.setPaymentRelatedDetailsForMobileSdkHash(response.getString(key));
-                            break;
-
-                        //TODO Below hashes only needs to be generated if you are using Store card feature
-                        /**
-                         * delete_user_card_hash is used while deleting a stored card.
-                         * Below is formula for generating delete_user_card_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
-                         *
-                         */
-                        case "delete_user_card_hash":
-                            payuHashes.setDeleteCardHash(response.getString(key));
-                            break;
-                        /**
-                         * get_user_cards_hash is used while fetching all the cards corresponding to a user.
-                         * Below is formula for generating get_user_cards_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
-                         *
-                         */
-                        case "get_user_cards_hash":
-                            payuHashes.setStoredCardsHash(response.getString(key));
-                            break;
-                        /**
-                         * edit_user_card_hash is used while editing details of existing stored card.
-                         * Below is formula for generating edit_user_card_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
-                         *
-                         */
-                        case "edit_user_card_hash":
-                            payuHashes.setEditCardHash(response.getString(key));
-                            break;
-                        /**
-                         * save_user_card_hash is used while saving card to the vault
-                         * Below is formula for generating save_user_card_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
-                         *
-                         */
-                        case "save_user_card_hash":
-                            payuHashes.setSaveCardHash(response.getString(key));
-                            break;
-
-                        //TODO This hash needs to be generated if you are using any offer key
-                        /**
-                         * check_offer_status_hash is used while using check_offer_status api
-                         * Below is formula for generating check_offer_status_hash -
-                         *
-                         * sha512(key|command|var1|salt)
-                         *
-                         * here, var1 will be Offer Key.
-                         *
-                         */
-                        case "check_offer_status_hash":
-                            payuHashes.setCheckOfferStatusHash(response.getString(key));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return payuHashes;
-        }
-
-        @Override
-        protected void onPostExecute(PayuHashes payuHashes) {
-            super.onPostExecute(payuHashes);
-
-            progressDialog.dismiss();
-            launchSdkUI(payuHashes);
-        }
     }
 
     /**
@@ -507,8 +352,6 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         fetchMerchantHashes(intent);
 
     }
-
-    //TODO This method is used if integrating One Tap Payments
 
     /**
      * This method stores merchantHash and cardToken on merchant server.
@@ -547,7 +390,6 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
 
                     JSONObject response = new JSONObject(responseStringBuffer.toString());
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
@@ -570,8 +412,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         }.execute();
     }
 
-
-    //TODO This method is used only if integrating One Tap Payments
+    //TODO This method is used if integrating One Tap Payments
 
     /**
      * This method fetches merchantHash and cardToken already stored on merchant server.
@@ -769,13 +610,12 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
     }
 
     //TODO This method is used only if integrating One Tap Payments
+
+    //TODO This method is used only if integrating One Tap Payments
     @Override
     public void getOneClickHash(String cardToken, String merchantKey, String userCredentials) {
 
     }
-
-
-    //TODO This method is used only if integrating One Tap Payments
 
     /**
      * This method will be called as a async task, regardless of merchant implementation.
@@ -818,6 +658,181 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
 
         deleteMerchantHash(cardToken);
 
+    }
+
+    //TODO This method is used only if integrating One Tap Payments
+
+    /**
+     * This AsyncTask generates hash from server.
+     */
+    private class GetHashesFromServerTask extends AsyncTask<String, String, PayuHashes> {
+
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(PayUPaymentActivity.this);
+            progressDialog.setMessage("Please wait...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected PayuHashes doInBackground(String... postParams) {
+            PayuHashes payuHashes = new PayuHashes();
+            try {
+
+                //TODO Below url is just for testing purpose, merchant needs to replace this with their server side hash generation url
+                URL url = new URL("https://payu.herokuapp.com/get_hash");
+
+                // get the payuConfig first
+                String postParam = postParams[0];
+
+                byte[] postParamsByte = postParam.getBytes("UTF-8");
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Content-Length", String.valueOf(postParamsByte.length));
+                conn.setDoOutput(true);
+                conn.getOutputStream().write(postParamsByte);
+
+                InputStream responseInputStream = conn.getInputStream();
+                StringBuffer responseStringBuffer = new StringBuffer();
+                byte[] byteContainer = new byte[1024];
+                for (int i; (i = responseInputStream.read(byteContainer)) != -1; ) {
+                    responseStringBuffer.append(new String(byteContainer, 0, i));
+                }
+
+                JSONObject response = new JSONObject(responseStringBuffer.toString());
+
+                Iterator<String> payuHashIterator = response.keys();
+                while (payuHashIterator.hasNext()) {
+                    String key = payuHashIterator.next();
+                    switch (key) {
+                        //TODO Below three hashes are mandatory for payment flow and needs to be generated at merchant server
+                        /**
+                         * Payment hash is one of the mandatory hashes that needs to be generated from merchant's server side
+                         * Below is formula for generating payment_hash -
+                         *
+                         * sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
+                         *
+                         */
+                        case "payment_hash":
+                            payuHashes.setPaymentHash(response.getString(key));
+                            break;
+                        /**
+                         * vas_for_mobile_sdk_hash is one of the mandatory hashes that needs to be generated from merchant's server side
+                         * Below is formula for generating vas_for_mobile_sdk_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be "default"
+                         *
+                         */
+                        case "vas_for_mobile_sdk_hash":
+                            payuHashes.setVasForMobileSdkHash(response.getString(key));
+                            break;
+                        /**
+                         * payment_related_details_for_mobile_sdk_hash is one of the mandatory hashes that needs to be generated from merchant's server side
+                         * Below is formula for generating payment_related_details_for_mobile_sdk_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
+                         *
+                         */
+                        case "payment_related_details_for_mobile_sdk_hash":
+                            payuHashes.setPaymentRelatedDetailsForMobileSdkHash(response.getString(key));
+                            break;
+
+                        //TODO Below hashes only needs to be generated if you are using Store card feature
+                        /**
+                         * delete_user_card_hash is used while deleting a stored card.
+                         * Below is formula for generating delete_user_card_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
+                         *
+                         */
+                        case "delete_user_card_hash":
+                            payuHashes.setDeleteCardHash(response.getString(key));
+                            break;
+                        /**
+                         * get_user_cards_hash is used while fetching all the cards corresponding to a user.
+                         * Below is formula for generating get_user_cards_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
+                         *
+                         */
+                        case "get_user_cards_hash":
+                            payuHashes.setStoredCardsHash(response.getString(key));
+                            break;
+                        /**
+                         * edit_user_card_hash is used while editing details of existing stored card.
+                         * Below is formula for generating edit_user_card_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
+                         *
+                         */
+                        case "edit_user_card_hash":
+                            payuHashes.setEditCardHash(response.getString(key));
+                            break;
+                        /**
+                         * save_user_card_hash is used while saving card to the vault
+                         * Below is formula for generating save_user_card_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be user credentials. If you are not using user_credentials then use "default"
+                         *
+                         */
+                        case "save_user_card_hash":
+                            payuHashes.setSaveCardHash(response.getString(key));
+                            break;
+
+                        //TODO This hash needs to be generated if you are using any offer key
+                        /**
+                         * check_offer_status_hash is used while using check_offer_status api
+                         * Below is formula for generating check_offer_status_hash -
+                         *
+                         * sha512(key|command|var1|salt)
+                         *
+                         * here, var1 will be Offer Key.
+                         *
+                         */
+                        case "check_offer_status_hash":
+                            payuHashes.setCheckOfferStatusHash(response.getString(key));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return payuHashes;
+        }
+
+        @Override
+        protected void onPostExecute(PayuHashes payuHashes) {
+            super.onPostExecute(payuHashes);
+
+            progressDialog.dismiss();
+            launchSdkUI(payuHashes);
+        }
     }
 
 }

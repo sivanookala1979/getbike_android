@@ -14,6 +14,7 @@ import org.json.JSONObject;
  */
 
 public class WalletSyncher extends BaseSyncher {
+
     //TODO NEED TO WRITE PROPER CALLS
     public SaveResult rechargeMobile(MobileRecharge recharge) {
         SaveResult result = new SaveResult();
@@ -44,14 +45,19 @@ public class WalletSyncher extends BaseSyncher {
     }
 
     public Wallet getWalletDetails() {
-        Wallet wallet = new Wallet();
-        wallet.setCashBalance(20.0);
-        wallet.setMinimumDeposit(1000.0);
-        wallet.setCashBalance(500.0);
-        wallet.setPromoBalance(50.0);
-        wallet.setUserBalance(500.0);
-        wallet.setRedeemableAmount(60.0);
-        return wallet;
+        final GetBikePointer<Wallet> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/wallet/getBalanceAmount") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    Wallet wallet = new Wallet();
+                    wallet.setUserBalance(jsonResult.getDouble("balanceAmount"));
+                    result.setValue(wallet);
+                }
+            }
+        }.handle();
+        return result.getValue();
     }
 
     public SaveResult updateBankAccountDetails(final BankAccount bankDetails) {
