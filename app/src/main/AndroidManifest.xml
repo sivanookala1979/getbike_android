@@ -126,6 +126,7 @@
         <activity android:name=".activity.ShareActivity"></activity>
         <activity android:name=".activity.ScheduleRideActivity"/>
         <activity android:name=".activity.ScheduledRidesAndHistoryActivity"/>
+        <activity android:name=".activity.PayUPaymentActivity"/>
     </application>
 
 </manifest>

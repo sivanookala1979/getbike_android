@@ -1,1 +1,1 @@
-include ':app', ':serverlib'
+include ':app', ':serverlib', ':sdkui2'
