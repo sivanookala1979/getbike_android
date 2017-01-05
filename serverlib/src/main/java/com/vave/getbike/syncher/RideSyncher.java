@@ -1,5 +1,6 @@
 package com.vave.getbike.syncher;
 
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.utils.GsonUtils;
@@ -67,16 +68,20 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public boolean acceptRide(long rideId) {
-        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
-        result.setValue(false);
+    public CallStatus acceptRide(long rideId) {
+        final GetBikePointer<CallStatus> result = new GetBikePointer<>(null);
         new JsonGetHandler("/acceptRide?rideId=" + rideId) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
+                CallStatus callStatus = new CallStatus();
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-                    result.setValue(true);
+                    callStatus.setSuccess();
                 }
+                else {
+                    callStatus.setErrorCode((Integer) jsonResult.get("errorCode"));
+                }
+                result.setValue(callStatus);
             }
         }.handle();
         return result.getValue();

@@ -1,6 +1,8 @@
 package com.vave.getbike.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.ToastHelper;
@@ -86,23 +89,59 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.acceptRide:
                 new GetBikeAsyncTask(AcceptRejectRideActivity.this) {
-                    boolean rideAccepted = false;
+                    CallStatus callStatus = null;
 
                     @Override
                     public void process() {
                         RideSyncher rideSyncher = new RideSyncher();
-                        rideAccepted = rideSyncher.acceptRide(rideId);
+                        callStatus = rideSyncher.acceptRide(rideId);
                     }
 
                     @Override
                     public void afterPostExecute() {
-                        if (rideAccepted) {
+                        if (callStatus != null && callStatus.isSuccess()) {
                             Intent intent = new Intent(AcceptRejectRideActivity.this, LocationActivity.class);
                             intent.putExtra("rideId", rideId);
                             startActivity(intent);
                             finish();
                         } else {
-                            showOpenRides(R.string.error_failed_to_accept_ride);
+                            String message = "Internal error occurred.";
+                            String title = "Unknown error";
+                            if (callStatus != null) {
+                                if(callStatus.getErrorCode() == 9905) {
+                                    message = "Please fill your Rider Profile to accept the ride, or wait for admin approval.";
+                                    title = "Rider Profile";
+                                }
+                                else if (callStatus.getErrorCode() == 9904){
+                                    message = "Ride is already allocated to someone else.";
+                                    title = "Ride";
+                                }
+                                else if (callStatus.getErrorCode() == 9903){
+                                    message = "You can't accept this ride, because you are already in ride.";
+                                    title = "Ride";
+                                }
+                            }
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(AcceptRejectRideActivity.this);
+                            builder.setCancelable(false);
+                            builder.setTitle(title);
+                            builder.setMessage(message);
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (callStatus != null && callStatus.getErrorCode() == 9905){
+                                        Intent intent = new Intent(AcceptRejectRideActivity.this, RiderProfileActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else {
+                                        Intent intent = new Intent(AcceptRejectRideActivity.this, OpenRidesActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                }
+                            });
+                            builder.show();
                         }
                     }
                 }.execute();

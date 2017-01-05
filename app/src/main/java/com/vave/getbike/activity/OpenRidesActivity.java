@@ -65,6 +65,7 @@ public class OpenRidesActivity extends BaseActivity {
                     Intent intent = new Intent(OpenRidesActivity.this, AcceptRejectRideActivity.class);
                     intent.putExtra("rideId", result.get(position).getId());
                     startActivity(intent);
+                    finish();
                 }
             }
         });
