@@ -83,7 +83,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
         if (googleMap != null && mCurrentLocation != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start"));
+            //googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start \n" + mCurrentLocation.getProvider() + "\n" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date(mCurrentLocation.getTime()))));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
             googleMap.setMyLocationEnabled(true);
         }
@@ -102,6 +102,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     }
 
     public void launchActivity(Class targetActivity) {
+        resetLocation();
         if (LocationDetails.isValid(mCurrentLocation)) {
             Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
             intent.putExtra("latitude", mCurrentLocation.getLatitude());

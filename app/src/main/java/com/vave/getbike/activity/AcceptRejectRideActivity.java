@@ -108,16 +108,17 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                             String message = "Internal error occurred.";
                             String title = "Unknown error";
                             if (callStatus != null) {
-                                if(callStatus.getErrorCode() == 9905) {
+                                if (callStatus.getErrorCode() == 9905) {
                                     message = "Please fill your Rider Profile to accept the ride, or wait for admin approval.";
                                     title = "Rider Profile";
-                                }
-                                else if (callStatus.getErrorCode() == 9904){
+                                } else if (callStatus.getErrorCode() == 9904) {
                                     message = "Ride is already allocated to someone else.";
                                     title = "Ride";
-                                }
-                                else if (callStatus.getErrorCode() == 9903){
+                                } else if (callStatus.getErrorCode() == 9903) {
                                     message = "You can't accept this ride, because you are already in ride.";
+                                    title = "Ride";
+                                } else if (callStatus.getErrorCode() == 9906) {
+                                    message = "You can't accept your own ride request.";
                                     title = "Ride";
                                 }
                             }
@@ -128,12 +129,11 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (callStatus != null && callStatus.getErrorCode() == 9905){
+                                    if (callStatus != null && callStatus.getErrorCode() == 9905) {
                                         Intent intent = new Intent(AcceptRejectRideActivity.this, RiderProfileActivity.class);
                                         startActivity(intent);
                                         finish();
-                                    }
-                                    else {
+                                    } else {
                                         Intent intent = new Intent(AcceptRejectRideActivity.this, OpenRidesActivity.class);
                                         startActivity(intent);
                                         finish();

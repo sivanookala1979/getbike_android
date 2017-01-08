@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.vave.getbike.R;
@@ -26,10 +27,6 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     public static WaitForRiderAllocationActivity activeInstance;
 
     // UI Widgets.
-    TextView generatedRideId;
-    TextView rideRequestedAt;
-    TextView allottedRiderDetails;
-    TextView rideStatus;
     AVLoadingIndicatorView avLoadingIndicatorView;
     Ride ride = null;
     ScheduledFuture<?> future = null;
@@ -59,15 +56,14 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_rider_allocation);
-        addToolbarView();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         scheduler =
                 Executors.newScheduledThreadPool(1);
         rideId = getIntent().getLongExtra("rideId", 0L);
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
-        generatedRideId = (TextView) findViewById(R.id.generatedRideId);
-        rideRequestedAt = (TextView) findViewById(R.id.rideRequestedAt);
-        rideStatus = (TextView) findViewById(R.id.rideStatus);
-        allottedRiderDetails = (TextView) findViewById(R.id.allottedRiderDetails);
         avLoadingIndicatorView.show();
         if (rideId > 0) {
             new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
@@ -81,8 +77,6 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                 @Override
                 public void afterPostExecute() {
                     if (ride != null) {
-                        generatedRideId.setText(ride.getId() + "");
-                        rideRequestedAt.setText(ride.getStartLatitude() + ", " + ride.getStartLongitude() + "\n" + ride.getSourceAddress() + "\n" + ride.getDestinationAddress());
                     } else {
                         ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
                     }
@@ -127,7 +121,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     }
 
     private void scheduleNextReminder() {
-        future = scheduler.schedule(new WaitMoreAlertForUser(), 120, TimeUnit.SECONDS);
+        future = scheduler.schedule(new WaitMoreAlertForUser(), 60, TimeUnit.SECONDS);
     }
 
     private class WaitMoreAlertForUser implements Runnable {
@@ -153,7 +147,6 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ToastHelper.blueToast(WaitForRiderAllocationActivity.this, "Thanks for using getbike, your request was stored in database, we will be get back you soon.");
                                 finish();
                             }
                         });
