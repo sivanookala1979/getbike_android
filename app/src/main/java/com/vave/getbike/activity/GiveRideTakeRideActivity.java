@@ -57,7 +57,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         showCurrentRideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Tag", "clicked on show currnet ride button");
+                Log.d("Tag", "clicked on show current ride button");
                 Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
                 intent.putExtra("rideId", rideID);
                 startActivity(intent);
@@ -109,6 +109,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             startActivity(intent);
         } else {
             ToastHelper.gpsToast(GiveRideTakeRideActivity.this);
+            LocationDetails.displayLocationSettingsRequest(this);
         }
     }
 

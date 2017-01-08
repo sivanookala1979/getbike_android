@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-            android:text="@string/get_bike"
             android:textColor="@android:color/white" />
     </android.support.v7.widget.Toolbar>
 

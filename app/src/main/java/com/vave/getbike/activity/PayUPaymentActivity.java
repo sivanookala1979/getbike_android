@@ -154,7 +154,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
          */
         mPaymentParams.setKey(merchantKey);
         mPaymentParams.setAmount(amount);
-        mPaymentParams.setProductInfo("Get Bike Wallet");
+        mPaymentParams.setProductInfo("getbike Wallet");
         mPaymentParams.setFirstName(userProfile.getName());
         mPaymentParams.setEmail(userProfile.getEmail());
 

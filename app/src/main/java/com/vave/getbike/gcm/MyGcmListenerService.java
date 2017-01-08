@@ -90,7 +90,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private void sendNotification(String message, String messageType, Long rideId) {
 
         Intent intent = null;
-        String title = "Get Bike Alert";
+        String title = "getbike Alert";
         if ("newRide".equals(messageType)) {
             intent = new Intent(this, AcceptRejectRideActivity.class);
             intent.putExtra("rideId", rideId);

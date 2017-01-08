@@ -18,6 +18,7 @@ import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +40,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GetBikePreferences.setPreferences(getApplicationContext());
+        BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
         setContentView(R.layout.trip_details_screen);
 
         addToolbarView();
@@ -74,6 +76,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void afterPostExecute() {
+
                     }
                 }.execute();
             }

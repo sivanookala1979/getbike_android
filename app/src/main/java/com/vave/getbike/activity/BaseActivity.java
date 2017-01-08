@@ -14,8 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.iid.InstanceID;
+import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.CircleTransform;
 import com.vave.getbike.helpers.GetBikePreferences;
+import com.vave.getbike.model.UserProfile;
+import com.vave.getbike.syncher.BaseSyncher;
 
 /**
  * Created by adarsht on 30/11/16.
@@ -24,9 +28,9 @@ import com.vave.getbike.helpers.GetBikePreferences;
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public ImageView userProfileImage;
-    public TextView occupation;
-    public TextView friendsCount;
-    public TextView userAddress;
+    public TextView mobileNumber;
+    public TextView userName;
+    UserProfile userProfile = new UserProfile();
 
     public void addToolbarView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,10 +60,19 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
-        userProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
-        occupation = (TextView) headerView.findViewById(R.id.occupation);
-        friendsCount = (TextView) headerView.findViewById(R.id.friendsCount);
-        userAddress = (TextView) headerView.findViewById(R.id.userAddress);
+        userProfile = GetBikePreferences.getUserProfile();
+        userProfileImage = (ImageView) headerView.findViewById(R.id.menu_profile_image);
+        userName = (TextView) headerView.findViewById(R.id.menu_user_name);
+        mobileNumber = (TextView) headerView.findViewById(R.id.menu_mobile_number);
+
+        if (userProfile != null) {
+            userName.setText(userProfile.getName());
+            mobileNumber.setText(userProfile.getPhoneNumber());
+            if (userProfile.getProfileImage() != null) {
+                Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/" + userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(userProfileImage);
+            }
+        }
+
     }
 
     @Override
@@ -71,7 +84,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, ProfileAndSettingsActivity.class));
                 break;
             case R.id.ridesAndHistory:
-                startActivity(new Intent(this,ScheduledRidesAndHistoryActivity.class));
+                startActivity(new Intent(this, ScheduledRidesAndHistoryActivity.class));
                 break;
             case R.id.earnFreeRides:
                 startActivity(new Intent(this, ShareActivity.class));

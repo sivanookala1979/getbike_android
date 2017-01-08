@@ -331,7 +331,11 @@
                         android:minHeight="40dp"
                         android:padding="5dp"
                         android:textColor="@color/get_bike_black"
-                        android:textSize="@dimen/text_size_intermediate" />
+                        android:textSize="@dimen/text_size_intermediate"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"/>
                 </LinearLayout>
 
                 <CheckBox
@@ -340,6 +344,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:layout_weight="1"
+                    android:checked="true"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:text="Verified" />
             </LinearLayout>
 

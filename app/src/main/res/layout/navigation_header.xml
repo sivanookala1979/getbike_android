@@ -19,7 +19,7 @@
         android:gravity="center">
 
         <ImageView
-            android:id="@+id/profileImage"
+            android:id="@+id/menu_profile_image"
             android:layout_width="@dimen/profile_image_height"
             android:layout_height="@dimen/profile_image_height"
             android:background="@drawable/profileicon" />
@@ -38,80 +38,27 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/userName"
+                android:id="@+id/menu_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|left"
                 android:padding="4dp"
-                android:text="Adarsh"
+                android:text="Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/navigation_title" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/call_icon" />
-
-                <TextView
-                    android:id="@+id/occupation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8.5"
-                    android:gravity="center_vertical|left"
-                    android:padding="4dp"
-                    android:text="Software Trainee"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/navigation_sub_title" />
-
-            </LinearLayout>
 
             <TextView
-                android:id="@+id/friendsCount"
+                android:id="@+id/menu_mobile_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|left"
                 android:padding="4dp"
-                android:text="500 Friends"
+                android:text="Mobile number"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/navigation_title" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="0dp"
-                    android:layout_height="25dp"
-                    android:layout_weight="1.5"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/home_icon" />
-
-                <TextView
-                    android:id="@+id/userAddress"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8.5"
-                    android:gravity="center_vertical|left"
-                    android:padding="4dp"
-                    android:text="Software Trainee"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/navigation_sub_title" />
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

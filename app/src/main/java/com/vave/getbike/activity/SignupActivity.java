@@ -46,14 +46,10 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);
 
-        Button gmaps = (Button) findViewById(R.id.gmaps);
-        gmaps.setOnClickListener(this);
         Button redirectButton = (Button) findViewById(R.id.redirectButton);
         redirectButton.setOnClickListener(this);
         loginTextView = (TextView) findViewById(R.id.login_text_view);
         loginTextView.setOnClickListener(this);
-        Button requestRide = (Button) findViewById(R.id.requestRide);
-        requestRide.setOnClickListener(this);
         genderGroup = (RadioGroup) findViewById(R.id.gender);
         genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -140,12 +136,6 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                 finish();
             }
             break;
-            case R.id.requestRide: {
-                Intent intent = new Intent(this, RequestRideActivity.class);
-                startActivity(intent);
-            }
-            break;
-
         }
     }
 
