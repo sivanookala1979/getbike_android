@@ -183,6 +183,17 @@ public class LocationActivity extends BaseActivity implements
             mStopUpdatesButton.setVisibility(View.VISIBLE);
             startLocationUpdates();
         }
+        new GetBikeAsyncTask(LocationActivity.this) {
+
+            @Override
+            public void process() {
+                new RideSyncher().startRide(rideId);
+            }
+
+            @Override
+            public void afterPostExecute() {
+            }
+        }.execute();
     }
 
     /**
@@ -364,6 +375,7 @@ public class LocationActivity extends BaseActivity implements
                         stopUpdatesButtonHandler(v);
                         new GetBikeAsyncTask(LocationActivity.this) {
                             Ride closedRide = null;
+
                             @Override
                             public void process() {
                                 RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
@@ -375,6 +387,7 @@ public class LocationActivity extends BaseActivity implements
                                 RideSyncher sut = new RideSyncher();
                                 closedRide = sut.closeRide(rideId);
                             }
+
                             @Override
                             public void afterPostExecute() {
                                 if (closedRide != null) {

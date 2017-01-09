@@ -77,11 +77,40 @@ public class RideSyncher extends BaseSyncher {
                 CallStatus callStatus = new CallStatus();
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
                     callStatus.setSuccess();
-                }
-                else {
+                } else {
                     callStatus.setErrorCode((Integer) jsonResult.get("errorCode"));
                 }
                 result.setValue(callStatus);
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public boolean startRide(long rideId) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/startRide?rideId=" + rideId) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public boolean cancelRide(long rideId) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/cancelRide?rideId=" + rideId) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
             }
         }.handle();
         return result.getValue();

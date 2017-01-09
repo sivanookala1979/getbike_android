@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.BaseSyncher;
@@ -38,7 +39,7 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     GoogleMap googleMap;
     long rideId;
     TextView allottedRiderDetailsView;
-    ImageButton callRider = null, showVehicleDetails;
+    ImageButton callRider = null, showVehicleDetails = null, cancelRide = null;
     Profile riderProfile = null;
     private Ride ride = null;
 
@@ -66,6 +67,8 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
         allottedRiderDetailsView = (TextView) findViewById(R.id.allottedRiderDetails);
         callRider = (ImageButton) findViewById(R.id.callRider);
         callRider.setOnClickListener(this);
+        cancelRide = (ImageButton) findViewById(R.id.cancelRide);
+        cancelRide.setOnClickListener(this);
         showVehicleDetails = (ImageButton) findViewById(R.id.showVehicle);
         showVehicleDetails.setOnClickListener(this);
 
@@ -126,7 +129,7 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                 startActivity(intent);
                 break;
             }
-            case R.id.showVehicle:
+            case R.id.showVehicle: {
                 final Dialog dialog = new Dialog(WaitForRiderAfterAcceptanceActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.vehicle_details_dialogue);
@@ -146,6 +149,29 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                 });
                 dialog.show();
                 break;
+            }
+            case R.id.cancelRide: {
+                new GetBikeAsyncTask(WaitForRiderAfterAcceptanceActivity.this) {
+                    boolean result = false;
+
+                    @Override
+                    public void process() {
+                        RideSyncher rideSyncher = new RideSyncher();
+                        result = rideSyncher.cancelRide(rideId);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                        if (result) {
+                            ToastHelper.blueToast(WaitForRiderAfterAcceptanceActivity.this, "Successfully cancelled the ride.");
+                            finish();
+                        } else {
+                            ToastHelper.redToast(WaitForRiderAfterAcceptanceActivity.this, "Failed to cancel the ride.");
+                        }
+                    }
+                }.execute();
+                break;
+            }
 
         }
     }
