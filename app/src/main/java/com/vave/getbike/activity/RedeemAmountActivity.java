@@ -33,6 +33,7 @@ import java.util.List;
  */
 
 public class RedeemAmountActivity extends BaseActivity implements View.OnClickListener {
+
     ImageView rechargeMobile, redeemToWallet, redeemToBank;
     TextView promoBalance, cashBalance, yourBalance;
     EditText rechargeMobileNumber, rechargeAmount, redeemMobileNumber, redeemAmount, bankAmount;
@@ -81,14 +82,13 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
         redeemToBankChildView = (LinearLayout) findViewById(R.id.redeemToBankChildView);
         bankAmount = (EditText) findViewById(R.id.bankAmount);
         bankSubmit = (Button) findViewById(R.id.redeemBankSubmit);
-        addOnClickListeners(rechargeMobile, rechargeSubmit, redeemToWallet, walletSubmit, redeemToBank,bankSubmit);
+        addOnClickListeners(rechargeMobile, rechargeSubmit, redeemToWallet, walletSubmit, redeemToBank, bankSubmit);
         setupSpinnersDate();
         loadWalletData();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
 
     private void loadWalletData() {
         new GetBikeAsyncTask(RedeemAmountActivity.this) {
@@ -113,7 +113,6 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
             view.setOnClickListener(this);
         }
     }
-
 
     @Override
     public void onClick(View view) {
@@ -163,7 +162,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
 
             @Override
             public void process() {
-                saveResult = walletSyncher.redeemtoBank(amount);
+                saveResult = walletSyncher.redeemToBank(amount);
             }
 
             @Override
@@ -184,7 +183,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
 
             @Override
             public void process() {
-                saveResult = walletSyncher.redeemeToWallet(redeemWallet);
+                saveResult = walletSyncher.redeemToWallet(redeemWallet);
             }
 
             @Override

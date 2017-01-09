@@ -102,7 +102,7 @@ public class ManualHelperTest {
         SystemClock.sleep(3000);
         onView(withId(R.id.takeRide)).perform(click());
         AtomicReference<String> rideIdCapture = new AtomicReference<>();
-        onView(withId(R.id.generatedRideId)).check(matches(textCapture(rideIdCapture)));
+//        onView(withId(R.id.generatedRideId)).check(matches(textCapture(rideIdCapture)));
         RideSyncher rideSyncher = new RideSyncher();
         SystemClock.sleep(3000);
         rideSyncher.acceptRide(Long.parseLong(rideIdCapture.get()));

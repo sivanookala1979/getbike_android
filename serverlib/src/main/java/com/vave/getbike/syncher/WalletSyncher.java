@@ -5,9 +5,14 @@ import com.vave.getbike.model.MobileRecharge;
 import com.vave.getbike.model.RedeemWallet;
 import com.vave.getbike.model.SaveResult;
 import com.vave.getbike.model.Wallet;
+import com.vave.getbike.model.WalletEntry;
 import com.vave.getbike.utils.GsonUtils;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by adarsht on 06/12/16.
@@ -15,32 +20,65 @@ import org.json.JSONObject;
 
 public class WalletSyncher extends BaseSyncher {
 
-    //TODO NEED TO WRITE PROPER CALLS
-    public SaveResult rechargeMobile(MobileRecharge recharge) {
-        SaveResult result = new SaveResult();
-        JSONObject jsonObject = recharge.getJson();
-        result.setValid(true);
+    public SaveResult rechargeMobile(final MobileRecharge recharge) {
+        final SaveResult result = new SaveResult();
+        new JsonPostHandler("/wallet/rechargeMobile") {
+
+            @Override
+            protected void prepareRequest() {
+                put("amount", recharge.getAmount());
+                put("mobileNumber", recharge.getMobileNumber());
+                put("circle", recharge.getCircle());
+                put("operator", recharge.getOperator());
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValid(true);
+                }
+            }
+        }.handle();
         return result;
     }
 
-    public SaveResult redeemeToWallet(RedeemWallet redeem) {
-        SaveResult result = new SaveResult();
-        JSONObject jsonObject = redeem.getJson();
-        result.setValid(true);
+    public SaveResult redeemToWallet(final RedeemWallet redeem) {
+        final SaveResult result = new SaveResult();
+        new JsonPostHandler("/wallet/redeemToWallet") {
+
+            @Override
+            protected void prepareRequest() {
+                put("amount", redeem.getAmount());
+                put("mobileNumber", redeem.getMobileNumber());
+                put("walletName", redeem.getWalletName());
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValid(true);
+                }
+            }
+        }.handle();
         return result;
     }
 
-    public SaveResult redeemtoBank(double amount) {
-        SaveResult result = new SaveResult();
-        result.setValid(true);
-        return result;
-    }
+    public SaveResult redeemToBank(final double amount) {
+        final SaveResult result = new SaveResult();
+        new JsonPostHandler("/wallet/redeemToBank") {
 
-    public SaveResult addMoneyToWallet(double amount) {
-        //TODO CCAVENUE INTEGREATION
-        SaveResult result = new SaveResult();
-        result.setValid(true);
+            @Override
+            protected void prepareRequest() {
+                put("amount", amount);
+            }
 
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValid(true);
+                }
+            }
+        }.handle();
         return result;
     }
 
@@ -58,6 +96,25 @@ public class WalletSyncher extends BaseSyncher {
             }
         }.handle();
         return result.getValue();
+    }
+
+    public List<WalletEntry> getWalletEntries() {
+        final ArrayList<WalletEntry> result = new ArrayList<>();
+        new JsonGetHandler("/wallet/myEntries") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("entries")) {
+                    JSONArray entriesArray = jsonResult.getJSONArray("entries");
+                    for (int i = 0; i < entriesArray.length(); i++) {
+                        JSONObject jsonRideObject = entriesArray.getJSONObject(i);
+                        WalletEntry walletEntry = GsonUtils.getGson().fromJson(jsonRideObject.toString(), WalletEntry.class);
+                        result.add(walletEntry);
+                    }
+                }
+            }
+        }.handle();
+        return result;
     }
 
     public SaveResult updateBankAccountDetails(final BankAccount bankDetails) {

@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
@@ -30,6 +32,26 @@ public class GetBikeWalletHomeTest extends BaseGetBikeActivityTest {
 
     @Rule
     public ActivityTestRule<GetBikeWalletHome> mActivityTestRule = new ActivityTestRule<>(GetBikeWalletHome.class);
+
+    @Test
+    public void testRechargeMobile() {
+        BaseSyncher.testSetup();
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, GetBikeWalletHome.class);
+        mActivityTestRule.launchActivity(intent);
+        manualReview(10000);
+        onView(withId(R.id.redeem)).perform(click());
+        onView(withId(R.id.rechargeMobile)).perform(click());
+        onView(withId(R.id.rechargeMobileNumber))
+                .perform(typeText("9949257729"), closeSoftKeyboard());
+        onView(withId(R.id.rechargeAmount))
+                .perform(typeText("50"), closeSoftKeyboard());
+        onView(withId(R.id.rechargeSubmit)).perform(click());
+        assertToast("Recharge successful", mActivityTestRule);
+        onView(withId(R.id.rechargeSubmit)).perform(pressBack());
+        manualReview(10000);
+    }
 
     @Test
     public void tesShowHideWalletDetails() {

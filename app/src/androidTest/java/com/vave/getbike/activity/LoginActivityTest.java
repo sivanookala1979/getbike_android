@@ -51,7 +51,7 @@ public class LoginActivityTest extends BaseGetBikeActivityTest {
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.requestRide)).perform(click());
+        //onView(withId(R.id.requestRide)).perform(click());
         onView(withId(R.id.getBikeResult)).check(matches(isPositive()));
         //onView(withId(R.id.startRide)).perform(click());
         onView(withId(R.id.start_updates_button)).perform(click());
@@ -74,13 +74,6 @@ public class LoginActivityTest extends BaseGetBikeActivityTest {
         smsIdlingResource.waitForSms();
         onView(withId(R.id.received_otp)).check(matches(isPositive()));
         onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.requestRide)).perform(click());
-        onView(withId(R.id.generatedRideId)).check(matches(isPositive()));
-        AtomicReference<String> rideIdCapture = new AtomicReference<>();
-        onView(withId(R.id.generatedRideId)).check(matches(textCapture(rideIdCapture)));
-        RideSyncher rideSyncher = new RideSyncher();
-        Ride rideFromServer = rideSyncher.getRideById(Long.parseLong(rideIdCapture.get()));
-        onView(withId(R.id.rideRequestedAt)).check(matches(withText(rideFromServer.getRequestedAt() + "")));
         Espresso.unregisterIdlingResources(smsIdlingResource);
     }
 
