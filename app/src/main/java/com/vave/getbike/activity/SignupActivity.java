@@ -46,8 +46,6 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);
 
-        Button redirectButton = (Button) findViewById(R.id.redirectButton);
-        redirectButton.setOnClickListener(this);
         loginTextView = (TextView) findViewById(R.id.login_text_view);
         loginTextView.setOnClickListener(this);
         genderGroup = (RadioGroup) findViewById(R.id.gender);

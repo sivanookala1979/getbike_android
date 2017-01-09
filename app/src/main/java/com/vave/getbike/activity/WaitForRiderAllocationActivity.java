@@ -156,5 +156,8 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
             });
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        // do nothing.
+    }
 }

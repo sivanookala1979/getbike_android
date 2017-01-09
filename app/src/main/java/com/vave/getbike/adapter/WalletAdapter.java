@@ -1,6 +1,7 @@
 package com.vave.getbike.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +57,14 @@ public class WalletAdapter extends BaseAdapter {
         }
 
         WalletEntry ride = searchArrayList.get(position);
-        holder.walletEntryDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(ride.getTransactionDateTime()));
-        holder.walletEntryType.setText(ride.getType());
         holder.walletEntryAmount.setText(ride.getAmount() + "");
+        if (ride.getAmount() >= 0) {
+            holder.walletEntryAmount.setTextColor(ContextCompat.getColor(context, R.color.thick_green));
+        } else {
+            holder.walletEntryAmount.setTextColor(ContextCompat.getColor(context, R.color.red));
+        }
+        holder.walletEntryType.setText(ride.getType());
+        holder.walletEntryDate.setText(new SimpleDateFormat("dd-MMM-yyyy").format(ride.getTransactionDateTime()));
         holder.walletEntryDescription.setText(ride.getDescription());
         return convertView;
     }

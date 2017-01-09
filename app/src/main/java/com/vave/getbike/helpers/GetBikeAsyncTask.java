@@ -1,7 +1,10 @@
 package com.vave.getbike.helpers;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,6 +25,8 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
     boolean showProgress = true;
     String progressMessage = "Loading....";
     ProgressDialog progressDialog;
+    boolean isUserOffline = false;
+    AlertDialog.Builder builder;
 
     public GetBikeAsyncTask(Context context) {
         super();
@@ -47,7 +52,6 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
 
         if (netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()) {
-            ToastHelper.redToast(context, "Please check your Internet connection!");
             return false;
         }
         return true;
@@ -61,12 +65,14 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
         if (isOnline(context)) {
             try {
                 process();
-
                 result = SUCCESS;
             } catch (Exception exception) {
                 Log.e("Application", exception.getMessage(), exception);
                 ToastHelper.redToast(context, "Internal error occurred.");
             }
+        }
+        else {
+            isUserOffline = true;
         }
         return result;
     }
@@ -93,6 +99,22 @@ public abstract class GetBikeAsyncTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         } finally {
             this.progressDialog = null;
+        }
+        if (isUserOffline){
+            if (builder == null){
+                builder = new AlertDialog.Builder(context);
+                builder.setTitle("Internet");
+                builder.setMessage("Please Enable your internet connection.");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
+                });
+                builder.show();
+            }
         }
         ToastHelper.processPendingToast();
         afterPostExecute();

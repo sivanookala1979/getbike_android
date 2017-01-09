@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#263238</color>
     <color name="colorPrimaryDark">#263238</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#263238</color>
     <color name="black">#000000</color>
     <color name="login_background">#1b1b1b</color>
     <color name="yellow">#efc51b</color>
@@ -22,6 +22,8 @@
     <color name="get_bike_orange">#FF9500</color>
     <color name="background">#e5e5e5</color>
     <color name="gray">#f2f2f2</color>
+    <color name="light_green">#00ff00</color>
+    <color name="thick_green">#006400</color>
 
 
 
