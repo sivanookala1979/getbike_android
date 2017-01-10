@@ -206,7 +206,7 @@ public class ScheduleRideActivity extends BaseActivity implements View.OnClickLi
                     public void process() {
                         LocationSyncher locationSyncher = new LocationSyncher();
                         fromLocationDetailsByName = locationSyncher
-                                .getLocationDetailsByName(fromAddress
+                                .getLocationDetailsByNameRecursive(fromAddress
                                         .getText().toString());
                     }
 
@@ -268,7 +268,7 @@ public class ScheduleRideActivity extends BaseActivity implements View.OnClickLi
                     public void process() {
                         LocationSyncher locationSyncher = new LocationSyncher();
                         fromLocationDetailsByName = locationSyncher
-                                .getLocationDetailsByName(toAddress
+                                .getLocationDetailsByNameRecursive(toAddress
                                         .getText().toString());
                     }
 

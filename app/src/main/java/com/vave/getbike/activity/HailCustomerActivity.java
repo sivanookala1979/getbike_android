@@ -139,7 +139,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                     public void process() {
                         LocationSyncher locationSyncher = new LocationSyncher();
                         fromLocationDetailsByName = locationSyncher
-                                .getLocationDetailsByName(destination
+                                .getLocationDetailsByNameRecursive(destination
                                         .getText().toString());
                     }
 

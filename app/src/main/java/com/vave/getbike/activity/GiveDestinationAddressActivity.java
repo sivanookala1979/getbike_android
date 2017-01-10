@@ -136,7 +136,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                     public void process() {
                         LocationSyncher locationSyncher = new LocationSyncher();
                         fromLocationDetailsByName = locationSyncher
-                                .getLocationDetailsByName(destination
+                                .getLocationDetailsByNameRecursive(destination
                                         .getText().toString());
                     }
 

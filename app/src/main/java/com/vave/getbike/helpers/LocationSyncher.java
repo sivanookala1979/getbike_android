@@ -31,11 +31,13 @@ public class LocationSyncher {
     private static final String PREDICTIONS = "predictions";
     String API_KEY = "AIzaSyDxqQEvtdEtl6dDIvG7vcm6QTO45Si0FZs";
     String URL_START = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
-    String URL_END = "&regions=(administrative_area_level_1)&sensor=true&key=" + API_KEY;
+    String URL_END = "&regions=(locality)&sensor=true&key=" + API_KEY;
     String LAT_LON_URL_START = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     String LAT_LON_URL_END = "&key=" + API_KEY;
     String URL = "";
     private String searchLocation;
+
+    //https://maps.googleapis.com/maps/api/place/autocomplete/json?input=munga&regions=(administrative_area_level_1)&sensor=true&key=AIzaSyDxqQEvtdEtl6dDIvG7vcm6QTO45Si0FZs
 
     public LocationSyncher(String searchLocation) {
         URL = URL_START + encodeData(searchLocation) + URL_END;
@@ -68,7 +70,19 @@ public class LocationSyncher {
         return list;
     }
 
-    public LocationDetails getLocationDetailsByName(String locationName) {
+    public LocationDetails getLocationDetailsByNameRecursive(String locationName) {
+        LocationDetails result = getLocationDetailsByName(locationName);
+        if (result == null) {
+            if (locationName.contains(",")) {
+                locationName = locationName.substring(locationName.indexOf(",") + 1);
+                result = getLocationDetailsByName(locationName);
+            }
+        }
+
+        return result;
+    }
+
+    private LocationDetails getLocationDetailsByName(String locationName) {
         LocationDetails details = null;
         try {
             String completeUrl = LAT_LON_URL_START + URLEncoder.encode(locationName, "utf-8") + LAT_LON_URL_END;
@@ -83,8 +97,8 @@ public class LocationSyncher {
                         for (int i = 0; i < contacts.length(); i++) {
                             JSONObject myLocation = contacts.getJSONObject(i);
                             if (myLocation.has(GEOMETRY)) {
-                                JSONObject gemetryInfo = myLocation.getJSONObject(GEOMETRY);
-                                JSONObject latLong = gemetryInfo.getJSONObject(LOCATION);
+                                JSONObject geometryInfo = myLocation.getJSONObject(GEOMETRY);
+                                JSONObject latLong = geometryInfo.getJSONObject(LOCATION);
                                 details.setLatitude(latLong.getDouble("lat"));
                                 details.setLongitude(latLong.getDouble("lng"));
                                 details.setAddress(myLocation.getString("formatted_address"));
