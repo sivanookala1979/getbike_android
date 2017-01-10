@@ -30,6 +30,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
+import com.vave.getbike.activity.LocationActivity;
 import com.vave.getbike.activity.ShowCompletedRideActivity;
 import com.vave.getbike.activity.SignupActivity;
 import com.vave.getbike.activity.SplashScreenActivity;
@@ -98,6 +99,10 @@ public class MyGcmListenerService extends GcmListenerService {
         } else if ("rideAccepted".equals(messageType)) {
             if (WaitForRiderAllocationActivity.instance() != null) {
                 WaitForRiderAllocationActivity.instance().rideAccepted(rideId);
+            }
+        } else if ("rideCancelled".equals(messageType)) {
+            if (LocationActivity.instance() != null) {
+                LocationActivity.instance().rideCancelled(rideId);
             }
         } else if ("rideClosed".equals(messageType)) {
             if (WaitForRiderAfterAcceptanceActivity.instance() != null) {

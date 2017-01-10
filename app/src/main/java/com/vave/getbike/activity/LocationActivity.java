@@ -100,6 +100,7 @@ public class LocationActivity extends BaseActivity implements
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
     //protected LocationRequest mLocationRequest;
+    public static LocationActivity activeInstance;
     /**
      * Represents a geographical location.
      */
@@ -134,6 +135,10 @@ public class LocationActivity extends BaseActivity implements
     Ride ride = null;
     private GoogleMap mMap;
     private long rideId;
+
+    public static LocationActivity instance() {
+        return activeInstance;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,6 +175,18 @@ public class LocationActivity extends BaseActivity implements
         if (getIntent().getBooleanExtra("reachedCustomer", false)) {
             startTracking();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        activeInstance = this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        activeInstance = null;
     }
 
     /**
@@ -299,38 +316,6 @@ public class LocationActivity extends BaseActivity implements
         }
         locationManager.removeUpdates(this);
     }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-//    @Override
-//    public void onConnected(Bundle connectionHint) {
-//        Log.i(TAG, "Connected to GoogleApiClient");
-//
-//        // If the initial location was never previously requested, we use
-//        // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
-//        // its value in the Bundle and check for it in onCreate(). We
-//        // do not request it again unless the user specifically requests location updates by pressing
-//        // the Start Updates button.
-//        //
-//        // Because we cache the value of the initial location in the Bundle, it means that if the
-//        // user launches the activity,
-//        // moves to a new location, and then changes the device orientation, the original location
-//        // is displayed as the activity is re-created.
-//        if (mCurrentLocation == null) {
-//            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//            mLastUpdateTimeAsDate = new Date();
-//            mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
-//            updateUI();
-//        }
-//
-//        // If the user presses the Start Updates button before GoogleApiClient connects, we set
-//        // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
-//        // the value of mRequestingLocationUpdates and if it is true, we start location updates.
-//        if (mRequestingLocationUpdates) {
-//            startLocationUpdates();
-//        }
-//    }
 
     /**
      * Callback that fires when the location changes.
@@ -492,6 +477,18 @@ public class LocationActivity extends BaseActivity implements
                 }
                 return;
             }
+        }
+    }
+
+    public void rideCancelled(long rideId) {
+        if (this.rideId == rideId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                    ToastHelper.blueToast(LocationActivity.this, "This ride is cancelled by the user.");
+                }
+            });
         }
     }
 
