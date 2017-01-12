@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +18,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,9 +38,17 @@ import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.syncher.LoginSyncher;
 
-public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
+public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener  {
 
     public static final int GPS_PERMISSION_REQUEST_CODE = 8;
+    private static final String TAG = "LocationActivity";
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
+    LocationRequest mLocationRequest;
+    GoogleApiClient mGoogleApiClient;
+    Location fusedCurrentLocation;
     GoogleMap googleMap;
     Long rideID = null;
     Button showCurrentRideButton;
@@ -46,6 +66,18 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Log.d(TAG, "onCreate ...............................");
+        //show error dialog if GoolglePlayServices not available
+        if (!isGooglePlayServicesAvailable()) {
+            finish();
+        }
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
         showCurrentRideButton = (Button) findViewById(R.id.show_current_ride_button);
@@ -66,6 +98,39 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         updateCurrentRideId();
     }
 
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart fired ..............");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop fired ..............");
+        mGoogleApiClient.disconnect();
+        Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
+    }
+
+
+    private boolean isGooglePlayServicesAvailable() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == status) {
+            return true;
+        } else {
+            GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+            return false;
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMapParam) {
         this.googleMap = googleMapParam;
@@ -83,7 +148,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
         if (googleMap != null && mCurrentLocation != null) {
             googleMap.clear();
-            //googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Start \n" + mCurrentLocation.getProvider() + "\n" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date(mCurrentLocation.getTime()))));
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("GPS"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
             googleMap.setMyLocationEnabled(true);
         }
@@ -136,6 +201,10 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         super.onResume();
         updateCurrentRideId();
         resetLocation();
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+            Log.d(TAG, "Location update resumed .....................");
+        }
     }
 
     public void updateCurrentRideId() {
@@ -159,4 +228,62 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         }.execute();
 
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
+        startLocationUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "Firing onLocationChanged..............................................");
+        fusedCurrentLocation = location;
+        Log.d(TAG, "fusedCurrentLocation is:"+fusedCurrentLocation);
+        if (googleMap != null && fusedCurrentLocation != null) {
+            googleMap.clear();
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude())).title("Fused Api"));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude()), 16.0f));
+        }
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+        Log.d(TAG, "Location update started ..............: ");
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+        Log.d(TAG, "Location update stopped .......................");
+    }
+
 }

@@ -108,6 +108,7 @@ public class LocationActivity extends BaseActivity implements
     // UI Widgets.
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
+    protected Button navigationButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLocationCountTextView;
     protected Button callCustomerButton;
@@ -157,6 +158,7 @@ public class LocationActivity extends BaseActivity implements
         locationTrackingPanel = (LinearLayout) findViewById(R.id.location_tracking_panel);
         callCustomerButton = (Button) findViewById(R.id.call_customer_button);
         reachedCustomerButton = (Button) findViewById(R.id.reached_customer_button);
+        navigationButton = (Button)findViewById(R.id.navigation_button);
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -167,6 +169,7 @@ public class LocationActivity extends BaseActivity implements
         mStopUpdatesButton.setOnClickListener(this);
         callCustomerButton.setOnClickListener(this);
         reachedCustomerButton.setOnClickListener(this);
+        navigationButton.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -414,6 +417,26 @@ public class LocationActivity extends BaseActivity implements
             case R.id.reached_customer_button:
                 startTracking();
                 break;
+            case R.id.navigation_button:
+                if (ride != null && ride.getStartLatitude() != null && ride.getStartLongitude() != null) {
+                    if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
+                        LatLng customerDestination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
+                        String url = null;
+                        if (customerDestination != null) {
+                            url = "google.navigation:q=" + customerDestination.latitude + "," + customerDestination.longitude + "&mode=d";
+                        }
+                        Uri gmmIntentUri = Uri.parse(url);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    }
+                    else {
+                        Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                    }
+                }
+                else {
+                    Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                }
         }
     }
 
