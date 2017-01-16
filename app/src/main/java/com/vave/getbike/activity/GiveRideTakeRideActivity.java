@@ -168,7 +168,15 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
     public void launchActivity(Class targetActivity) {
         resetLocation();
-        if (LocationDetails.isValid(mCurrentLocation)) {
+        if (googleMap != null && fusedCurrentLocation != null){
+            if (fusedCurrentLocation.getLatitude() != 0.0 && fusedCurrentLocation.getLongitude() != 0.0){
+                Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
+                intent.putExtra("latitude", fusedCurrentLocation.getLatitude());
+                intent.putExtra("longitude", fusedCurrentLocation.getLongitude());
+                startActivity(intent);
+            }
+        }
+        else if (LocationDetails.isValid(mCurrentLocation)) {
             Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
             intent.putExtra("latitude", mCurrentLocation.getLatitude());
             intent.putExtra("longitude", mCurrentLocation.getLongitude());

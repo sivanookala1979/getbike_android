@@ -153,7 +153,7 @@ public class LocationActivity extends BaseActivity implements
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mLocationCountTextView = (TextView) findViewById(R.id.locationCount);
         TextView tripIdTextView = (TextView) findViewById(R.id.tripId);
-        tripIdTextView.setText("Trip ID : " + rideId);
+        tripIdTextView.setText("" + rideId);
         reachCustomerPanel = (LinearLayout) findViewById(R.id.reach_customer_panel);
         locationTrackingPanel = (LinearLayout) findViewById(R.id.location_tracking_panel);
         callCustomerButton = (Button) findViewById(R.id.call_customer_button);
@@ -275,7 +275,7 @@ public class LocationActivity extends BaseActivity implements
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 18.0f);
                 mMap.animateCamera(cameraUpdate);
             }
-            mLocationCountTextView.setText("Number Of Locations : " + locations.size());
+            mLocationCountTextView.setText("Locations Count : " + locations.size());
         }
     }
 
@@ -418,25 +418,41 @@ public class LocationActivity extends BaseActivity implements
                 startTracking();
                 break;
             case R.id.navigation_button:
-                if (ride != null && ride.getStartLatitude() != null && ride.getStartLongitude() != null) {
-                    if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
-                        LatLng customerDestination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
-                        String url = null;
-                        if (customerDestination != null) {
-                            url = "google.navigation:q=" + customerDestination.latitude + "," + customerDestination.longitude + "&mode=d";
+                final AlertDialog.Builder navigationBuilder = new AlertDialog.Builder(LocationActivity.this);
+                navigationBuilder.setCancelable(false);
+                navigationBuilder.setTitle("Navigation");
+                navigationBuilder.setMessage("This action will open Google maps with driving directions to reach customer, please press back button for 3 times to come back to this application.");
+                navigationBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (ride != null && ride.getStartLatitude() != null && ride.getStartLongitude() != null) {
+                            if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
+                                LatLng customerDestination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
+                                String url = null;
+                                if (customerDestination != null) {
+                                    url = "google.navigation:q=" + customerDestination.latitude + "," + customerDestination.longitude + "&mode=d";
+                                }
+                                Uri gmmIntentUri = Uri.parse(url);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                            else {
+                                Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                            }
                         }
-                        Uri gmmIntentUri = Uri.parse(url);
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
+                        else {
+                            Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                        }
                     }
-                    else {
-                        Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                });
+                navigationBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                     }
-                }
-                else {
-                    Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
-                }
+                });
+                navigationBuilder.show();
         }
     }
 
@@ -476,7 +492,9 @@ public class LocationActivity extends BaseActivity implements
                 @Override
                 public void afterPostExecute() {
                     if (ride != null && ride.getStartLatitude() != null && ride.getStartLongitude() != null) {
-                        if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
+                        if ("RideCancelled".equals(ride.getRideStatus())) {
+                            rideCancelled(rideId);
+                        } else if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
                             LatLng destination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
                             mMap.addMarker(new MarkerOptions().position(destination).title("Customer Location"));
                         }
@@ -515,4 +533,9 @@ public class LocationActivity extends BaseActivity implements
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animateToLocation();
+    }
 }
