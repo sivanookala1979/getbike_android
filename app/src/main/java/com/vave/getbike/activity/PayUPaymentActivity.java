@@ -130,7 +130,8 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
             ToastHelper.blueToast(PayUPaymentActivity.this, "Failed to load the profile");
             return;
         }
-        merchantKey = "gtKFFx";
+        //merchantKey = "gtKFFx"; -- Test
+        merchantKey = "cWS3zB";
 
         String amount = "100";
         if (radioButton500.isChecked()) {
@@ -142,7 +143,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         }
         String email = userProfile.getEmail();
 
-        int environment = PayuConstants.STAGING_ENV;
+        int environment = PayuConstants.PRODUCTION_ENV;
 
         userCredentials = merchantKey + ":" + email;
 
@@ -205,7 +206,8 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
          * if your server side hash generation code is not completely setup. While going live this approach for hash generation
          * should not be used.
          * */
-        String salt = "eCwWELxi";
+        //String salt = "eCwWELxi"; // TEST
+        String salt = "TscMUEAc";
         generateHashFromSDK(mPaymentParams, salt);
 
     }
