@@ -69,8 +69,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.GoogleMapActivity"/>
-
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
