@@ -266,4 +266,24 @@ public class RideSyncher extends BaseSyncher {
         return result;
     }
 
+    public List<RideLocation> loadNearByRiders(double latitude, double longitude) {
+        List<RideLocation> result = new ArrayList<>();
+        RideLocation north = new RideLocation();
+        north.setLatitude(latitude * 0.99995);
+        north.setLongitude(longitude);
+        result.add(north);
+        RideLocation south = new RideLocation();
+        south.setLatitude(latitude * 1.00005);
+        south.setLongitude(longitude);
+        result.add(south);
+        RideLocation east = new RideLocation();
+        east.setLatitude(latitude);
+        east.setLongitude(longitude * 1.00005);
+        result.add(east);
+        RideLocation west = new RideLocation();
+        west.setLatitude(latitude);
+        west.setLongitude(longitude * 0.99995);
+        result.add(west);
+        return result;
+    }
 }

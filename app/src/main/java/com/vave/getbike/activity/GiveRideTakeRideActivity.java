@@ -26,21 +26,28 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.LoginSyncher;
+import com.vave.getbike.syncher.RideSyncher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, LocationListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener  {
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static final int GPS_PERMISSION_REQUEST_CODE = 8;
     private static final String TAG = "LocationActivity";
@@ -120,7 +127,6 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
     }
 
-
     private boolean isGooglePlayServicesAvailable() {
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (ConnectionResult.SUCCESS == status) {
@@ -151,7 +157,36 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("GPS"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
             googleMap.setMyLocationEnabled(true);
+            loadNearByRiders(googleMap, mCurrentLocation);
         }
+    }
+
+    private void loadNearByRiders(final GoogleMap googleMap, final Location currentLocation) {
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            List<RideLocation> rideLocations = new ArrayList<RideLocation>();
+
+            @Override
+            public void process() {
+                rideLocations = new RideSyncher().loadNearByRiders(currentLocation.getLatitude(), currentLocation.getLongitude());
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (rideLocations.size() > 0) {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (RideLocation location : rideLocations) {
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        builder.include(latLng);
+                        googleMap.addMarker(new MarkerOptions().position(latLng));
+                    }
+                    LatLngBounds bounds = builder.build();
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 5);
+                    googleMap.animateCamera(cameraUpdate);
+                }
+            }
+        }.execute();
+
     }
 
     @Override
@@ -168,15 +203,14 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
     public void launchActivity(Class targetActivity) {
         resetLocation();
-        if (googleMap != null && fusedCurrentLocation != null){
-            if (fusedCurrentLocation.getLatitude() != 0.0 && fusedCurrentLocation.getLongitude() != 0.0){
+        if (googleMap != null && fusedCurrentLocation != null) {
+            if (fusedCurrentLocation.getLatitude() != 0.0 && fusedCurrentLocation.getLongitude() != 0.0) {
                 Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
                 intent.putExtra("latitude", fusedCurrentLocation.getLatitude());
                 intent.putExtra("longitude", fusedCurrentLocation.getLongitude());
                 startActivity(intent);
             }
-        }
-        else if (LocationDetails.isValid(mCurrentLocation)) {
+        } else if (LocationDetails.isValid(mCurrentLocation)) {
             Intent intent = new Intent(GiveRideTakeRideActivity.this, targetActivity);
             intent.putExtra("latitude", mCurrentLocation.getLatitude());
             intent.putExtra("longitude", mCurrentLocation.getLongitude());
@@ -264,11 +298,12 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void onLocationChanged(Location location) {
         Log.d(TAG, "Firing onLocationChanged..............................................");
         fusedCurrentLocation = location;
-        Log.d(TAG, "fusedCurrentLocation is:"+fusedCurrentLocation);
+        Log.d(TAG, "fusedCurrentLocation is:" + fusedCurrentLocation);
         if (googleMap != null && fusedCurrentLocation != null) {
             googleMap.clear();
             googleMap.addMarker(new MarkerOptions().position(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude())).title("Fused Api"));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude()), 16.0f));
+            loadNearByRiders(googleMap, fusedCurrentLocation);
         }
     }
 
