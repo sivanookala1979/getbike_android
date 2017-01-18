@@ -200,7 +200,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     for (RideLocation location : rideLocations) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         builder.include(latLng);
-                        googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
+                        googleMap.addMarker(new MarkerOptions().position(latLng).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
                     }
                     builder.include(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                     LatLngBounds bounds = builder.build();
