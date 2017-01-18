@@ -6,6 +6,7 @@ package com.vave.getbike.helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,6 +21,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.vave.getbike.activity.ShowCompletedRideActivity;
+import com.vave.getbike.datasource.RideLocationDataSource;
+import com.vave.getbike.model.Ride;
+import com.vave.getbike.syncher.RideLocationSyncher;
+import com.vave.getbike.syncher.RideSyncher;
 
 /**
  * @author Adarsh.T
@@ -28,11 +34,11 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 public class LocationDetails {
 
     public static final int LOCATION_EXPIRY_TIME_IN_MILLI_SECONDS = 60000;
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     String address;
     double latitude;
     double longitude;
     String city;
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
     public static boolean isValid(Location location) {
         return location != null && location.getLatitude() != 0.0 && location.getLatitude() != 0.0;
@@ -59,42 +65,35 @@ public class LocationDetails {
         return result;
     }
 
+    public static void stopTrip(Context context, final long rideId) {
+        new GetBikeAsyncTask(context) {
+            Ride closedRide = null;
 
+            @Override
+            public void process() {
+                RideLocationDataSource dataSource = new RideLocationDataSource(context);
+                dataSource.setUpdataSource();
+                RideLocationSyncher locationSyncher = new RideLocationSyncher();
+                locationSyncher.setDataSource(dataSource);
+                locationSyncher.storePendingLocations(rideId);
+                dataSource.close();
+                RideSyncher sut = new RideSyncher();
+                closedRide = sut.closeRide(rideId);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (closedRide != null) {
+                    Intent intent = new Intent(context, ShowCompletedRideActivity.class);
+                    intent.putExtra("rideId", closedRide.getId());
+                    context.startActivity(intent);
+                }
+            }
+        }.execute();
+    }
 
     public static boolean isExpired(Location result) {
         return (System.currentTimeMillis() - result.getTime()) > LOCATION_EXPIRY_TIME_IN_MILLI_SECONDS;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public static void displayLocationSettingsRequest(final Context context) {
@@ -136,5 +135,37 @@ public class LocationDetails {
                 }
             }
         });
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

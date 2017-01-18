@@ -119,7 +119,9 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         if (googleMap != null && yourLocationLatLng != null && yourLocationLatLng.latitude != 0.0 && yourLocationLatLng.longitude != 0.0) {
-            googleMap.addMarker(new MarkerOptions().position(yourLocationLatLng).title("Start"));
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(yourLocationLatLng.latitude,yourLocationLatLng.longitude))
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourLocationLatLng, 16.0f));
         }
 
@@ -196,7 +198,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(point);
         BitmapDescriptor fromResource = BitmapDescriptorFactory
-                .fromResource(isDestination ? R.drawable.pick_location_to_icon : R.drawable.pick_up_location_from_icon);
+                .fromResource(isDestination ? R.mipmap.location_pointer : R.mipmap.location_pointer);
         googleMap
                 .addMarker(markerOptions.icon(fromResource));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
@@ -258,7 +260,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                             rectLine.add(directionPoints.get(i));
                         }
                         polyline = googleMap.addPolyline(rectLine);
-                        polyline.setColor(Color.parseColor("#2a94eb"));
+                        polyline.setColor(Color.parseColor("#FFA500"));
                         polyline.setWidth(10f);
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 

@@ -40,15 +40,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/get_bike_transparent"
             android:orientation="vertical"
             android:weightSum="100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="65"
-                android:background="@color/transparent">
+                android:layout_weight="65">
 
             </LinearLayout>
 
@@ -57,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:background="@color/get_bike_orange"
-                android:text="SHOW CURRENT RIDE"
+                android:text="RESUME PREVIOUS RIDE"
                 android:id="@+id/show_current_ride_button"
                 android:visibility="gone" />
 
@@ -65,7 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="35"
-                android:background="@color/transparent"
                 android:orientation="vertical"
                 android:id="@+id/give_ride_take_ride_linear_layout"
                 android:visibility="visible"

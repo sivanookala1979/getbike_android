@@ -39,7 +39,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
@@ -50,7 +52,6 @@ import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.LoginSyncher;
-import com.vave.getbike.syncher.RideLocationSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
 import java.text.DateFormat;
@@ -136,6 +137,7 @@ public class LocationActivity extends BaseActivity implements
     Ride ride = null;
     private GoogleMap mMap;
     private long rideId;
+    private Marker marker = null;
 
     public static LocationActivity instance() {
         return activeInstance;
@@ -158,7 +160,7 @@ public class LocationActivity extends BaseActivity implements
         locationTrackingPanel = (LinearLayout) findViewById(R.id.location_tracking_panel);
         callCustomerButton = (Button) findViewById(R.id.call_customer_button);
         reachedCustomerButton = (Button) findViewById(R.id.reached_customer_button);
-        navigationButton = (Button)findViewById(R.id.navigation_button);
+        navigationButton = (Button) findViewById(R.id.navigation_button);
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -177,6 +179,13 @@ public class LocationActivity extends BaseActivity implements
 
         if (getIntent().getBooleanExtra("reachedCustomer", false)) {
             startTracking();
+        }
+
+        if (getIntent().getBooleanExtra("isTripResumed", false)) {
+            //Resume the previous trip;
+            reachCustomerPanel.setVisibility(View.GONE);
+            locationTrackingPanel.setVisibility(View.VISIBLE);
+            mStartUpdatesButton.setText("RESUME TRIP");
         }
     }
 
@@ -258,7 +267,6 @@ public class LocationActivity extends BaseActivity implements
             locations = dataSource.getRideLocations(rideId);
             dataSource.close();
             postLastKnownLocation();
-
             if (mMap != null) {
                 PolylineOptions polylineOptions = new PolylineOptions();
                 LatLng[] latLngs = new LatLng[locations.size()];
@@ -271,11 +279,20 @@ public class LocationActivity extends BaseActivity implements
                 mMap.addPolyline(polylineOptions
                         .add(latLngs)
                         .width(5)
-                        .color(Color.RED));
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 18.0f);
-                mMap.animateCamera(cameraUpdate);
+                        .color(Color.parseColor("#FFA500")));
+                if (marker != null) {
+                    marker.remove();
+                }
+                if (locations.size() > 0) {
+                    RideLocation lastLocation = locations.get(locations.size() - 1);
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 18.0f);
+                    mMap.animateCamera(cameraUpdate);
+                }
             }
-            mLocationCountTextView.setText("Locations Count : " + locations.size());
+            mLocationCountTextView.setText("Locations Count:" + locations.size());
         }
     }
 
@@ -361,31 +378,8 @@ public class LocationActivity extends BaseActivity implements
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         stopUpdatesButtonHandler(v);
-                        new GetBikeAsyncTask(LocationActivity.this) {
-                            Ride closedRide = null;
-
-                            @Override
-                            public void process() {
-                                RideLocationDataSource dataSource = new RideLocationDataSource(getApplicationContext());
-                                dataSource.setUpdataSource();
-                                RideLocationSyncher locationSyncher = new RideLocationSyncher();
-                                locationSyncher.setDataSource(dataSource);
-                                locationSyncher.storePendingLocations(rideId);
-                                dataSource.close();
-                                RideSyncher sut = new RideSyncher();
-                                closedRide = sut.closeRide(rideId);
-                            }
-
-                            @Override
-                            public void afterPostExecute() {
-                                if (closedRide != null) {
-                                    Intent intent = new Intent(LocationActivity.this, ShowCompletedRideActivity.class);
-                                    intent.putExtra("rideId", closedRide.getId());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        }.execute();
+                        LocationDetails.stopTrip(LocationActivity.this, rideId);
+                        finish();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -421,7 +415,7 @@ public class LocationActivity extends BaseActivity implements
                 final AlertDialog.Builder navigationBuilder = new AlertDialog.Builder(LocationActivity.this);
                 navigationBuilder.setCancelable(false);
                 navigationBuilder.setTitle("Navigation");
-                navigationBuilder.setMessage("This action will open Google maps with driving directions to reach customer, please press back button for 3 times to come back to this application.");
+                navigationBuilder.setMessage("This action will open Google maps with driving directions to reach customer, please press back button for 3 times to resume this application.");
                 navigationBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -436,13 +430,11 @@ public class LocationActivity extends BaseActivity implements
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
+                            } else {
+                                Toast.makeText(LocationActivity.this, "Invalid customer location", Toast.LENGTH_LONG).show();
                             }
-                            else {
-                                Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        else {
-                            Toast.makeText(LocationActivity.this,"Invalid customer location",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LocationActivity.this, "Invalid customer location", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -472,12 +464,12 @@ public class LocationActivity extends BaseActivity implements
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         animateToLocation();
+
     }
 
     public void animateToLocation() throws SecurityException {
         Location startLocation = LocationDetails.getLocationOrShowToast(LocationActivity.this, locationManager);
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
             if (LocationDetails.isValid(startLocation)) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()), 16.0f));
             }
@@ -496,7 +488,10 @@ public class LocationActivity extends BaseActivity implements
                             rideCancelled(rideId);
                         } else if (ride.getStartLongitude() != 0.0 && ride.getStartLatitude() != 0.0) {
                             LatLng destination = new LatLng(ride.getStartLatitude(), ride.getStartLongitude());
-                            mMap.addMarker(new MarkerOptions().position(destination).title("Customer Location"));
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(destination)
+                                    .title("Customer Location")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.location_pointer)));
                         }
                     }
                 }

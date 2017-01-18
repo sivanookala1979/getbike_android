@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -102,7 +103,9 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
                     LatLngBounds bounds = builder.build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 5);
                     googleMap.animateCamera(cameraUpdate);
-                    googleMap.addMarker(new MarkerOptions().position(startLatLng).title("Start"));
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(startLatLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
                     if (riderProfile != null) {
                         allottedRiderDetailsView.setText(riderProfile.getName() + "\n" + riderProfile.getPhoneNumber() + "\n" + riderProfile.getVehicleNumber());
                     }

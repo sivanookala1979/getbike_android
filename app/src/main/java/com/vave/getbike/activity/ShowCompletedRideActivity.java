@@ -155,7 +155,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
                         mMap.addPolyline(polylineOptions
                                 .add(latLngs)
                                 .width(5)
-                                .color(Color.RED));
+                                .color(Color.parseColor("#FFA500")));
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 5);
                         mMap.animateCamera(cameraUpdate);
                     }

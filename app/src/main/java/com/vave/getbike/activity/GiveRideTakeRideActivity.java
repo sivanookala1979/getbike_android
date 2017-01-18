@@ -1,7 +1,9 @@
 package com.vave.getbike.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -98,9 +100,28 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             @Override
             public void onClick(View view) {
                 Log.d("Tag", "clicked on show current ride button");
-                Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
-                intent.putExtra("rideId", rideID);
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+                builder.setCancelable(false);
+                builder.setTitle("Trip Details");
+                builder.setMessage("Your previous trip was not yet closed, Do you want to resume it again?");
+                builder.setPositiveButton("Resume", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
+                        intent.putExtra("rideId", rideID);
+                        intent.putExtra("isTripResumed", true);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("Close Ride", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Need to close the ride
+                        dialogInterface.dismiss();
+                        LocationDetails.stopTrip(GiveRideTakeRideActivity.this, rideID);
+                    }
+                });
+                builder.show();
             }
         });
         updateCurrentRideId();
@@ -303,7 +324,9 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         Log.d(TAG, "fusedCurrentLocation is:" + fusedCurrentLocation);
         if (googleMap != null && fusedCurrentLocation != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude())).title("Fused Api"));
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude()), 16.0f));
             loadNearByRiders(googleMap, fusedCurrentLocation);
         }
@@ -326,9 +349,12 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        Log.d(TAG, "Location update stopped .......................");
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+            Log.d(TAG, "Location update stopped .......................");
+        }
+
     }
 
 }
