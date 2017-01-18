@@ -1,5 +1,6 @@
 package com.vave.getbike;
 
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -15,7 +16,7 @@ public class ManualTriggers {
 
     public static void acceptRide(long rideId) {
         BaseSyncher.testSetup();
-        boolean actual = new RideSyncher().acceptRide(rideId);
+        CallStatus actual = new RideSyncher().acceptRide(rideId);
     }
 
 }

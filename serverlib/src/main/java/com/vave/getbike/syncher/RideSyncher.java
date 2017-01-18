@@ -267,23 +267,19 @@ public class RideSyncher extends BaseSyncher {
     }
 
     public List<RideLocation> loadNearByRiders(double latitude, double longitude) {
-        List<RideLocation> result = new ArrayList<>();
-        RideLocation north = new RideLocation();
-        north.setLatitude(latitude * 0.99995);
-        north.setLongitude(longitude);
-        result.add(north);
-        RideLocation south = new RideLocation();
-        south.setLatitude(latitude * 1.00005);
-        south.setLongitude(longitude);
-        result.add(south);
-        RideLocation east = new RideLocation();
-        east.setLatitude(latitude);
-        east.setLongitude(longitude * 1.00005);
-        result.add(east);
-        RideLocation west = new RideLocation();
-        west.setLatitude(latitude);
-        west.setLongitude(longitude * 0.99995);
-        result.add(west);
+        final List<RideLocation> result = new ArrayList<>();
+        new JsonGetHandler("/loadNearByRiders?latitude=" + latitude + "&longitude=" + longitude) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("riders")) {
+                    JSONArray ridesArray = jsonResult.getJSONArray("riders");
+                    for (int i = 0; i < ridesArray.length(); i++) {
+                        result.add(GsonUtils.getGson().fromJson(ridesArray.get(i).toString(), RideLocation.class));
+                    }
+                }
+            }
+        }.handle();
         return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.android.AndroidStubsFactory;
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
@@ -26,6 +27,13 @@ import static org.junit.Assert.assertTrue;
 public class RideSyncherTest {
 
     RideSyncher sut;
+
+    public static void closeCurrentRide() {
+        Long previousRideId = new LoginSyncher().getCurrentRide();
+        if (previousRideId != null) {
+            new RideSyncher().closeRide(previousRideId);
+        }
+    }
 
     @Test
     public void requestRideTESTHappyFlow() {
@@ -63,8 +71,8 @@ public class RideSyncherTest {
     @Test
     public void acceptRideTESTHappyFlow() {
         Ride ride = sut.requestRide(24.56, 24.57);
-        boolean actual = sut.acceptRide(ride.getId());
-        assertTrue(actual);
+        CallStatus actual = sut.acceptRide(ride.getId());
+        assertTrue(actual.isSuccess());
     }
 
     @Test
@@ -170,6 +178,17 @@ public class RideSyncherTest {
     }
 
     @Test
+    public void loadNearByRidersTESTHappyFlow() {
+        // Setup
+
+        // Exercise SUT
+        List<RideLocation> actual = sut.loadNearByRiders(24.56, 24.57);
+        // Verify
+        int knownNumberOfRiders = 4;
+        assertEquals(knownNumberOfRiders, actual.size());
+    }
+
+    @Test
     public void estimateRideTESTHappyFlow() {
         // Setup
         ArrayList<RideLocation> rideLocations = new ArrayList<>();
@@ -206,13 +225,6 @@ public class RideSyncherTest {
         BaseSyncher.testSetup();
         AndroidStubsFactory.IS_TEST = true;
         closeCurrentRide();
-    }
-
-    public static void closeCurrentRide() {
-        Long previousRideId = new LoginSyncher().getCurrentRide();
-        if (previousRideId != null) {
-            new RideSyncher().closeRide(previousRideId);
-        }
     }
 
     @After
