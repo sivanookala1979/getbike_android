@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,8 +52,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
     public static final int GPS_PERMISSION_REQUEST_CODE = 8;
     private static final String TAG = "LocationActivity";
-    private static final long INTERVAL = 1000 * 10;
-    private static final long FASTEST_INTERVAL = 1000 * 5;
+    private static final long INTERVAL = 1000 * 100;
+    private static final long FASTEST_INTERVAL = 1000 * 50;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location fusedCurrentLocation;
@@ -178,7 +179,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     for (RideLocation location : rideLocations) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         builder.include(latLng);
-                        googleMap.addMarker(new MarkerOptions().position(latLng));
+                        googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
                     }
                     LatLngBounds bounds = builder.build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 5);
