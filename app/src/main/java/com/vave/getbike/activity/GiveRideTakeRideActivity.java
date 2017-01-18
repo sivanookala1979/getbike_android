@@ -181,8 +181,9 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                         builder.include(latLng);
                         googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
                     }
+                    builder.include(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                     LatLngBounds bounds = builder.build();
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 5);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 15);
                     googleMap.animateCamera(cameraUpdate);
                 }
             }
