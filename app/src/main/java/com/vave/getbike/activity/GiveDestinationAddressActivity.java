@@ -47,8 +47,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.vave.getbike.utils.GetBikeUtils.trimList;
+
 public class GiveDestinationAddressActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
+    public static final int MAX_DIRECTION_POINTS = 40;
     GoogleMap googleMap;
     TextView yourLocation;
     LatLng yourLocationLatLng;
@@ -117,7 +120,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         this.googleMap = googleMap;
         if (googleMap != null && yourLocationLatLng != null && yourLocationLatLng.latitude != 0.0 && yourLocationLatLng.longitude != 0.0) {
             googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(yourLocationLatLng.latitude,yourLocationLatLng.longitude))
+                    .position(new LatLng(yourLocationLatLng.latitude, yourLocationLatLng.longitude))
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourLocationLatLng, 16.0f));
         }
@@ -215,18 +218,10 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                     directionPoints = googleMapV2Direction
                             .getDirection(document);
                     RideSyncher rideSyncher = new RideSyncher();
+                    List<LatLng> trimmedList = trimList(directionPoints, MAX_DIRECTION_POINTS);
                     ArrayList<RideLocation> rideLocations = new ArrayList<RideLocation>();
-                    if (directionPoints.size() <= 20) {
-                        for (LatLng directionPoint : directionPoints) {
-                            RideLocation rideLocation = getRideLocation(directionPoint);
-                            rideLocations.add(rideLocation);
-                        }
-                    } else {
-                        rideLocations.add(getRideLocation(directionPoints.get(0)));
-                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() / 4)));
-                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() / 2)));
-                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() * 3 / 4)));
-                        rideLocations.add(getRideLocation(directionPoints.get(directionPoints.size() - 1)));
+                    for (LatLng directionPoint : trimmedList) {
+                        rideLocations.add(getRideLocation(directionPoint));
                     }
                     estimatedRide = rideSyncher.estimateRide(rideLocations);
                 }
