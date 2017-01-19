@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.widget.Toast;
 
 import com.vave.getbike.activity.LoginActivity;
 
@@ -27,7 +26,6 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
                 smsMessageStr += "SMS From: " + address + "\n";
                 smsMessageStr += smsBody + "\n";
             }
-            Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
 
             //this will update the UI with message
             LoginActivity inst = LoginActivity.instance();
