@@ -84,7 +84,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
             }.execute();
         }
 
-        future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 0, 60, TimeUnit.SECONDS);
+        future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 60, 60, TimeUnit.SECONDS);
 
     }
 
