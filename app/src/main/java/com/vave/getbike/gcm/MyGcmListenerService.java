@@ -21,7 +21,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -32,7 +31,6 @@ import com.vave.getbike.R;
 import com.vave.getbike.activity.AcceptRejectRideActivity;
 import com.vave.getbike.activity.LocationActivity;
 import com.vave.getbike.activity.ShowCompletedRideActivity;
-import com.vave.getbike.activity.SignupActivity;
 import com.vave.getbike.activity.SplashScreenActivity;
 import com.vave.getbike.activity.WaitForRiderAfterAcceptanceActivity;
 import com.vave.getbike.activity.WaitForRiderAllocationActivity;
@@ -118,14 +116,13 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                     PendingIntent.FLAG_ONE_SHOT);
-
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.getbike_logo)
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
+                    .setSound(uri)
                     .setContentIntent(pendingIntent);
 
             NotificationManager notificationManager =
@@ -134,7 +131,7 @@ public class MyGcmListenerService extends GcmListenerService {
             Notification notification = notificationBuilder.build();
             notification.defaults |= Notification.DEFAULT_LIGHTS;
             notification.defaults |= Notification.DEFAULT_VIBRATE;
-            notification.flags |= Notification.FLAG_INSISTENT;
+            notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notificationManager.notify(0, notification);
         }

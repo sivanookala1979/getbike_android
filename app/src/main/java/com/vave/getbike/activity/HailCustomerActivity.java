@@ -47,6 +47,7 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class HailCustomerActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
@@ -55,6 +56,8 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
     LatLng yourLocationLatLng;
     TextView rideEstimateTextView;
     EditText customerMobileNumber;
+    EditText customerName;
+    EditText customerEmailId;
     AutoCompleteTextView destination;
     GMapV2Direction googleMapV2Direction;
     Button giveRideButton;
@@ -68,6 +71,8 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hail_customer);
         customerMobileNumber = (EditText) findViewById(R.id.customerMobileNumber);
+        customerName = (EditText) findViewById(R.id.customerName);
+        customerEmailId = (EditText) findViewById(R.id.customerEmailId);
         yourLocation = (TextView) findViewById(R.id.yourLocation);
         destination = (AutoCompleteTextView) findViewById(R.id.destination);
         rideEstimateTextView = (TextView) findViewById(R.id.rideEstimate);
@@ -120,7 +125,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         this.googleMap = googleMap;
         if (googleMap != null && yourLocationLatLng != null && yourLocationLatLng.latitude != 0.0 && yourLocationLatLng.longitude != 0.0) {
             googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(yourLocationLatLng.latitude,yourLocationLatLng.longitude))
+                    .position(new LatLng(yourLocationLatLng.latitude, yourLocationLatLng.longitude))
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourLocationLatLng, 16.0f));
         }
@@ -290,29 +295,43 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.giveRide:
-                new GetBikeAsyncTask(HailCustomerActivity.this) {
-                    Long rideID = null;
+                final Pattern pattern1 = Pattern.compile("[^0-9]");
+                final Pattern pattern2 = Pattern.compile("[^a-z A-Z]");
+                final Boolean stringCheck1 = pattern2.matcher(customerName.getText().toString()).find();
+                boolean patternCheck = pattern1.matcher(customerMobileNumber.getText().toString()).find();
+                if ((customerMobileNumber.getText().toString().length() != 10) || (patternCheck)) {
+                    customerMobileNumber.setError("Required 10 digits number");
+                    customerMobileNumber.requestFocus();
+                } else if ((customerName.getText().toString().length() == 0) || (stringCheck1)) {
+                    customerName.setError("Required only alphabets");
+                    customerName.requestFocus();
+                } else {
+                    final String email;
+                    email = (customerEmailId.getText().toString().length() == 0) ? "NA" : customerEmailId.getText().toString();
+                    new GetBikeAsyncTask(HailCustomerActivity.this) {
+                        Long rideID = null;
 
-                    @Override
-                    public void process() {
-                        RideSyncher sut = new RideSyncher();
-                        Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString(), customerMobileNumber.getText().toString());
-                        rideID = ride.getId();
-                    }
-
-                    @Override
-                    public void afterPostExecute() {
-                        if (rideID != null) {
-                            Intent intent = new Intent(HailCustomerActivity.this, LocationActivity.class);
-                            intent.putExtra("rideId", rideID);
-                            intent.putExtra("reachedCustomer", true);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            ToastHelper.redToast(HailCustomerActivity.this, "Failed to book a ride.");
+                        @Override
+                        public void process() {
+                            RideSyncher sut = new RideSyncher();
+                            Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email);
+                            rideID = ride.getId();
                         }
-                    }
-                }.execute();
+
+                        @Override
+                        public void afterPostExecute() {
+                            if (rideID != null) {
+                                Intent intent = new Intent(HailCustomerActivity.this, LocationActivity.class);
+                                intent.putExtra("rideId", rideID);
+                                intent.putExtra("reachedCustomer", true);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                ToastHelper.redToast(HailCustomerActivity.this, "Failed to book a ride.");
+                            }
+                        }
+                    }.execute();
+                }
                 break;
         }
     }

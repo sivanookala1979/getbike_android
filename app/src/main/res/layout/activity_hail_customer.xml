@@ -28,27 +28,39 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Customer Mobile Number"/>
-
             <EditText
                 android:id="@+id/customerMobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:hint="Type Customer Mobile Number Here"
                 android:inputType="number"
-                android:hint="Type Mobile Number Here"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/editText"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Your Location"/>
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <EditText
+                    android:id="@+id/customerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Customer Name"
+                    android:inputType="textPersonName"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/customerEmailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Customer Email Id"
+                    android:inputType="textEmailAddress"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/yourLocation"
@@ -57,27 +69,20 @@
                 android:layout_weight="1"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Destination"/>
-
             <AutoCompleteTextView
                 android:id="@+id/destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:ems="10"
-                android:hint="Type your destination"
-                android:inputType="textPersonName"/>
+                android:hint="Type Your Destination"
+                android:inputType="textPersonName"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="45"
+            android:layout_weight="47.88"
             android:background="@color/transparent"
             android:orientation="vertical">
         </LinearLayout>
