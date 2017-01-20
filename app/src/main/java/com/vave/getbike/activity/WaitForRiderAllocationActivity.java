@@ -105,12 +105,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                 @Override
                 public void afterPostExecute() {
                     if (ride != null && riderProfile != null) {
-                        avLoadingIndicatorView.hide();
-                        ToastHelper.blueToast(WaitForRiderAllocationActivity.this, "Rider is allocated to you, he will call you shortly.");
-                        Intent intent = new Intent(WaitForRiderAllocationActivity.this, WaitForRiderAfterAcceptanceActivity.class);
-                        intent.putExtra("rideId", ride.getId());
-                        startActivity(intent);
-                        finish();
+                        processRideAcceptance();
                     } else {
                         ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
                     }
@@ -119,6 +114,15 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
             asyncTask.setShowProgress(false);
             asyncTask.execute();
         }
+    }
+
+    public void processRideAcceptance() {
+        avLoadingIndicatorView.hide();
+        ToastHelper.blueToast(WaitForRiderAllocationActivity.this, "Rider is allocated to you, he will call you shortly.");
+        Intent intent = new Intent(WaitForRiderAllocationActivity.this, WaitForRiderAfterAcceptanceActivity.class);
+        intent.putExtra("rideId", ride.getId());
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -130,33 +134,52 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
 
         @Override
         public void run() {
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (!showingDialog) {
                         showingDialog = true;
-                        AlertDialog.Builder builder;
-                        builder = new AlertDialog.Builder(WaitForRiderAllocationActivity.this);
-                        builder.setCancelable(false);
-                        builder.setTitle("Trip Update");
-                        builder.setMessage("We are sorry. Currently all are our riders are busy, do you want to wait for some more time?");
-                        builder.setPositiveButton("Wait More", new DialogInterface.OnClickListener() {
+                        new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
+
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                showingDialog = false;
+                            public void process() {
+                                RideSyncher rideSyncher = new RideSyncher();
+                                ride = rideSyncher.getRideById(rideId);
                             }
-                        });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                                showingDialog = false;
+                            public void afterPostExecute() {
+                                if ("RideAccepted".equals(ride.getRideStatus())) {
+                                    processRideAcceptance();
+                                    showingDialog = false;
+                                } else {
+                                    AlertDialog.Builder builder;
+                                    builder = new AlertDialog.Builder(WaitForRiderAllocationActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle("Trip Update");
+                                    builder.setMessage("We are sorry. Currently all are our riders are busy, do you want to wait for some more time?");
+                                    builder.setPositiveButton("Wait More", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                            showingDialog = false;
+                                        }
+                                    });
+                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            finish();
+                                            showingDialog = false;
+                                        }
+                                    });
+                                    builder.show();
+                                }
                             }
-                        });
-                        builder.show();
+                        }.execute();
                     }
                 }
+
             });
         }
     }
