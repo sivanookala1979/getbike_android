@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
@@ -30,6 +29,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     AVLoadingIndicatorView avLoadingIndicatorView;
     Ride ride = null;
     ScheduledFuture<?> future = null;
+    boolean showingDialog = false;
     private ScheduledExecutorService scheduler = null;
     private long rideId;
 
@@ -84,7 +84,8 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
             }.execute();
         }
 
-        scheduleNextReminder();
+        future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 0, 60, TimeUnit.SECONDS);
+
     }
 
     public void rideAccepted(long acceptedRideId) {
@@ -120,8 +121,9 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
         }
     }
 
-    private void scheduleNextReminder() {
-        future = scheduler.schedule(new WaitMoreAlertForUser(), 60, TimeUnit.SECONDS);
+    @Override
+    public void onBackPressed() {
+        // do nothing.
     }
 
     private class WaitMoreAlertForUser implements Runnable {
@@ -131,7 +133,8 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isFinishing()) {
+                    if (!showingDialog) {
+                        showingDialog = true;
                         AlertDialog.Builder builder;
                         builder = new AlertDialog.Builder(WaitForRiderAllocationActivity.this);
                         builder.setCancelable(false);
@@ -141,13 +144,14 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
-                                scheduleNextReminder();
+                                showingDialog = false;
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 finish();
+                                showingDialog = false;
                             }
                         });
                         builder.show();
@@ -155,9 +159,5 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                 }
             });
         }
-    }
-    @Override
-    public void onBackPressed() {
-        // do nothing.
     }
 }
