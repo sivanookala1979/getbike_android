@@ -176,7 +176,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
         if (googleMap != null && mCurrentLocation != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("GPS"));
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
             googleMap.setMyLocationEnabled(true);
             loadNearByRiders(googleMap, mCurrentLocation);

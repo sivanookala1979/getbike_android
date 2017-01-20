@@ -287,7 +287,8 @@ public class LocationActivity extends BaseActivity implements
                     RideLocation lastLocation = locations.get(locations.size() - 1);
                     marker = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)).anchor(0.5f, 0.5f));
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.top_view_bike_icon)).anchor(0.5f, 0.5f));
+                    marker.setRotation(mCurrentLocation.getBearing());
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 18.0f);
                     mMap.animateCamera(cameraUpdate);
                 }

@@ -17,9 +17,11 @@ import com.google.android.gms.iid.InstanceID;
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.CircleTransform;
+import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.model.UserProfile;
 import com.vave.getbike.syncher.BaseSyncher;
+import com.vave.getbike.syncher.LoginSyncher;
 
 /**
  * Created by adarsht on 30/11/16.
@@ -30,6 +32,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     public ImageView userProfileImage;
     public TextView mobileNumber;
     public TextView userName;
+    LoginSyncher loginSyncher = new LoginSyncher();
     UserProfile userProfile = new UserProfile();
 
     public void addToolbarView() {
@@ -43,6 +46,30 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 finish();
             }
         });
+    }
+
+    private void getProfileDetails() {
+        new GetBikeAsyncTask(BaseActivity.this) {
+
+            @Override
+            public void process() {
+                userProfile = loginSyncher.getUserProfile();
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (userProfile != null) {
+                    userName.setText(userProfile.getName());
+                    mobileNumber.setText(userProfile.getPhoneNumber());
+                    if (userProfile.getProfileImage() != null) {
+                        Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/" + userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(userProfileImage);
+                    }
+                } else {
+                    userProfile = new UserProfile();
+                }
+                GetBikePreferences.setUserProfile(userProfile);
+            }
+        }.execute();
     }
 
     public String getCurrencySymbol() {
@@ -64,15 +91,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         userProfileImage = (ImageView) headerView.findViewById(R.id.menu_profile_image);
         userName = (TextView) headerView.findViewById(R.id.menu_user_name);
         mobileNumber = (TextView) headerView.findViewById(R.id.menu_mobile_number);
-
-        if (userProfile != null) {
-            userName.setText(userProfile.getName());
-            mobileNumber.setText(userProfile.getPhoneNumber());
-            if (userProfile.getProfileImage() != null) {
-                Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/" + userProfile.getProfileImage()).transform(new CircleTransform()).placeholder(R.drawable.male_profile_icon).into(userProfileImage);
-            }
-        }
-
+        getProfileDetails();
     }
 
     @Override
