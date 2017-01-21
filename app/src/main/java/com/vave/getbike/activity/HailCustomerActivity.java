@@ -17,7 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,12 +54,14 @@ import java.util.regex.Pattern;
 public class HailCustomerActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     GoogleMap googleMap;
-    TextView yourLocation;
+    String yourLocation;
     LatLng yourLocationLatLng;
     TextView rideEstimateTextView;
     EditText customerMobileNumber;
     EditText customerName;
     EditText customerEmailId;
+    char gender;
+    RadioGroup genderGroup;
     AutoCompleteTextView destination;
     GMapV2Direction googleMapV2Direction;
     Button giveRideButton;
@@ -73,11 +77,24 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         customerMobileNumber = (EditText) findViewById(R.id.customerMobileNumber);
         customerName = (EditText) findViewById(R.id.customerName);
         customerEmailId = (EditText) findViewById(R.id.customerEmailId);
-        yourLocation = (TextView) findViewById(R.id.yourLocation);
+
         destination = (AutoCompleteTextView) findViewById(R.id.destination);
         rideEstimateTextView = (TextView) findViewById(R.id.rideEstimate);
         giveRideButton = (Button) findViewById(R.id.giveRide);
         giveRideButton.setOnClickListener(this);
+
+        genderGroup = (RadioGroup) findViewById(R.id.hailCustomerGender);
+        genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.male) {
+                    gender = 'M';
+                }
+                if (checkedId == R.id.female) {
+                    gender = 'F';
+                }
+            }
+        });
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -86,7 +103,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         yourLocationLatLng = new LatLng(latitude, longitude);
         if (latitude > 0 && longitude > 0) {
-            yourLocation.setText(getCompleteAddressString(latitude, longitude));
+            yourLocation = getCompleteAddressString(latitude, longitude);
         }
         googleMapV2Direction = new GMapV2Direction();
         addTextChangedListener();
@@ -305,6 +322,8 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                 } else if ((customerName.getText().toString().length() == 0) || (stringCheck1)) {
                     customerName.setError("Required only alphabets");
                     customerName.requestFocus();
+                } else if (genderGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(HailCustomerActivity.this, "Please select gender", Toast.LENGTH_LONG).show();
                 } else {
                     final String email;
                     email = (customerEmailId.getText().toString().length() == 0) ? "NA" : customerEmailId.getText().toString();
@@ -314,7 +333,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                         @Override
                         public void process() {
                             RideSyncher sut = new RideSyncher();
-                            Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email);
+                            Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation, destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email, gender);
                             rideID = ride.getId();
                         }
 

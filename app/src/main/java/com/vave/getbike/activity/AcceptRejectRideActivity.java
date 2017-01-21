@@ -120,6 +120,9 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                                 } else if (callStatus.getErrorCode() == 9906) {
                                     message = "You can't accept your own ride request.";
                                     title = "Ride";
+                                } else if (callStatus.getErrorCode() == 9907) {
+                                    message = "Please add money to your wallet.";
+                                    title = "Wallet";
                                 }
                             }
                             final AlertDialog.Builder builder = new AlertDialog.Builder(AcceptRejectRideActivity.this);
@@ -131,6 +134,10 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (callStatus != null && callStatus.getErrorCode() == 9905) {
                                         Intent intent = new Intent(AcceptRejectRideActivity.this, RiderProfileActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else if (callStatus != null && callStatus.getErrorCode() == 9907) {
+                                        Intent intent = new Intent(AcceptRejectRideActivity.this, GetBikeWalletHome.class);
                                         startActivity(intent);
                                         finish();
                                     } else {

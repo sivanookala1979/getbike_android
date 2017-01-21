@@ -45,7 +45,7 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public Ride hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email) {
+    public Ride hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email, final char gender) {
         final GetBikePointer<Ride> result = new GetBikePointer<>();
         new JsonPostHandler("/hailCustomer") {
 
@@ -58,6 +58,7 @@ public class RideSyncher extends BaseSyncher {
                 put("phoneNumber", phoneNumber);
                 put("name", name);
                 put("email", email);
+                put("gender", gender);
             }
 
             @Override
