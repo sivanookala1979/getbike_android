@@ -1,6 +1,8 @@
 package com.vave.getbike.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.vave.getbike.R;
+import com.vave.getbike.datasource.CallStatus;
 import com.vave.getbike.helpers.GMapV2Direction;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikeTextWatcher;
@@ -323,30 +326,60 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                     customerName.setError("Required only alphabets");
                     customerName.requestFocus();
                 } else if (genderGroup.getCheckedRadioButtonId() == -1) {
-                    Toast.makeText(HailCustomerActivity.this, "Please select gender", Toast.LENGTH_LONG).show();
+                    Toast.makeText(HailCustomerActivity.this, "Please select Gender", Toast.LENGTH_LONG).show();
                 } else {
                     final String email;
                     email = (customerEmailId.getText().toString().length() == 0) ? "NA" : customerEmailId.getText().toString();
                     new GetBikeAsyncTask(HailCustomerActivity.this) {
-                        Long rideID = null;
+                        CallStatus callStatus = null;
 
                         @Override
                         public void process() {
                             RideSyncher sut = new RideSyncher();
-                            Ride ride = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation, destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email, gender);
-                            rideID = ride.getId();
+                            callStatus = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation, destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email, gender);
                         }
 
                         @Override
                         public void afterPostExecute() {
-                            if (rideID != null) {
+                            if (callStatus.isSuccess()) {
                                 Intent intent = new Intent(HailCustomerActivity.this, LocationActivity.class);
-                                intent.putExtra("rideId", rideID);
+                                intent.putExtra("rideId", callStatus.getId());
                                 intent.putExtra("reachedCustomer", true);
                                 startActivity(intent);
                                 finish();
                             } else {
-                                ToastHelper.redToast(HailCustomerActivity.this, "Failed to book a ride.");
+                                String message = "Internal error occurred.";
+                                String title = "Unknown error";
+                                if (callStatus.getErrorCode() == 9905) {
+                                    message = "Please fill your Rider Profile to start the ride, or wait for admin approval.";
+                                    title = "Rider Profile";
+                                } else if (callStatus.getErrorCode() == 9907) {
+                                    message = "Please add money to your wallet.";
+                                    title = "Wallet";
+                                }
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(HailCustomerActivity.this);
+                                builder.setCancelable(false);
+                                builder.setTitle(title);
+                                builder.setMessage(message);
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (callStatus != null && callStatus.getErrorCode() == 9905) {
+                                            Intent intent = new Intent(HailCustomerActivity.this, RiderProfileActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else if (callStatus != null && callStatus.getErrorCode() == 9907) {
+                                            Intent intent = new Intent(HailCustomerActivity.this, GetBikeWalletHome.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Intent intent = new Intent(HailCustomerActivity.this, OpenRidesActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                });
+                                builder.show();
                             }
                         }
                     }.execute();

@@ -45,8 +45,8 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public Ride hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email, final char gender) {
-        final GetBikePointer<Ride> result = new GetBikePointer<>();
+    public CallStatus hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email, final char gender) {
+        final CallStatus result = new CallStatus();
         new JsonPostHandler("/hailCustomer") {
 
             @Override
@@ -63,30 +63,32 @@ public class RideSyncher extends BaseSyncher {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                Ride ride = new Ride();
-                ride.setId(jsonResult.getLong("rideId"));
-                result.setValue(ride);
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setSuccess();
+                    result.setId(jsonResult.getLong("rideId"));
+                } else {
+                    result.setErrorCode((Integer) jsonResult.get("errorCode"));
+                }
+
             }
         }.handle();
-        return result.getValue();
+        return result;
     }
 
     public CallStatus acceptRide(long rideId) {
-        final GetBikePointer<CallStatus> result = new GetBikePointer<>(null);
+        final CallStatus result = new CallStatus();
         new JsonGetHandler("/acceptRide?rideId=" + rideId) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                CallStatus callStatus = new CallStatus();
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-                    callStatus.setSuccess();
+                    result.setSuccess();
                 } else {
-                    callStatus.setErrorCode((Integer) jsonResult.get("errorCode"));
+                    result.setErrorCode((Integer) jsonResult.get("errorCode"));
                 }
-                result.setValue(callStatus);
             }
         }.handle();
-        return result.getValue();
+        return result;
     }
 
     public boolean startRide(long rideId) {
