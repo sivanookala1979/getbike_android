@@ -60,6 +60,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.vave.getbike.activity.GiveRideTakeRideActivity.GPS_PERMISSION_REQUEST_CODE;
+import static com.vave.getbike.utils.GetBikeUtils.isTimePassed;
 
 /**
  * Getting Location Updates.
@@ -88,6 +89,7 @@ public class LocationActivity extends BaseActivity implements
      */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    public static final int TIME_DELAY_BETWEEN_LOCATION_POSTS = 45;
     protected static final String TAG = "location-updates-sample";
     // Keys for storing activity state in the Bundle.
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
@@ -132,6 +134,8 @@ public class LocationActivity extends BaseActivity implements
      */
     protected String mLastUpdateTime;
     protected Date mLastUpdateTimeAsDate;
+    protected Date lastLocationPostedTime = new Date();
+    protected boolean tripStarted = false;
     List<RideLocation> locations = new ArrayList<>();
     LocationManager locationManager;
     Ride ride = null;
@@ -205,13 +209,9 @@ public class LocationActivity extends BaseActivity implements
      * Handles the Start Updates button and requests start of location updates. Does nothing if
      * updates have already been requested.
      */
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            mStartUpdatesButton.setVisibility(View.GONE);
-            mStopUpdatesButton.setVisibility(View.VISIBLE);
-            startLocationUpdates();
-        }
+    public void onStartTripClicked(View view) {
+        mStartUpdatesButton.setVisibility(View.GONE);
+        mStopUpdatesButton.setVisibility(View.VISIBLE);
         new GetBikeAsyncTask(LocationActivity.this) {
 
             @Override
@@ -221,6 +221,7 @@ public class LocationActivity extends BaseActivity implements
 
             @Override
             public void afterPostExecute() {
+                tripStarted = true;
             }
         }.execute();
     }
@@ -257,7 +258,7 @@ public class LocationActivity extends BaseActivity implements
     /**
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
-    private void updateUI() {
+    private void storeRideLocation() {
         if (mCurrentLocation != null) {
             String locationTime = String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime);
             mLastUpdateTimeTextView.setText(locationTime);
@@ -298,19 +299,31 @@ public class LocationActivity extends BaseActivity implements
     }
 
     private void postLastKnownLocation() {
-        if (locations.size() > 0 && locations.size() % 10 == 0) {
-            new GetBikeAsyncTask(LocationActivity.this) {
+        if (!tripStarted || (locations.size() > 0 && locations.size() % 10 == 0)) {
+            if (isTimePassed(lastLocationPostedTime, new Date(), TIME_DELAY_BETWEEN_LOCATION_POSTS))
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            new GetBikeAsyncTask(LocationActivity.this) {
 
-                @Override
-                public void process() {
-                    LoginSyncher loginSyncher = new LoginSyncher();
-                    loginSyncher.storeLastKnownLocation(new Date(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                }
+                                @Override
+                                public void process() {
+                                    LoginSyncher loginSyncher = new LoginSyncher();
+                                    loginSyncher.storeLastKnownLocation(new Date(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                                }
 
-                @Override
-                public void afterPostExecute() {
-                }
-            }.execute();
+                                @Override
+                                public void afterPostExecute() {
+                                    lastLocationPostedTime = new Date();
+                                }
+                            }.execute();
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
         }
     }
 
@@ -346,9 +359,11 @@ public class LocationActivity extends BaseActivity implements
         mCurrentLocation = location;
         mLastUpdateTimeAsDate = new Date();
         mLastUpdateTime = DateFormat.getTimeInstance().format(mLastUpdateTimeAsDate);
-        updateUI();
-        Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT).show();
+        if (tripStarted) {
+            storeRideLocation();
+        } else {
+            postLastKnownLocation();
+        }
     }
 
     @Override
@@ -465,7 +480,7 @@ public class LocationActivity extends BaseActivity implements
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         animateToLocation();
-
+        startLocationUpdates();
     }
 
     public void animateToLocation() throws SecurityException {

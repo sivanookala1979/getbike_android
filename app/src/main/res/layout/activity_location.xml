@@ -103,7 +103,7 @@
             android:layout_weight="1"
             android:background="@color/get_bike_black"
             android:gravity="center"
-            android:onClick="startUpdatesButtonHandler"
+            android:onClick="onStartTripClicked"
             android:text="START TRIP"
             android:textColor="@color/white"/>
 

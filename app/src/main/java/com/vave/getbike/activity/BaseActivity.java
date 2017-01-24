@@ -76,7 +76,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         return getApplicationContext().getResources().getString(R.string.Rs);
     }
 
-    public void addNavigationMenu() {
+    public void addNavigationMenu(AppCompatActivity activity) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -87,6 +87,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
+        GetBikePreferences.setPreferences(activity);
         userProfile = GetBikePreferences.getUserProfile();
         userProfileImage = (ImageView) headerView.findViewById(R.id.menu_profile_image);
         userName = (TextView) headerView.findViewById(R.id.menu_user_name);

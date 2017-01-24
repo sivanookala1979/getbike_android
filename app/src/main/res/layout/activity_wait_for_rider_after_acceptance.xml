@@ -41,25 +41,26 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/callRider"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/call_icon"
-                    android:id="@+id/callRider"/>
+                    android:background="@drawable/call_icon"/>
 
                 <ImageButton
+                    android:id="@+id/showVehicle"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/vehicle"
-                    android:id="@+id/showVehicle"/>
+                    android:background="@drawable/vehicle"/>
 
                 <ImageButton
+                    android:id="@+id/cancelRide"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/cancel_icon"
-                    android:id="@+id/cancelRide"/>
+                    android:background="@drawable/cancel_icon"/>
             </LinearLayout>
 
             <TextView
+                android:id="@+id/allottedRiderDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/get_bike_black"
@@ -67,9 +68,18 @@
                 android:padding="10dp"
                 android:text="Loading Rider Details..."
                 android:textColor="@color/white"
-                android:id="@+id/allottedRiderDetails"
                 />
 
+            <TextView
+                android:id="@+id/timeInMinutes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/get_bike_black"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:text=""
+                android:textColor="@color/white"
+                />
 
         </LinearLayout>
     </LinearLayout>

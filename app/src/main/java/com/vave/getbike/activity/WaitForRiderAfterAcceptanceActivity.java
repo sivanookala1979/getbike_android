@@ -2,8 +2,11 @@ package com.vave.getbike.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
@@ -34,15 +38,19 @@ import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
+import static com.vave.getbike.utils.GetBikeUtils.distanceInKms;
+import static com.vave.getbike.utils.GetBikeUtils.round2;
+
 public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     static WaitForRiderAfterAcceptanceActivity activeInstance;
     GoogleMap googleMap;
     long rideId;
-    TextView allottedRiderDetailsView;
+    TextView allottedRiderDetailsView, timeInMinutesView;
     ImageButton callRider = null, showVehicleDetails = null, cancelRide = null;
     Profile riderProfile = null;
     private Ride ride = null;
+    private LocationManager locationManager;
 
     public static WaitForRiderAfterAcceptanceActivity instance() {
         return activeInstance;
@@ -66,12 +74,15 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
         setContentView(R.layout.activity_wait_for_rider_after_acceptance);
         rideId = getIntent().getLongExtra("rideId", 0L);
         allottedRiderDetailsView = (TextView) findViewById(R.id.allottedRiderDetails);
+        timeInMinutesView = (TextView) findViewById(R.id.timeInMinutes);
         callRider = (ImageButton) findViewById(R.id.callRider);
         callRider.setOnClickListener(this);
         cancelRide = (ImageButton) findViewById(R.id.cancelRide);
         cancelRide.setOnClickListener(this);
         showVehicleDetails = (ImageButton) findViewById(R.id.showVehicle);
         showVehicleDetails.setOnClickListener(this);
+        locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -185,6 +196,42 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
             intent.putExtra("rideId", ride.getId());
             startActivity(intent);
             finish();
+        }
+    }
+
+    public void processRiderLocation(final double latitude, final double longtiude, final boolean rideStarted, long rideId) {
+        if (rideId == ride.getId()) {
+            if (googleMap != null && locationManager != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Location customerLocation = LocationDetails.getLocationOrShowToast(WaitForRiderAfterAcceptanceActivity.this, locationManager);
+                        if (customerLocation != null) {
+                            googleMap.clear();
+                            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                            LatLng customerLatLng = new LatLng(customerLocation.getLatitude(), customerLocation.getLongitude());
+                            builder.include(customerLatLng);
+                            LatLng riderLatLng = new LatLng(latitude, longtiude);
+                            builder.include(riderLatLng);
+                            LatLngBounds bounds = builder.build();
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 15);
+                            googleMap.animateCamera(cameraUpdate);
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(riderLatLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.top_view_bike_icon)));
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(customerLatLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
+                            timeInMinutesView.setText(round2(distanceInKms(customerLocation.getLatitude(), customerLocation.getLongitude(), latitude, longtiude)) + " kms away");
+                            if (rideStarted) {
+                                timeInMinutesView.setText("Ride Started");
+                                cancelRide.setVisibility(View.INVISIBLE);
+                            }
+                        }
+
+                    }
+                });
+            }
         }
     }
 }

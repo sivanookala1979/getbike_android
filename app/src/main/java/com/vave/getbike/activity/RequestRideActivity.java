@@ -24,7 +24,7 @@ public class RequestRideActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-        addNavigationMenu();
+        addNavigationMenu(this);
         getBikeResult = (TextView) findViewById(R.id.getBikeResult);
         showCurrentRideButton = (Button) findViewById(R.id.showCurrentRide);
         showCurrentRideButton.setOnClickListener(this);

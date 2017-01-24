@@ -109,6 +109,11 @@ public class MyGcmListenerService extends GcmListenerService {
                 intent = new Intent(this, ShowCompletedRideActivity.class);
                 intent.putExtra("rideId", rideId);
             }
+        } else if ("riderLocation".equals(messageType)) {
+            if (WaitForRiderAfterAcceptanceActivity.instance() != null) {
+                String tokens[] = message.split(",");
+                WaitForRiderAfterAcceptanceActivity.instance().processRiderLocation(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]), Boolean.parseBoolean(tokens[2]), rideId);
+            }
         } else {
             intent = new Intent(this, SplashScreenActivity.class);
         }
