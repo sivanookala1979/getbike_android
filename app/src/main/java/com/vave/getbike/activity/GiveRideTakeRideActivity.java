@@ -41,6 +41,8 @@ import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
+import com.vave.getbike.model.CurrentRideStatus;
+import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
@@ -60,7 +62,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     GoogleApiClient mGoogleApiClient;
     Location fusedCurrentLocation;
     GoogleMap googleMap;
-    Long rideID = null;
+    CurrentRideStatus rideStatus = null;
     Button showCurrentRideButton;
     LinearLayout giveRideTakeRideLinearLayout;
     private Location mCurrentLocation;
@@ -99,32 +101,110 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         showCurrentRideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Tag", "clicked on show current ride button");
-                AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
-                builder.setCancelable(false);
-                builder.setTitle("Trip Details");
-                builder.setMessage("Your previous trip was not yet closed, Do you want to resume it again?");
-                builder.setPositiveButton("Resume", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
-                        intent.putExtra("rideId", rideID);
-                        intent.putExtra("isTripResumed", true);
-                        startActivity(intent);
-                    }
-                });
-                builder.setNegativeButton("Close Ride", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Need to close the ride
-                        dialogInterface.dismiss();
-                        LocationDetails.stopTrip(GiveRideTakeRideActivity.this, rideID);
-                    }
-                });
-                builder.show();
+                if (rideStatus != null && rideStatus.getRideId() != null && rideStatus.getRideId() > 0) {
+                    resumeRide(rideStatus.getRideId());
+                } else if (rideStatus != null && rideStatus.getRequestId() != null && rideStatus.getRequestId() > 0) {
+                    final long requestId = rideStatus.getRequestId();
+
+                    new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+                        Ride ride = null;
+
+                        @Override
+                        public void process() {
+                            ride = new RideSyncher().getRideById(rideStatus.getRequestId());
+                        }
+
+                        @Override
+                        public void afterPostExecute() {
+                            if (ride != null && "RideRequested".equals(ride.getRideStatus())) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+                                builder.setCancelable(false);
+                                builder.setTitle("Trip Details");
+                                builder.setMessage("Your previous trip was not yet closed, Do you want to resume it again?");
+                                builder.setPositiveButton("Resume", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(GiveRideTakeRideActivity.this, WaitForRiderAllocationActivity.class);
+                                        intent.putExtra("rideId", requestId);
+                                        startActivity(intent);
+
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel Ride", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                        processCancelRide(requestId);
+                                    }
+
+                                });
+                                builder.show();
+                            } else if (ride != null && "RideAccepted".equals(ride.getRideStatus())) {
+                                Intent intent = new Intent(GiveRideTakeRideActivity.this, WaitForRiderAfterAcceptanceActivity.class);
+                                intent.putExtra("rideId", requestId);
+                                startActivity(intent);
+                            }
+                        }
+                    }.execute();
+
+                    Log.d("Tag", "clicked on show current ride button");
+
+                }
+            }
+
+        });
+    }
+
+    public void processCancelRide(final long requestId) {
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+            boolean result = false;
+
+            @Override
+            public void process() {
+                RideSyncher rideSyncher = new RideSyncher();
+                result = rideSyncher.cancelRide(requestId);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (result) {
+                    ToastHelper.blueToast(GiveRideTakeRideActivity.this, "Successfully cancelled the ride.");
+                    updateCurrentRideId();
+                } else {
+                    ToastHelper.redToast(GiveRideTakeRideActivity.this, "Failed to cancel the ride.");
+                    Intent intent = new Intent(GiveRideTakeRideActivity.this, WaitForRiderAfterAcceptanceActivity.class);
+                    intent.putExtra("rideId", requestId);
+                    startActivity(intent);
+                }
+            }
+        }.execute();
+    }
+
+    public void resumeRide(final long rideID) {
+        Log.d("Tag", "clicked on show current ride button");
+        AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+        builder.setCancelable(false);
+        builder.setTitle("Trip Details");
+        builder.setMessage("Your previous trip was not yet closed, Do you want to resume it again?");
+        builder.setPositiveButton("Resume", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(GiveRideTakeRideActivity.this, LocationActivity.class);
+                intent.putExtra("rideId", rideID);
+                intent.putExtra("isTripResumed", true);
+                startActivity(intent);
             }
         });
-        updateCurrentRideId();
+        builder.setNegativeButton("Close Ride", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Need to close the ride
+                dialogInterface.dismiss();
+                LocationDetails.stopTrip(GiveRideTakeRideActivity.this, rideID);
+            }
+        });
+        builder.show();
     }
 
     protected void createLocationRequest() {
@@ -277,17 +357,17 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
             @Override
             public void process() {
-                rideID = new LoginSyncher().getCurrentRide();
+                rideStatus = new LoginSyncher().getCurrentRide();
             }
 
             @Override
             public void afterPostExecute() {
-                if (rideID == null) {
-                    showCurrentRideButton.setVisibility(View.GONE);
-                    giveRideTakeRideLinearLayout.setVisibility(View.VISIBLE);
-                } else {
+                if (rideStatus.isPending()) {
                     showCurrentRideButton.setVisibility(View.VISIBLE);
                     giveRideTakeRideLinearLayout.setVisibility(View.GONE);
+                } else {
+                    showCurrentRideButton.setVisibility(View.GONE);
+                    giveRideTakeRideLinearLayout.setVisibility(View.VISIBLE);
                 }
             }
         }.execute();

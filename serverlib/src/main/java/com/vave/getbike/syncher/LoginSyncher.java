@@ -2,6 +2,7 @@ package com.vave.getbike.syncher;
 
 import com.google.gson.Gson;
 import com.vave.getbike.datasource.CallStatus;
+import com.vave.getbike.model.CurrentRideStatus;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.SaveResult;
 import com.vave.getbike.model.UserProfile;
@@ -159,18 +160,24 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public Long getCurrentRide() {
-        final GetBikePointer<Long> result = new GetBikePointer<>(null);
+    public CurrentRideStatus getCurrentRide() {
+        final CurrentRideStatus result = new CurrentRideStatus();
         new JsonGetHandler("/getCurrentRide") {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                if (jsonResult.has("result") && jsonResult.get("result").equals("success") && jsonResult.has("rideId")) {
-                    result.setValue(jsonResult.getLong("rideId"));
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setPending(true);
+                    if (jsonResult.has("rideId")) {
+                        result.setRideId(jsonResult.getLong("rideId"));
+                    }
+                    if (jsonResult.has("requestId")) {
+                        result.setRequestId(jsonResult.getLong("requestId"));
+                    }
                 }
             }
         }.handle();
-        return result.getValue();
+        return result;
     }
 
     public boolean storeLastKnownLocation(final Date lastLocationTime, final Double latitude, final Double longitude) {
