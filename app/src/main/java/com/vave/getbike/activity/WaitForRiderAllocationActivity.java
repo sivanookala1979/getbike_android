@@ -41,14 +41,22 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         activeInstance = this;
+        cleanFuture();
+        future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 45, 45, TimeUnit.SECONDS);
+        showingDialog = false;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         activeInstance = null;
+        cleanFuture();
+    }
+
+    private void cleanFuture() {
         if (future != null) {
             future.cancel(true);
+            future = null;
         }
     }
 
@@ -83,8 +91,6 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                 }
             }.execute();
         }
-
-        future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 60, 60, TimeUnit.SECONDS);
 
     }
 
