@@ -138,7 +138,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
             notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(0, notification);
+            notificationManager.notify(rideId != null ? rideId.intValue() : 0, notification);
         }
     }
 }

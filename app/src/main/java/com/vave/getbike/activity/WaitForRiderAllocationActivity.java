@@ -170,6 +170,20 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             finish();
+                                            new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
+                                                boolean result = false;
+
+                                                @Override
+                                                public void process() {
+                                                    RideSyncher rideSyncher = new RideSyncher();
+                                                    result = rideSyncher.cancelRide(rideId);
+                                                }
+
+                                                @Override
+                                                public void afterPostExecute() {
+                                                }
+                                            }.execute();
+
                                             showingDialog = false;
                                         }
                                     });
