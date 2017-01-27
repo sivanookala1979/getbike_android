@@ -97,6 +97,9 @@ public class MyGcmListenerService extends GcmListenerService {
         } else if ("rideAccepted".equals(messageType)) {
             if (WaitForRiderAllocationActivity.instance() != null) {
                 WaitForRiderAllocationActivity.instance().rideAccepted(rideId);
+            } else {
+                intent = new Intent(this, WaitForRiderAfterAcceptanceActivity.class);
+                intent.putExtra("rideId", rideId);
             }
         } else if ("rideCancelled".equals(messageType)) {
             if (LocationActivity.instance() != null) {

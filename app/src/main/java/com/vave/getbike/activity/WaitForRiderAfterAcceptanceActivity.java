@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.Profile;
@@ -71,6 +72,8 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GetBikePreferences.setPreferences(getApplicationContext());
+        BaseSyncher.setAccessToken(GetBikePreferences.getAccessToken());
         setContentView(R.layout.activity_wait_for_rider_after_acceptance);
         rideId = getIntent().getLongExtra("rideId", 0L);
         allottedRiderDetailsView = (TextView) findViewById(R.id.allottedRiderDetails);
