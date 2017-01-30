@@ -121,8 +121,9 @@ public class MyGcmListenerService extends GcmListenerService {
             intent = new Intent(this, SplashScreenActivity.class);
         }
         if (intent != null) {
+            int notificationId = rideId != null ? rideId.intValue() : 0;
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent,
                     PendingIntent.FLAG_ONE_SHOT);
             Uri uri = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -141,7 +142,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
             notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(rideId != null ? rideId.intValue() : 0, notification);
+            notificationManager.notify(notificationId, notification);
         }
     }
 }
