@@ -203,7 +203,7 @@ public class WaitForRiderAfterAcceptanceActivity extends AppCompatActivity imple
     }
 
     public void processRiderLocation(final double latitude, final double longtiude, final boolean rideStarted, long rideId) {
-        if (rideId == ride.getId()) {
+        if (ride != null && ride.getId() == rideId) {
             if (googleMap != null && locationManager != null) {
                 runOnUiThread(new Runnable() {
                     @Override
