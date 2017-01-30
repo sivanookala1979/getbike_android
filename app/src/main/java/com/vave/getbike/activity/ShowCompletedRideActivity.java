@@ -2,6 +2,8 @@ package com.vave.getbike.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -29,7 +31,8 @@ import static com.vave.getbike.utils.StringUtils.isStringValid;
 
 public class ShowCompletedRideActivity extends BaseActivity implements OnMapReadyCallback {
 
-    TextView tripDateTime, tripId, userName, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash, currentRatingStatus;
+    TextView tripDateTime, tripId, userName, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash, currentRatingStatus, freeRideDiscount;
+    LinearLayout freeRideDiscountPanel;
     RatingBar ratingBar;
     private GoogleMap mMap;
     private Ride ride = null;
@@ -44,6 +47,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         setContentView(R.layout.trip_details_screen);
 
         addToolbarView();
+        freeRideDiscountPanel = (LinearLayout) findViewById(R.id.freeRideDiscountPanel);
         tripDateTime = (TextView) findViewById(R.id.tipDateTime);
         tripId = (TextView) findViewById(R.id.tripId);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
@@ -60,6 +64,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         totalBill = (TextView) findViewById(R.id.totalBill);
         cash = (TextView) findViewById(R.id.cashAmount);
         currentRatingStatus = (TextView) findViewById(R.id.currentRatingStatus);
+        freeRideDiscount = (TextView) findViewById(R.id.freeRideDiscount);
         rideId = getIntent().getLongExtra("rideId", 0L);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -118,6 +123,11 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
                 currentRatingStatus.setText("You rated");
             } else {
                 currentRatingStatus.setText("Please rate your ride");
+            }
+            if (ride.isFreeRide()) {
+                freeRideDiscountPanel.setVisibility(View.VISIBLE);
+                freeRideDiscount.setText(indianRupee + " " + ride.getFreeRideDiscount());
+                cash.setText(indianRupee + " " + Math.max(0.0, ride.getTotalBill() - ride.getFreeRideDiscount()));
             }
         }
     }

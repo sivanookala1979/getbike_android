@@ -441,6 +441,40 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/freeRideDiscountPanel"
+                    android:visibility="gone"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                        android:gravity="center_vertical"
+                        android:padding="2dp"
+                        android:text="Free Ride Discount"
+                        android:textColor="@color/get_bike_black"
+                        android:textSize="@dimen/text_size_intermediate"/>
+
+                    <TextView
+                        android:id="@+id/freeRideDiscount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
+                        android:gravity="center_vertical|right"
+                        android:padding="2dp"
+                        android:text="0.0"
+                        android:textColor="@color/get_bike_black"
+                        android:textSize="@dimen/text_size_intermediate"/>
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

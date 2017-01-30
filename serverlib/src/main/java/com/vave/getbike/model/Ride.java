@@ -32,6 +32,8 @@ public class Ride {
     Integer rating;
     String actualSourceAddress;
     String actualDestinationAddress;
+    boolean freeRide = false;
+    Double freeRideDiscount;
 
     public String getActualSourceAddress() {
         return actualSourceAddress;
@@ -230,5 +232,21 @@ public class Ride {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public boolean isFreeRide() {
+        return freeRide;
+    }
+
+    public void setFreeRide(boolean freeRide) {
+        this.freeRide = freeRide;
+    }
+
+    public Double getFreeRideDiscount() {
+        return freeRideDiscount;
+    }
+
+    public void setFreeRideDiscount(Double freeRideDiscount) {
+        this.freeRideDiscount = freeRideDiscount;
     }
 }
