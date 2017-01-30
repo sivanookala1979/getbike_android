@@ -58,7 +58,7 @@ public class RideSyncher extends BaseSyncher {
                 put("phoneNumber", phoneNumber);
                 put("name", name);
                 put("email", email);
-                put("gender", gender);
+                put("gender", gender + "");
             }
 
             @Override
