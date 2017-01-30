@@ -12,6 +12,7 @@ import android.support.test.runner.lifecycle.Stage;
 import android.view.View;
 import android.widget.TextView;
 
+import com.vave.getbike.model.CurrentRideStatus;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -40,9 +41,9 @@ public class BaseGetBikeActivityTest {
     protected Activity currentActivity;
 
     public static void closeCurrentRide() {
-        Long previousRideId = new LoginSyncher().getCurrentRide();
-        if (previousRideId != null) {
-            new RideSyncher().closeRide(previousRideId);
+        CurrentRideStatus currentRideStatus = new LoginSyncher().getCurrentRide();
+        if (currentRideStatus != null) {
+            new RideSyncher().closeRide(currentRideStatus.getRideId());
         }
     }
 

@@ -28,6 +28,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     EditText name;
     EditText mobile;
     EditText email;
+    EditText promoCode;
     char gender;
 
     @Override
@@ -45,6 +46,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         name = (EditText) findViewById(R.id.name);
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);
+        promoCode = (EditText) findViewById(R.id.promoCode);
 
         loginTextView = (TextView) findViewById(R.id.login_text_view);
         loginTextView.setOnClickListener(this);
@@ -94,7 +96,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                         public void process() {
                             LoginSyncher sut = new LoginSyncher();
                             Log.d("TAG", "call status for signup is:" + callStatus);
-                            callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), gender);
+                            callStatus = sut.signup(readText(R.id.name), readText(R.id.mobile), readText(R.id.email), gender, readText(R.id.promoCode));
                             Log.d("TAG", "call status for signup is:" + callStatus);
                         }
 

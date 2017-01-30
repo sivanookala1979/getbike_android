@@ -19,7 +19,7 @@ import java.util.Date;
 
 public class LoginSyncher extends BaseSyncher {
 
-    public CallStatus signup(final String name, final String mobileNumber, final String email, final char gender) {
+    public CallStatus signup(final String name, final String mobileNumber, final String email, final char gender, final String signupPromoCode) {
         final GetBikePointer<CallStatus> result = new GetBikePointer<>(null);
         new JsonPostHandler("/signup") {
 
@@ -29,6 +29,7 @@ public class LoginSyncher extends BaseSyncher {
                 put("phoneNumber", mobileNumber);
                 put("email", email);
                 put("gender", gender);
+                put("signupPromoCode", signupPromoCode);
             }
 
             @Override

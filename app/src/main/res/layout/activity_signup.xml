@@ -31,9 +31,10 @@
             android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -42,10 +43,8 @@
 
         <EditText
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:ems="10"
             android:hint="Name"
             android:inputType="textPersonName"
@@ -53,11 +52,8 @@
 
         <EditText
             android:id="@+id/email"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/name"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -65,30 +61,19 @@
 
         <EditText
             android:id="@+id/mobile"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/email"
             android:ems="10"
             android:hint="Mobile Number"
             android:inputType="phone"/>
 
-        <LinearLayout
-            android:id="@+id/optionsView"
+        <EditText
+            android:id="@+id/promoCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/signup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"/>
-
-        </LinearLayout>
+            android:ems="10"
+            android:hint="Promo Code (Optional)"
+            android:inputType="phone"/>
 
 
         <TextView
@@ -103,7 +88,7 @@
         <RadioGroup
             android:id="@+id/gender"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/optionsView"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView"
@@ -126,15 +111,29 @@
 
         </RadioGroup>
 
+        <LinearLayout
+            android:id="@+id/optionsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/login_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/optionsView"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:text="Already registered! Log me in"
             android:textColor="@color/colorPrimary"/>
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
