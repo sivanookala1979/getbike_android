@@ -41,10 +41,25 @@ public class BaseGetBikeActivityTest {
     protected Activity currentActivity;
 
     public static void closeCurrentRide() {
-        CurrentRideStatus currentRideStatus = new LoginSyncher().getCurrentRide();
+        CurrentRideStatus currentRideStatus = new LoginSyncher().getCurrentRide("xx~xxx~uui");
         if (currentRideStatus != null) {
             new RideSyncher().closeRide(currentRideStatus.getRideId());
         }
+    }
+
+    public static Matcher<View> textCapture(final AtomicReference<String> ref) {
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with text: ");
+            }
+
+            @Override
+            public boolean matchesSafely(TextView textView) {
+                ref.set(textView.getText().toString());
+                return true;
+            }
+        };
     }
 
     protected void assertToast(int errorId, ActivityTestRule mActivityTestRule) {
@@ -134,20 +149,5 @@ public class BaseGetBikeActivityTest {
                         LocationManager.GPS_PROVIDER,
                         newLocation
                 );
-    }
-
-    public static Matcher<View> textCapture(final AtomicReference<String> ref) {
-        return new BoundedMatcher<View, TextView>(TextView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with text: ");
-            }
-
-            @Override
-            public boolean matchesSafely(TextView textView) {
-                ref.set(textView.getText().toString());
-                return true;
-            }
-        };
     }
 }

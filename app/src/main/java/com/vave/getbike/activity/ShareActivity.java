@@ -61,28 +61,30 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
+        String url = "Welcome to getbike https://goo.gl/VpB7bE family our Referral code is " + shareCode;
+        String subject = "getbike Referral Code";
         switch (view.getId()) {
             case R.id.whatsApp_button:
                 Intent whatsAppIntent = new Intent();
                 whatsAppIntent.setAction(Intent.ACTION_SEND);
                 whatsAppIntent.setType("text/plain");
-                whatsAppIntent.putExtra(Intent.EXTRA_SUBJECT, "getbike Referral Code");
-                whatsAppIntent.putExtra(Intent.EXTRA_TEXT, "Welcome to getbike family our Referral code is " + shareCode);
+                whatsAppIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                whatsAppIntent.putExtra(Intent.EXTRA_TEXT, url);
                 whatsAppIntent.setPackage("com.whatsapp");
                 startActivity(whatsAppIntent);
                 break;
             case R.id.mail_button:
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
-                email.putExtra(Intent.EXTRA_SUBJECT, "getbike Referral Code");
-                email.putExtra(Intent.EXTRA_TEXT, "Welcome to getbike family our Referral code is " + shareCode);
+                email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                email.putExtra(Intent.EXTRA_TEXT, url);
                 email.setType("message/rfc822");
                 startActivity(Intent.createChooser(email, "Choose an Email client :"));
                 break;
             case R.id.message_button:
                 Intent messageIntent = new Intent(Intent.ACTION_VIEW);
                 messageIntent.setType("vnd.android-dir/mms-sms");
-                messageIntent.putExtra("sms_body", "Welcome to getbike family our Referral code is " + shareCode);
+                messageIntent.putExtra("sms_body", url);
                 startActivity(messageIntent);
                 break;
             case R.id.share_on_social_media:
@@ -90,8 +92,8 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
                 Intent sharingIntent = new Intent();
                 sharingIntent.setAction(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "getbike Referral Code");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, "Welcome to getbike family our Referral code is " + shareCode);
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, url);
                 startActivity(Intent.createChooser(sharingIntent, "Share"));
                 break;
         }

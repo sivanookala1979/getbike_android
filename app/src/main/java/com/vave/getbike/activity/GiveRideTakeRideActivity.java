@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -65,6 +66,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     CurrentRideStatus rideStatus = null;
     Button showCurrentRideButton;
     LinearLayout giveRideTakeRideLinearLayout;
+    String applicationVersionName = "xx";
+    int applicationVersionCode = -999;
     private Location mCurrentLocation;
     private LocationManager locationManager;
     private ImageButton takeRide;
@@ -79,6 +82,13 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            applicationVersionName = pInfo.versionName;
+            applicationVersionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         Log.d(TAG, "onCreate ...............................");
         //show error dialog if GoolglePlayServices not available
         if (!isGooglePlayServicesAvailable()) {
@@ -357,7 +367,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
             @Override
             public void process() {
-                rideStatus = new LoginSyncher().getCurrentRide();
+                rideStatus = new LoginSyncher().getCurrentRide(applicationVersionName + "~" + applicationVersionCode + "~" + R.string.app_version);
             }
 
             @Override

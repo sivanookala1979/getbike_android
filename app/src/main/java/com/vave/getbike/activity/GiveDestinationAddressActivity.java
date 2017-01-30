@@ -300,7 +300,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
                             startActivity(intent);
                             finish();
                         } else {
-                            ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to book a ride.");
+                            ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to book a ride, please retry.");
                         }
                     }
                 }.execute();

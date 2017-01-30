@@ -22,6 +22,7 @@
         completions."
     </string>
     <string name="get_bike">getbike</string>
+    <string name="app_version">1.7</string>
 
 
     <string name="latitude_label">Latitude</string>

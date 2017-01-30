@@ -161,9 +161,9 @@ public class LoginSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public CurrentRideStatus getCurrentRide() {
+    public CurrentRideStatus getCurrentRide(String versionDetails) {
         final CurrentRideStatus result = new CurrentRideStatus();
-        new JsonGetHandler("/getCurrentRide") {
+        new JsonGetHandler("/getCurrentRide?version=" + versionDetails) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
