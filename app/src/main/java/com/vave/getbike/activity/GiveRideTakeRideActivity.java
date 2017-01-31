@@ -68,6 +68,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     LinearLayout giveRideTakeRideLinearLayout;
     String applicationVersionName = "xx";
     int applicationVersionCode = -999;
+    String applicationVersionFromStrings = "xxxx";
     private Location mCurrentLocation;
     private LocationManager locationManager;
     private ImageButton takeRide;
@@ -89,6 +90,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        applicationVersionFromStrings = getString(R.string.app_version);
         Log.d(TAG, "onCreate ...............................");
         //show error dialog if GoolglePlayServices not available
         if (!isGooglePlayServicesAvailable()) {
@@ -367,7 +369,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
             @Override
             public void process() {
-                rideStatus = new LoginSyncher().getCurrentRide(applicationVersionName + "~" + applicationVersionCode + "~" + R.string.app_version);
+                rideStatus = new LoginSyncher().getCurrentRide(applicationVersionName + "~" + applicationVersionCode + "~" + applicationVersionFromStrings);
             }
 
             @Override
