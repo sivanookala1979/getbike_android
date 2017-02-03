@@ -103,8 +103,8 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                         @Override
                         public void afterPostExecute() {
                             if (callStatus != null) {
+                                Log.d("TAG", "call status for signup is:" + callStatus);
                                 if (callStatus.isSuccess()) {
-                                    Log.d("TAG", "call status for signup is:" + callStatus);
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                                     builder.setCancelable(false);
                                     builder.setTitle("Success");
@@ -119,8 +119,9 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                                     });
                                     builder.show();
                                 } else if (callStatus.getErrorCode() == 9901) {
-                                    Log.d("TAG", "call status for signup is:" + callStatus);
                                     ToastHelper.redToast(getApplicationContext(), R.string.error_user_already_exists);
+                                } else if (callStatus.getErrorCode() == 9908) {
+                                    ToastHelper.redToast(getApplicationContext(), "Invalid promo code.");
                                 }
                             } else {
                                 ToastHelper.serverToast(getApplicationContext());
