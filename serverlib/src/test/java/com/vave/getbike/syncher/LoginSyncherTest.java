@@ -1,6 +1,7 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
+import com.vave.getbike.model.CurrentRideStatus;
 import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.UserProfile;
@@ -38,7 +39,7 @@ public class LoginSyncherTest {
 
     @Test
     public void signupTESTHappyFlow() {
-        CallStatus actual = sut.signup("Siva", UUID.randomUUID().toString(), "siva.nookala@gmail.com", 'M');
+        CallStatus actual = sut.signup("Siva", UUID.randomUUID().toString(), "siva.nookala@gmail.com", 'M', "");
         assertNotNull(actual);
         assertTrue(actual.getId() > 0);
         assertTrue(actual.isSuccess());
@@ -47,15 +48,15 @@ public class LoginSyncherTest {
     @Test
     public void signupTESTWithDuplicateMobileNumber() {
         String randomMobileNumber = UUID.randomUUID().toString();
-        sut.signup("Siva", randomMobileNumber, "siva.nookala@gmail.com", 'M');
-        CallStatus actual = sut.signup("Siva", randomMobileNumber, "siva.nookala@gmail.com", 'M');
+        sut.signup("Siva", randomMobileNumber, "siva.nookala@gmail.com", 'M', "");
+        CallStatus actual = sut.signup("Siva", randomMobileNumber, "siva.nookala@gmail.com", 'M', "");
         assertEquals(9901, actual.getErrorCode());
         assertFalse(actual.isSuccess());
     }
 
     @Test
     public void loginTESTHappyFlow() {
-        sut.signup("Siva", "9949287789", "siva.nookala@gmail.com", 'M');
+        sut.signup("Siva", "9949287789", "siva.nookala@gmail.com", 'M', "");
         boolean actual = sut.login("9949287789");
         assertTrue(actual);
     }
@@ -87,24 +88,24 @@ public class LoginSyncherTest {
         Ride ride = rideSyncher.requestRide(21.34, 32.56, "Chennai", "Mumbai");
         rideSyncher.acceptRide(ride.getId());
         // Execute
-        Long rideId = sut.getCurrentRide();
+        CurrentRideStatus currentRideStatus = sut.getCurrentRide("version222");
         // Verify
-        assertEquals(ride.getId(), rideId);
+        assertEquals(ride.getId(), currentRideStatus.getRideId());
     }
 
     @Test
     public void getCurrentRideTESTNoRide() {
         // Setup
         BaseSyncher.testSetup();
-        Long previousRideId = sut.getCurrentRide();
-        if (previousRideId != null) {
+        CurrentRideStatus currentRideStatus = sut.getCurrentRide("vveee");
+        if (currentRideStatus != null && currentRideStatus.getRideId() != null) {
             RideSyncher rideSyncher = new RideSyncher();
-            rideSyncher.closeRide(previousRideId);
+            rideSyncher.closeRide(currentRideStatus.getRideId());
         }
         // Execute
-        Long rideId = sut.getCurrentRide();
+        CurrentRideStatus actual = sut.getCurrentRide("wuwwou");
         // Verify
-        assertNull(rideId);
+        assertNull(actual.getRideId());
     }
 
     @Test

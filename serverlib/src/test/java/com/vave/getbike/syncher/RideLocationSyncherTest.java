@@ -41,7 +41,7 @@ public class RideLocationSyncherTest {
         sut = new RideLocationSyncher();
         BaseSyncher.testSetup();
         AndroidStubsFactory.IS_TEST = true;
-        Long previousRideId = new LoginSyncher().getCurrentRide();
+        Long previousRideId = new LoginSyncher().getCurrentRide("sss").getRideId();
         if (previousRideId != null) {
             new RideSyncher().closeRide(previousRideId);
         }

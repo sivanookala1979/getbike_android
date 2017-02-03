@@ -29,7 +29,7 @@ public class RideSyncherTest {
     RideSyncher sut;
 
     public static void closeCurrentRide() {
-        Long previousRideId = new LoginSyncher().getCurrentRide();
+        Long previousRideId = new LoginSyncher().getCurrentRide("wwwww").getRideId();
         if (previousRideId != null) {
             new RideSyncher().closeRide(previousRideId);
         }
@@ -57,10 +57,10 @@ public class RideSyncherTest {
 
     @Test
     public void hailCustomerTESTHappyFlow() {
-        Ride ride = sut.hailCustomer(24.56, 24.57, "Kavali", "Musunur", "9383787373");
-        Ride actual = sut.getRideById(ride.getId());
+        CallStatus callStatus = sut.hailCustomer(24.56, 24.57, "Kavali", "Musunur", "9383787373", "Jyothi", "jyothi36636@gmail.com", 'F');
+        Ride actual = sut.getRideById(callStatus.getId());
         assertNotNull(actual);
-        assertEquals(ride.getId(), actual.getId());
+        assertEquals(callStatus.getId(), actual.getId());
         assertEquals(24.56, actual.getStartLatitude());
         assertEquals(24.57, actual.getStartLongitude());
         assertEquals("Kavali", actual.getSourceAddress());

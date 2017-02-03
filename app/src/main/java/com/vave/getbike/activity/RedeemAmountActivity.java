@@ -168,7 +168,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void afterPostExecute() {
                 if (saveResult.isValid()) {
-                    ToastHelper.redToast(getApplicationContext(), "transaction successful.");
+                    ToastHelper.redToast(getApplicationContext(), "Transaction successful.");
                     bankAmount.setText("");
                 } else {
                     ToastHelper.redToast(getApplicationContext(), saveResult.getErrorMessage());
@@ -189,7 +189,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void afterPostExecute() {
                 if (saveResult.isValid()) {
-                    ToastHelper.redToast(getApplicationContext(), "transaction successful.");
+                    ToastHelper.redToast(getApplicationContext(), "Transaction successful.");
                     redeemMobileNumber.setText("");
                     redeemAmount.setText("");
                 } else {
@@ -219,7 +219,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void afterPostExecute() {
                 if (saveResult.isValid()) {
-                    ToastHelper.redToast(getApplicationContext(), "Recharge successful");
+                    ToastHelper.redToast(getApplicationContext(), "Recharge successful.");
                     rechargeMobileNumber.setText("");
                     rechargeAmount.setText("");
                 } else {

@@ -5,9 +5,12 @@ package com.vave.getbike.model;
  */
 
 public class Wallet {
+
     double promoBalance;
     double cashBalance;
     double userBalance;
+    int freeRidesEarned;
+    int freeRidesSpent;
     double minimumDeposit;
     double redeemableAmount;
 
@@ -51,4 +54,19 @@ public class Wallet {
         this.redeemableAmount = redeemableAmount;
     }
 
+    public int getFreeRidesEarned() {
+        return freeRidesEarned;
+    }
+
+    public void setFreeRidesEarned(int freeRidesEarned) {
+        this.freeRidesEarned = freeRidesEarned;
+    }
+
+    public int getFreeRidesSpent() {
+        return freeRidesSpent;
+    }
+
+    public void setFreeRidesSpent(int freeRidesSpent) {
+        this.freeRidesSpent = freeRidesSpent;
+    }
 }

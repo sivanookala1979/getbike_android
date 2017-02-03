@@ -23,7 +23,7 @@ import java.util.List;
 
 public class GetBikeWalletHome extends BaseActivity implements View.OnClickListener {
 
-    TextView promoBalance, cashBalance, yourBalance;
+    TextView promoBalance, cashBalance, yourBalance, ridesEarned, ridesSpent;
     ListView history;
     Button redeem, addMoney;
 
@@ -35,6 +35,8 @@ public class GetBikeWalletHome extends BaseActivity implements View.OnClickListe
         promoBalance = (TextView) findViewById(R.id.promoBalance);
         cashBalance = (TextView) findViewById(R.id.cashBalance);
         yourBalance = (TextView) findViewById(R.id.yourBalance);
+        ridesEarned = (TextView) findViewById(R.id.ridesEarned);
+        ridesSpent = (TextView) findViewById(R.id.ridesSpent);
         history = (ListView) findViewById(R.id.history);
         redeem = (Button) findViewById(R.id.redeem);
         addMoney = (Button) findViewById(R.id.addMoney);
@@ -61,6 +63,8 @@ public class GetBikeWalletHome extends BaseActivity implements View.OnClickListe
                     promoBalance.setText("" + getCurrencySymbol() + " " + wallet.getPromoBalance());
                     cashBalance.setText("" + getCurrencySymbol() + " " + wallet.getCashBalance());
                     yourBalance.setText("" + getCurrencySymbol() + " " + wallet.getUserBalance());
+                    ridesEarned.setText("" + wallet.getFreeRidesEarned());
+                    ridesSpent.setText("" + wallet.getFreeRidesSpent());
                     history.setAdapter(new WalletAdapter(GetBikeWalletHome.this, walletEntryList));
                 } else {
                     ToastHelper.redToast(GetBikeWalletHome.this, "Failed to load the wallet details.");

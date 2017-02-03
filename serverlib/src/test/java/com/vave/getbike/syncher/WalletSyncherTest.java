@@ -1,12 +1,14 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.model.BankAccount;
+import com.vave.getbike.model.Wallet;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,6 +33,17 @@ public class WalletSyncherTest {
         assertEquals(bankAccount.getIfscCode(),updatedBankAccount.getIfscCode());
         assertEquals(bankAccount.getBankName(),updatedBankAccount.getBankName());
         assertEquals(bankAccount.getBranchName(),updatedBankAccount.getBranchName());
+
+    }
+
+    @Test
+    public void getWalletDetailsTESTHappyFlow() {
+        Wallet wallet = sut.getWalletDetails();
+        assertNotNull(wallet.getCashBalance());
+        assertNotNull(wallet.getPromoBalance());
+        assertNotNull(wallet.getUserBalance());
+        assertNotNull(wallet.getFreeRidesEarned());
+        assertNotNull(wallet.getFreeRidesSpent());
 
     }
 

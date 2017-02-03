@@ -36,6 +36,8 @@ public class WalletSyncher extends BaseSyncher {
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
                     result.setValid(true);
+                } else {
+                    result.setErrorMessage("Not enough cash balance.");
                 }
             }
         }.handle();
@@ -57,6 +59,8 @@ public class WalletSyncher extends BaseSyncher {
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
                     result.setValid(true);
+                } else {
+                    result.setErrorMessage("Not enough cash balance.");
                 }
             }
         }.handle();
@@ -76,6 +80,8 @@ public class WalletSyncher extends BaseSyncher {
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
                     result.setValid(true);
+                } else {
+                    result.setErrorMessage("Not enough cash balance.");
                 }
             }
         }.handle();
@@ -89,8 +95,7 @@ public class WalletSyncher extends BaseSyncher {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
                 if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
-                    Wallet wallet = new Wallet();
-                    wallet.setUserBalance(jsonResult.getDouble("balanceAmount"));
+                    Wallet wallet = GsonUtils.getGson().fromJson(jsonResult.toString(), Wallet.class);
                     result.setValue(wallet);
                 }
             }
