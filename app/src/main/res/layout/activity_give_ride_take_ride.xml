@@ -42,6 +42,32 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:weightSum="100">
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/take_ride_give_ride"
+                android:visibility="gone"
+                android:id="@+id/take_ride_give_ride_gif_view"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/getbike_promotions"
+                android:visibility="gone"
+                android:id="@+id/get_bike_promotions_gif_view"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/share_promocode"
+                android:visibility="gone"
+                android:id="@+id/share_promo_code_gif_view"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"

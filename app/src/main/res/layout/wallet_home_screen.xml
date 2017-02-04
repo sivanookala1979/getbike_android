@@ -191,15 +191,15 @@
                 android:gravity="center"
                 android:minHeight="30dp"
                 android:orientation="horizontal"
-                android:weightSum="10">
+                android:weightSum="100">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="5"
+                    android:layout_weight="55"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                    android:text="Rides Earned : "
+                    android:text="Free Rides Earned : "
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
@@ -209,7 +209,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
+                    android:layout_weight="10"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="center"
                     android:text="0"
@@ -219,7 +219,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="3"
+                    android:layout_weight="25"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:text=" Spent : "
                     android:textColor="@color/white"
@@ -231,7 +231,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
+                    android:layout_weight="10"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="center"
                     android:text="0"

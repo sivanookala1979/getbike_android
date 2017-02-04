@@ -126,14 +126,10 @@ public class UserProfile {
                         if (StringUtils.isStringValid(getCity())) {
                             if (StringUtils.isStringValid(getYearOfBirth())) {
                                 if (StringUtils.isStringValid(getHomeLocation())) {
-                                    if (StringUtils.isStringValid(getOfficeLocation())) {
-                                        if (StringUtils.isStringValid(getPhoneNumber())) {
-                                            result.setValid(true);
-                                        } else {
-                                            result.setErrorMessage("mobile");
-                                        }
+                                    if (StringUtils.isStringValid(getPhoneNumber())) {
+                                        result.setValid(true);
                                     } else {
-                                        result.setErrorMessage("office location");
+                                        result.setErrorMessage("mobile");
                                     }
                                 } else {
                                     result.setErrorMessage("home location");

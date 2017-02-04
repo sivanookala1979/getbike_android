@@ -49,11 +49,11 @@ public class BankAccountDetailsActivity extends BaseActivity implements View.OnC
             @Override
             public void afterPostExecute() {
                 if (bankDetails!=null) {
-                    accountHoldername.setText(""+bankDetails.getAccountHolderName());
-                    accountNumber.setText(""+bankDetails.getAccountNumber());
-                    ifscCode.setText(""+bankDetails.getIfscCode());
-                    bankName.setText(""+bankDetails.getBankName());
-                    branchName.setText(""+bankDetails.getBranchName());
+                    accountHoldername.setText(bankDetails.getAccountHolderName());
+                    accountNumber.setText(bankDetails.getAccountNumber());
+                    ifscCode.setText(bankDetails.getIfscCode());
+                    bankName.setText(bankDetails.getBankName());
+                    branchName.setText(bankDetails.getBranchName());
                 }
             }
         }.execute();

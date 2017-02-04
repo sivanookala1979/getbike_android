@@ -116,6 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
@@ -128,9 +129,10 @@
 
         <TextView
             android:id="@+id/login_text_view"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:layout_gravity="center"
             android:text="Already registered! Log me in"
             android:textColor="@color/colorPrimary"/>
     </LinearLayout>

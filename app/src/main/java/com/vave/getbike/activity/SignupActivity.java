@@ -71,6 +71,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                 name.setError(null);
                 email.setError(null);
                 mobile.setError(null);
+                promoCode.setError(null);
                 final String EMAIL_REGEX = "^(.+)@(.+)$";
                 final Pattern pattern1 = Pattern.compile("[^0-9]");
                 final Pattern pattern2 = Pattern.compile("[^a-z A-Z]");
@@ -121,7 +122,8 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                                 } else if (callStatus.getErrorCode() == 9901) {
                                     ToastHelper.redToast(getApplicationContext(), R.string.error_user_already_exists);
                                 } else if (callStatus.getErrorCode() == 9908) {
-                                    ToastHelper.redToast(getApplicationContext(), "Invalid promo code.");
+                                    promoCode.setError("Invalid promo code.");
+                                    promoCode.requestFocus();
                                 }
                             } else {
                                 ToastHelper.serverToast(getApplicationContext());

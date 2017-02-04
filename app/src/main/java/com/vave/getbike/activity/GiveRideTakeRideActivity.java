@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
+import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.CurrentRideStatus;
@@ -50,6 +51,8 @@ import com.vave.getbike.syncher.RideSyncher;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifImageView;
 
 public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, LocationListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -82,6 +85,37 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        GetBikePreferences.setPreferences(getApplicationContext());
+
+        if (!(GetBikePreferences.isTutorialCompleted())){
+            //Show tutorial;
+            final GifImageView getBikePromotionsGifView=(GifImageView)findViewById(R.id.get_bike_promotions_gif_view);
+            final GifImageView sharePromoCodeGifView=(GifImageView)findViewById(R.id.share_promo_code_gif_view);
+            final GifImageView giveRideTakeRideGifView=(GifImageView)findViewById(R.id.take_ride_give_ride_gif_view);
+
+            giveRideTakeRideGifView.setVisibility(View.VISIBLE);
+            giveRideTakeRideGifView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    giveRideTakeRideGifView.setVisibility(View.GONE);
+                    getBikePromotionsGifView.setVisibility(View.VISIBLE);
+                }
+            });
+            getBikePromotionsGifView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getBikePromotionsGifView.setVisibility(View.GONE);
+                    sharePromoCodeGifView.setVisibility(View.VISIBLE);
+                }
+            });
+            sharePromoCodeGifView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sharePromoCodeGifView.setVisibility(View.GONE);
+                }
+            });
+            GetBikePreferences.setIsTutorialCompleted(true);
+        }
 
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
