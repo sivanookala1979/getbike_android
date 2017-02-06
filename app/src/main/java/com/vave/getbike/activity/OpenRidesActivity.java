@@ -49,7 +49,7 @@ public class OpenRidesActivity extends BaseActivity {
         refreshButton = (Button) findViewById(R.id.refreshOpenRides);
         final double latitude = getIntent().getDoubleExtra("latitude", 0);
         final double longitude = getIntent().getDoubleExtra("longitude", 0);
-        hailModelTextView=(TextView)findViewById(R.id.hail_model_text_view);
+        hailModelTextView = (TextView) findViewById(R.id.hail_model_text_view);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,7 +129,7 @@ public class OpenRidesActivity extends BaseActivity {
                 @Override
                 public void afterPostExecute() {
                     if (result != null) {
-                        openRidesListView.setAdapter(new RideAdapter2(OpenRidesActivity.this, result));
+                        openRidesListView.setAdapter(new RideAdapter2(OpenRidesActivity.this, result, true));
                         if (result.size() == 0) {
                             ToastHelper.blueToast(OpenRidesActivity.this, R.string.message_no_open_rides);
                         }

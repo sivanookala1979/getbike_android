@@ -37,7 +37,7 @@ public class RidesGivenByMeActivity extends BaseActivity {
             @Override
             public void afterPostExecute() {
                 if (result != null) {
-                    myCompletedRidesListView.setAdapter(new RideAdapter2(RidesGivenByMeActivity.this, result));
+                    myCompletedRidesListView.setAdapter(new RideAdapter2(RidesGivenByMeActivity.this, result, false));
                 }
             }
         }.execute();

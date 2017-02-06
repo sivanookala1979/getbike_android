@@ -21,11 +21,13 @@ public class RideAdapter2 extends BaseAdapter {
     Context context;
     private List<Ride> searchArrayList;
     private LayoutInflater mInflater;
+    private boolean showAcceptRideTextView = true;
 
-    public RideAdapter2(Context context, List<Ride> results) {
+    public RideAdapter2(Context context, List<Ride> results, boolean value) {
         searchArrayList = results;
         this.context = context;
         mInflater = LayoutInflater.from(context);
+        showAcceptRideTextView = value;
     }
 
     public int getCount() {
@@ -50,6 +52,7 @@ public class RideAdapter2 extends BaseAdapter {
             holder.fromAddress = (TextView) convertView.findViewById(R.id.fromAddress);
             holder.toAddress = (TextView) convertView.findViewById(R.id.toAddress);
             holder.price = (TextView) convertView.findViewById(R.id.price);
+            holder.acceptRideTextViewInOpenRides = (TextView) convertView.findViewById(R.id.acceptRideTextView);
             holder.rideDateTime = (TextView) convertView.findViewById(R.id.rideDateTime);
             convertView.setTag(holder);
         } else {
@@ -62,6 +65,9 @@ public class RideAdapter2 extends BaseAdapter {
             holder.price.setText(indianRupee + ride.getTotalBill());
         } else {
             holder.price.setText("");
+        }
+        if (showAcceptRideTextView) {
+            holder.acceptRideTextViewInOpenRides.setVisibility(View.VISIBLE);
         }
         holder.fromAddress.setText(ride.getSourceAddress());
         holder.toAddress.setText(ride.getDestinationAddress());
@@ -76,6 +82,7 @@ public class RideAdapter2 extends BaseAdapter {
         TextView toAddress;
         TextView price;
         TextView rideDateTime;
+        TextView acceptRideTextViewInOpenRides;
 
     }
 }

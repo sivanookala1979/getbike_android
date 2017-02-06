@@ -101,11 +101,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@color/get_bike_black"
+            android:background="@color/thick_green"
             android:gravity="center"
             android:onClick="onStartTripClicked"
             android:text="START TRIP"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/stop_updates_button"
@@ -113,10 +114,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@color/get_bike_black"
+            android:background="@color/red"
             android:gravity="center"
             android:text="STOP TRIP"
             android:textColor="@color/white"
+            android:textStyle="bold"
             android:visibility="gone"/>
 
     </LinearLayout>
