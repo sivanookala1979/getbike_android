@@ -19,20 +19,21 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             String smsMessageStr = "";
             for (int i = 0; i < sms.length; ++i) {
                 SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
-
                 String smsBody = smsMessage.getMessageBody().toString();
-                String address = smsMessage.getOriginatingAddress();
-
-                smsMessageStr += "SMS From: " + address + "\n";
-                smsMessageStr += smsBody + "\n";
+                smsMessageStr = smsBody;
             }
 
             //this will update the UI with message
             LoginActivity inst = LoginActivity.instance();
             if (inst != null) {
-                int index = smsMessageStr.indexOf(" is ");
-                if (smsMessageStr.contains("NETSECURE") && index > 0) {
-                    inst.updateOtp(smsMessageStr.substring(index + 4, index + 10));
+                if (smsMessageStr.contains("getbike Sign In")) {
+                    inst.updateOtp(smsMessageStr.substring(0, 6));
+                }
+                if (smsMessageStr.contains("NETSECURE")) {
+                    int index = smsMessageStr.indexOf(" is ");
+                    if (index > 0) {
+                        inst.updateOtp(smsMessageStr.substring(index + 4, index + 10));
+                    }
                 }
             }
         }
