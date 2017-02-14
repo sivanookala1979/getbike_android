@@ -44,6 +44,7 @@ import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.CurrentRideStatus;
+import com.vave.getbike.model.Profile;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.syncher.LoginSyncher;
@@ -345,7 +346,46 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                 launchActivity(GiveDestinationAddressActivity.class);
                 break;
             case R.id.giveRide:
-                launchActivity(OpenRidesActivity.class);
+                new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+                    Profile publicProfile;
+
+                    @Override
+                    public void process() {
+                        publicProfile = new LoginSyncher().getPublicProfile(0l);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+                        if (publicProfile != null) {
+                            if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null){
+                                launchActivity(OpenRidesActivity.class);
+                            }
+                            else{
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+                                builder.setCancelable(false);
+                                builder.setTitle("Rider profile");
+                                builder.setMessage("Please fill your rider profile to give a ride.");
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(GiveRideTakeRideActivity.this, RiderProfileActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
+                        } else {
+                            ToastHelper.serverToast(GiveRideTakeRideActivity.this);
+                        }
+                    }
+                }.execute();
+
                 break;
         }
     }

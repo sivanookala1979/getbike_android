@@ -31,7 +31,7 @@ public class LocationSyncher {
     private static final String PREDICTIONS = "predictions";
     String API_KEY = "AIzaSyDxqQEvtdEtl6dDIvG7vcm6QTO45Si0FZs";
     String URL_START = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
-    String URL_END = "&regions=(locality)&sensor=true&key=" + API_KEY;
+    String URL_END = "&regions=(locality)&location=17.387140,78.491684&radius=100000&strictbounds&sensor=true&key=" + API_KEY;
     String LAT_LON_URL_START = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     String LAT_LON_URL_END = "&key=" + API_KEY;
     String URL = "";
