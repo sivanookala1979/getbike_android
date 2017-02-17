@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +65,7 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     Document document;
     Polyline polyline;
     List<String> locations = new ArrayList<String>();
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +80,19 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         yourLocationLatLng = new LatLng(latitude, longitude);
         if (latitude > 0 && longitude > 0) {
             yourLocation.setText(getCompleteAddressString(latitude, longitude));
+        } else {
+            Location mCurrentLocation = LocationDetails.getLocationOrShowToast(GiveDestinationAddressActivity.this, locationManager);
+            locationManager = (LocationManager)
+                    getSystemService(Context.LOCATION_SERVICE);
+            if (mCurrentLocation != null && mCurrentLocation.getLatitude() > 0 && mCurrentLocation.getLongitude() > 0) {
+                yourLocation.setText(getCompleteAddressString(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+            }
         }
         googleMapV2Direction = new GMapV2Direction();
         addTextChangedListener();

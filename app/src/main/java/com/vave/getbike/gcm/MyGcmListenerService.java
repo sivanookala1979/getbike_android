@@ -54,7 +54,10 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Ride Id: " + data.getString("rideId"));
         String message = data.getString("message");
         String messageType = data.getString("messageType");
-        Long rideId = Long.parseLong(data.getString("rideId"));
+        Long rideId = null;
+        if (data.getString("rideId") != null) {
+            rideId = Long.parseLong(data.getString("rideId"));
+        }
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 

@@ -67,6 +67,8 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                     if (ride != null) {
                         if ("RideAccepted".equals(ride.getRideStatus())) {
                             showOpenRides(R.string.error_ride_is_already_allocated);
+                        } else if ("RideCancelled".equals(ride.getRideStatus())) {
+                            showOpenRides(R.string.error_ride_is_cancelled_by_customer);
                         } else {
                             rideRequestedBy.setText(ride.getRequestorName());
                             rideRequestAddress.setText(ride.getSourceAddress());

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +74,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
     Document document;
     Polyline polyline;
     List<String> locations = new ArrayList<String>();
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,13 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
         yourLocationLatLng = new LatLng(latitude, longitude);
         if (latitude > 0 && longitude > 0) {
             yourLocation = getCompleteAddressString(latitude, longitude);
+        } else {
+            Location mCurrentLocation = LocationDetails.getLocationOrShowToast(HailCustomerActivity.this, locationManager);
+            locationManager = (LocationManager)
+                    getSystemService(Context.LOCATION_SERVICE);
+            if (mCurrentLocation != null && mCurrentLocation.getLatitude() > 0 && mCurrentLocation.getLongitude() > 0) {
+                yourLocation = getCompleteAddressString(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            }
         }
         googleMapV2Direction = new GMapV2Direction();
         addTextChangedListener();

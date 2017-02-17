@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -87,12 +88,12 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         GetBikePreferences.setPreferences(getApplicationContext());
-
-        if (!(GetBikePreferences.isTutorialCompleted())){
+        TextView appVersionTextView = (TextView) findViewById(R.id.appVersionTextView);
+        if (!(GetBikePreferences.isTutorialCompleted())) {
             //Show tutorial;
-            final GifImageView getBikePromotionsGifView=(GifImageView)findViewById(R.id.get_bike_promotions_gif_view);
-            final GifImageView sharePromoCodeGifView=(GifImageView)findViewById(R.id.share_promo_code_gif_view);
-            final GifImageView giveRideTakeRideGifView=(GifImageView)findViewById(R.id.take_ride_give_ride_gif_view);
+            final GifImageView getBikePromotionsGifView = (GifImageView) findViewById(R.id.get_bike_promotions_gif_view);
+            final GifImageView sharePromoCodeGifView = (GifImageView) findViewById(R.id.share_promo_code_gif_view);
+            final GifImageView giveRideTakeRideGifView = (GifImageView) findViewById(R.id.take_ride_give_ride_gif_view);
 
             giveRideTakeRideGifView.setVisibility(View.VISIBLE);
             giveRideTakeRideGifView.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +127,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             e.printStackTrace();
         }
         applicationVersionFromStrings = getString(R.string.app_version);
+        appVersionTextView.setText(applicationVersionName + "~" + applicationVersionCode + "~" + applicationVersionFromStrings);
+
         Log.d(TAG, "onCreate ...............................");
         //show error dialog if GoolglePlayServices not available
         if (!isGooglePlayServicesAvailable()) {
@@ -357,10 +360,9 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     @Override
                     public void afterPostExecute() {
                         if (publicProfile != null) {
-                            if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null){
+                            if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null) {
                                 launchActivity(OpenRidesActivity.class);
-                            }
-                            else{
+                            } else {
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
                                 builder.setCancelable(false);
                                 builder.setTitle("Rider profile");
