@@ -6,11 +6,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.paytm.pgsdk.PaytmMerchant;
+import com.paytm.pgsdk.PaytmOrder;
+import com.paytm.pgsdk.PaytmPGService;
+import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.payu.india.CallBackHandler.OnetapCallback;
 import com.payu.india.Extras.PayUChecksum;
 import com.payu.india.Extras.PayUSdkDetails;
@@ -29,6 +35,7 @@ import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.UserProfile;
 import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
+import com.vave.getbike.syncher.WalletSyncher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +50,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * This activity prepares PaymentParams, fetches hashes from server and send it to PayuBaseActivity.java.
@@ -93,6 +102,92 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         }.execute();
 
     }
+    //PAYTM
+    public void launchPaytm(View view){
+        PaytmPGService Service = PaytmPGService.getStagingService();
+        Map<String, String> paramMap = new HashMap<String, String>();
+        String amount = getAmount();
+        Random r = new Random(System.currentTimeMillis());
+        String ordeId = "ORDER"+ (1 + r.nextInt(2)) * 10000 + r.nextInt(10000);
+        // these are mandatory parameters
+        paramMap.put("ORDER_ID", ordeId);
+        paramMap.put("MID", "WorldP64425807474247");
+        paramMap.put("CUST_ID", "CUST23657");
+        paramMap.put("CHANNEL_ID", "WAP");
+        paramMap.put("INDUSTRY_TYPE_ID", "Retail");
+        paramMap.put("WEBSITE", "worldpressplg");
+        paramMap.put("TXN_AMOUNT", amount);
+        paramMap.put("THEME", "merchant");
+        paramMap.put("EMAIL", "adarsh@gmail.com");
+        paramMap.put("MOBILE_NO", "919949257729");
+        PaytmOrder Order = new PaytmOrder(paramMap);
+ 
+        PaytmMerchant Merchant = new PaytmMerchant(
+                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumGenerator.jsp",
+                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumVerify.jsp");
+
+        Service.initialize(Order, Merchant, null);
+
+        Service.startPaymentTransaction(this, true, true,
+                new PaytmPaymentTransactionCallback() {
+                    @Override
+                    public void someUIErrorOccurred(String inErrorMessage) {
+
+                    }
+
+                    @Override
+                    public void onTransactionSuccess(final Bundle inResponse) {
+                        // After successful transaction this method gets called.
+                        // Response bundle contains the merchant response
+//                        String transactionId = inResponse.getString("TXNID");
+//                        String bankId = inResponse.getString("BANKTXNID");
+                        Log.d("LOG", "Payment Transaction is successful " + inResponse);
+                        //Response Bundle[{STATUS=TXN_SUCCESS, BANKNAME=, ORDERID=ORDER10000500, TXNAMOUNT=100.00, TXNDATE=2017-02-20 11:51:01.0, MID=WorldP64425807474247, TXNID=32292550, RESPCODE=01, PAYMENTMODE=PPI, BANKTXNID=558149, CURRENCY=INR, GATEWAYNAME=WALLET, IS_CHECKSUM_VALID=Y, RESPMSG=Txn Successful.}]
+                        //Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onTransactionFailure(String inErrorMessage,
+                                                     Bundle inResponse) {
+                        // This method gets called if transaction failed. //
+                        // Here in this case transaction is completed, but with
+                        // a failure. // Error Message describes the reason for
+                        // failure. // Response bundle contains the merchant
+                        // response parameters.
+                        Log.d("LOG", "Payment Transaction Failed " + inErrorMessage);
+                        //Toast.makeText(getBaseContext(), "Payment Transaction Failed ", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void networkNotAvailable() { // If network is not
+                        // available, then this
+                        // method gets called.
+                    }
+
+                    @Override
+                    public void clientAuthenticationFailed(String inErrorMessage) {
+                        // This method gets called if client authentication
+                        // failed. // Failure may be due to following reasons //
+                        // 1. Server error or downtime. // 2. Server unable to
+                        // generate checksum or checksum response is not in
+                        // proper format. // 3. Server failed to authenticate
+                        // that client. That is value of payt_STATUS is 2. //
+                        // Error Message describes the reason for failure.
+                    }
+
+                    @Override
+                    public void onErrorLoadingWebPage(int iniErrorCode,
+                                                      String inErrorMessage, String inFailingUrl) {
+                    }
+                    // had to be added: NOTE
+                    @Override
+                    public void onBackPressedCancelTransaction() {
+                        // TODO Auto-generated method stub
+                    }
+
+                });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -133,14 +228,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         //merchantKey = "gtKFFx"; -- Test
         merchantKey = "cWS3zB";
 
-        String amount = "100";
-        if (radioButton500.isChecked()) {
-            amount = "500";
-        } else if (radioButton200.isChecked()) {
-            amount = "200";
-        } else if (radioButton100.isChecked()) {
-            amount = "100";
-        }
+        String amount = getAmount();
         String email = userProfile.getEmail();
 
         int environment = PayuConstants.PRODUCTION_ENV;
@@ -210,6 +298,19 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         String salt = "TscMUEAc";
         generateHashFromSDK(mPaymentParams, salt);
 
+    }
+
+    @NonNull
+    private String getAmount() {
+        String amount = "100";
+        if (radioButton500.isChecked()) {
+            amount = "500";
+        } else if (radioButton200.isChecked()) {
+            amount = "200";
+        } else if (radioButton100.isChecked()) {
+            amount = "100";
+        }
+        return amount;
     }
 
     /******************************

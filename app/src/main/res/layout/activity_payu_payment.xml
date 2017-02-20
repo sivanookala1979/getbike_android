@@ -1,23 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".activity.PayUPaymentActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.PayUPaymentActivity">
 
     <include
         android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+        layout="@layout/app_bar" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose the amount"/>
+        android:text="Choose the amount" />
 
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <RadioButton
@@ -26,31 +27,49 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            android:text="Rs. 100"/>
+            android:text="Rs. 100" />
 
         <RadioButton
             android:id="@+id/amountRadioButton200"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Rs. 200"/>
+            android:text="Rs. 200" />
 
         <RadioButton
             android:id="@+id/amountRadioButton500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Rs. 500"/>
+            android:text="Rs. 500" />
     </RadioGroup>
 
-    <Button
-        android:id="@+id/btnPayNow"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:onClick="navigateToBaseActivity"
-        android:padding="10dp"
-        android:text="Add to Wallet"/>
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/paytm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="launchPaytm"
+            android:padding="10dp"
+            android:text="Paytm" />
+
+
+        <Button
+            android:id="@+id/btnPayNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="navigateToBaseActivity"
+            android:padding="10dp"
+            android:text="PayU" />
+
+    </LinearLayout>
 
 </LinearLayout>
