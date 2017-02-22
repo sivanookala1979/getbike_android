@@ -122,6 +122,20 @@ public class WalletSyncher extends BaseSyncher {
         return result;
     }
 
+    public String generateOrderIDForWallet(String amount) {
+        final GetBikePointer<String> result = new GetBikePointer<>(null);
+        new JsonGetHandler("/generateOrderId?type=Wallet&amount=" + amount) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result")) && jsonResult.has("orderIdentifier")) {
+                    result.setValue(jsonResult.getString("orderIdentifier"));
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
     public SaveResult updateBankAccountDetails(final BankAccount bankDetails) {
         final SaveResult result = new SaveResult();
         new JsonPostHandler("/profile/saveAccountDetails") {

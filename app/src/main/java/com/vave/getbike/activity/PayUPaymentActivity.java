@@ -19,7 +19,6 @@ import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.payu.india.CallBackHandler.OnetapCallback;
 import com.payu.india.Extras.PayUChecksum;
-import com.payu.india.Extras.PayUSdkDetails;
 import com.payu.india.Interfaces.OneClickPaymentListener;
 import com.payu.india.Model.PaymentParams;
 import com.payu.india.Model.PayuConfig;
@@ -51,7 +50,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * This activity prepares PaymentParams, fetches hashes from server and send it to PayuBaseActivity.java.
@@ -102,92 +100,119 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         }.execute();
 
     }
+
     //PAYTM
-    public void launchPaytm(View view){
-        PaytmPGService Service = PaytmPGService.getStagingService();
-        Map<String, String> paramMap = new HashMap<String, String>();
-        String amount = getAmount();
-        Random r = new Random(System.currentTimeMillis());
-        String ordeId = "ORDER"+ (1 + r.nextInt(2)) * 10000 + r.nextInt(10000);
-        // these are mandatory parameters
-        paramMap.put("ORDER_ID", ordeId);
-        paramMap.put("MID", "WorldP64425807474247");
-        paramMap.put("CUST_ID", "CUST23657");
-        paramMap.put("CHANNEL_ID", "WAP");
-        paramMap.put("INDUSTRY_TYPE_ID", "Retail");
-        paramMap.put("WEBSITE", "worldpressplg");
-        paramMap.put("TXN_AMOUNT", amount);
-        paramMap.put("THEME", "merchant");
-        paramMap.put("EMAIL", "adarsh@gmail.com");
-        paramMap.put("MOBILE_NO", "919949257729");
-        PaytmOrder Order = new PaytmOrder(paramMap);
- 
-        PaytmMerchant Merchant = new PaytmMerchant(
-                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumGenerator.jsp",
-                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumVerify.jsp");
+    public void launchPaytm(View view) {
+        if (userProfile == null) {
+            ToastHelper.blueToast(PayUPaymentActivity.this, "Failed to load the profile");
+            return;
+        }
+        final String amount = getAmount();
 
-        Service.initialize(Order, Merchant, null);
+        new GetBikeAsyncTask(PayUPaymentActivity.this) {
+            String orderId = null;
 
-        Service.startPaymentTransaction(this, true, true,
-                new PaytmPaymentTransactionCallback() {
-                    @Override
-                    public void someUIErrorOccurred(String inErrorMessage) {
+            @Override
+            public void process() {
+                orderId = new WalletSyncher().generateOrderIDForWallet(amount);
+            }
 
-                    }
+            @Override
+            public void afterPostExecute() {
 
-                    @Override
-                    public void onTransactionSuccess(final Bundle inResponse) {
-                        // After successful transaction this method gets called.
-                        // Response bundle contains the merchant response
+                if (orderId == null) {
+                    ToastHelper.blueToast(PayUPaymentActivity.this, "Failed to generate the order id.");
+                    return;
+                }
+
+                PaytmPGService Service = PaytmPGService.getStagingService();
+                Map<String, String> paramMap = new HashMap<String, String>();
+
+                // these are mandatory parameters
+                paramMap.put("ORDER_ID", orderId);
+                paramMap.put("MID", "VaveIn61514259730321");
+                paramMap.put("CUST_ID", userProfile.getPhoneNumber());
+                paramMap.put("CHANNEL_ID", "WAP");
+                paramMap.put("INDUSTRY_TYPE_ID", "Retail");
+                paramMap.put("WEBSITE", "APP_STAGING");
+                paramMap.put("TXN_AMOUNT", amount);
+                paramMap.put("THEME", "merchant");
+                paramMap.put("EMAIL", userProfile.getEmail());
+                paramMap.put("MOBILE_NO", userProfile.getPhoneNumber());
+                PaytmOrder Order = new PaytmOrder(paramMap);
+
+                PaytmMerchant Merchant = new PaytmMerchant(
+                        BaseSyncher.BASE_URL + "/paytmCheckSumGenerator",
+                        BaseSyncher.BASE_URL + "/paytmCheckSumVerify");
+
+                Service.initialize(Order, Merchant, null);
+
+                Service.startPaymentTransaction(PayUPaymentActivity.this, true, true,
+                        new PaytmPaymentTransactionCallback() {
+                            @Override
+                            public void someUIErrorOccurred(String inErrorMessage) {
+
+                            }
+
+                            @Override
+                            public void onTransactionSuccess(final Bundle inResponse) {
+                                // After successful transaction this method gets called.
+                                // Response bundle contains the merchant response
 //                        String transactionId = inResponse.getString("TXNID");
 //                        String bankId = inResponse.getString("BANKTXNID");
-                        Log.d("LOG", "Payment Transaction is successful " + inResponse);
-                        //Response Bundle[{STATUS=TXN_SUCCESS, BANKNAME=, ORDERID=ORDER10000500, TXNAMOUNT=100.00, TXNDATE=2017-02-20 11:51:01.0, MID=WorldP64425807474247, TXNID=32292550, RESPCODE=01, PAYMENTMODE=PPI, BANKTXNID=558149, CURRENCY=INR, GATEWAYNAME=WALLET, IS_CHECKSUM_VALID=Y, RESPMSG=Txn Successful.}]
-                        //Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
-                    }
+                                Log.d("LOG", "Payment Transaction is successful " + inResponse);
+                                //Response Bundle[{STATUS=TXN_SUCCESS, BANKNAME=, ORDERID=ORDER10000500, TXNAMOUNT=100.00, TXNDATE=2017-02-20 11:51:01.0, MID=WorldP64425807474247, TXNID=32292550, RESPCODE=01, PAYMENTMODE=PPI, BANKTXNID=558149, CURRENCY=INR, GATEWAYNAME=WALLET, IS_CHECKSUM_VALID=Y, RESPMSG=Txn Successful.}]
+                                Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
 
-                    @Override
-                    public void onTransactionFailure(String inErrorMessage,
-                                                     Bundle inResponse) {
-                        // This method gets called if transaction failed. //
-                        // Here in this case transaction is completed, but with
-                        // a failure. // Error Message describes the reason for
-                        // failure. // Response bundle contains the merchant
-                        // response parameters.
-                        Log.d("LOG", "Payment Transaction Failed " + inErrorMessage);
-                        //Toast.makeText(getBaseContext(), "Payment Transaction Failed ", Toast.LENGTH_LONG).show();
-                    }
+                            @Override
+                            public void onTransactionFailure(String inErrorMessage,
+                                                             Bundle inResponse) {
+                                // This method gets called if transaction failed. //
+                                // Here in this case transaction is completed, but with
+                                // a failure. // Error Message describes the reason for
+                                // failure. // Response bundle contains the merchant
+                                // response parameters.
+                                Log.d("LOG", "Payment Transaction Failed " + inErrorMessage);
+                                //Toast.makeText(getBaseContext(), "Payment Transaction Failed ", Toast.LENGTH_LONG).show();
+                            }
 
-                    @Override
-                    public void networkNotAvailable() { // If network is not
-                        // available, then this
-                        // method gets called.
-                    }
+                            @Override
+                            public void networkNotAvailable() { // If network is not
+                                // available, then this
+                                // method gets called.
+                            }
 
-                    @Override
-                    public void clientAuthenticationFailed(String inErrorMessage) {
-                        // This method gets called if client authentication
-                        // failed. // Failure may be due to following reasons //
-                        // 1. Server error or downtime. // 2. Server unable to
-                        // generate checksum or checksum response is not in
-                        // proper format. // 3. Server failed to authenticate
-                        // that client. That is value of payt_STATUS is 2. //
-                        // Error Message describes the reason for failure.
-                    }
+                            @Override
+                            public void clientAuthenticationFailed(String inErrorMessage) {
+                                // This method gets called if client authentication
+                                // failed. // Failure may be due to following reasons //
+                                // 1. Server error or downtime. // 2. Server unable to
+                                // generate checksum or checksum response is not in
+                                // proper format. // 3. Server failed to authenticate
+                                // that client. That is value of payt_STATUS is 2. //
+                                // Error Message describes the reason for failure.
+                            }
 
-                    @Override
-                    public void onErrorLoadingWebPage(int iniErrorCode,
-                                                      String inErrorMessage, String inFailingUrl) {
-                    }
-                    // had to be added: NOTE
-                    @Override
-                    public void onBackPressedCancelTransaction() {
-                        // TODO Auto-generated method stub
-                    }
+                            @Override
+                            public void onErrorLoadingWebPage(int iniErrorCode,
+                                                              String inErrorMessage, String inFailingUrl) {
+                                Log.d("LOG", "onErrorLoadingWebPage");
+                            }
 
-                });
+                            // had to be added: NOTE
+                            @Override
+                            public void onBackPressedCancelTransaction() {
+                                // TODO Auto-generated method stub
+                                Log.d("LOG", "onBackPressedCancelTransaction");
+                            }
+
+                        });
+
+            }
+        }.execute();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
