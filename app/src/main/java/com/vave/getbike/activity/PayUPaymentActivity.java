@@ -319,8 +319,14 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
          * If you don't want to use it, then send them as empty string like, udf1=""
          * */
         mPaymentParams.setUdf1(BaseSyncher.getAccessToken());
-        mPaymentParams.setUdf2("rideid-" + rideId);
-        mPaymentParams.setUdf3("udf3");
+        if (rideId > 0) {
+            mPaymentParams.setUdf2("Ride");
+            mPaymentParams.setUdf3(rideId + "");
+
+        } else {
+            mPaymentParams.setUdf2("Wallet");
+            mPaymentParams.setUdf3("udf3");
+        }
         mPaymentParams.setUdf4("udf4");
         mPaymentParams.setUdf5("udf5");
 
