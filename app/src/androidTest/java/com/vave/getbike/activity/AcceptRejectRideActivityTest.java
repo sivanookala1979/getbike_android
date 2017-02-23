@@ -41,7 +41,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
         closeCurrentRide();
         setupMockLocation((LocationManager) mActivityTestRule.getActivity().getSystemService(Context.LOCATION_SERVICE));
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole", "Cash");
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
@@ -62,7 +62,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
     public void clickOnRejectRide() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole", "Cash");
 
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
@@ -84,7 +84,7 @@ public class AcceptRejectRideActivityTest extends BaseGetBikeActivityTest {
     public void withValidRide() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole");
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Kavali", "Ongole", "Cash");
 
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();

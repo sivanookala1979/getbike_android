@@ -151,16 +151,16 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
                     return;
                 }
 
-                PaytmPGService Service = PaytmPGService.getStagingService();
+                PaytmPGService Service = PaytmPGService.getProductionService();
                 Map<String, String> paramMap = new HashMap<String, String>();
 
                 // these are mandatory parameters
                 paramMap.put("ORDER_ID", orderId);
-                paramMap.put("MID", "VaveIn61514259730321");
+                paramMap.put("MID", "VavInf16301400717586");
                 paramMap.put("CUST_ID", userProfile.getPhoneNumber());
                 paramMap.put("CHANNEL_ID", "WAP");
-                paramMap.put("INDUSTRY_TYPE_ID", "Retail");
-                paramMap.put("WEBSITE", "APP_STAGING");
+                paramMap.put("INDUSTRY_TYPE_ID", "Retail109");
+                paramMap.put("WEBSITE", "VavInfWAP");
                 paramMap.put("TXN_AMOUNT", amount);
                 paramMap.put("THEME", "merchant");
                 paramMap.put("EMAIL", userProfile.getEmail());
