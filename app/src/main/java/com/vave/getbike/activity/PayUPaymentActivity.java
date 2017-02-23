@@ -10,7 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paytm.pgsdk.PaytmMerchant;
@@ -60,6 +63,13 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
 
     UserProfile userProfile = null;
     RadioButton radioButton100, radioButton200, radioButton500;
+    TextView payUWalletFareAmountTextView;
+    double fareAmount = 0.0;
+    Button btnPayNow;
+    Button paytmButton;
+    RadioGroup walletAmountRadioGroup;
+    long rideId;
+
     private String merchantKey, userCredentials;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
@@ -86,6 +96,18 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
         radioButton100 = (RadioButton) findViewById(R.id.amountRadioButton100);
         radioButton200 = (RadioButton) findViewById(R.id.amountRadioButton200);
         radioButton500 = (RadioButton) findViewById(R.id.amountRadioButton500);
+        payUWalletFareAmountTextView = (TextView) findViewById(R.id.payUWallet_fareAmountTextView);
+        btnPayNow = (Button) findViewById(R.id.btnPayNow);
+        paytmButton = (Button) findViewById(R.id.paytm);
+        walletAmountRadioGroup = (RadioGroup) findViewById(R.id.walletAmountRadioGroup);
+
+        if (getIntent().getBooleanExtra("isRideOnline", false)) {
+            rideId = getIntent().getLongExtra("rideId", 0);
+            fareAmount = getIntent().getDoubleExtra("fareAmount", 0);
+            walletAmountRadioGroup.setVisibility(View.GONE);
+            payUWalletFareAmountTextView.setVisibility(View.VISIBLE);
+            payUWalletFareAmountTextView.setText("Fare Amount = " + fareAmount);
+        }
 
         new GetBikeAsyncTask(PayUPaymentActivity.this) {
 
@@ -246,6 +268,8 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
      * This method prepares all the payments params to be sent to PayuBaseActivity.java
      */
     public void navigateToBaseActivity(View view) {
+        btnPayNow.setEnabled(false);
+        paytmButton.setEnabled(false);
         if (userProfile == null) {
             ToastHelper.blueToast(PayUPaymentActivity.this, "Failed to load the profile");
             return;
@@ -291,7 +315,7 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
          * If you don't want to use it, then send them as empty string like, udf1=""
          * */
         mPaymentParams.setUdf1(BaseSyncher.getAccessToken());
-        mPaymentParams.setUdf2("udf2");
+        mPaymentParams.setUdf2("rideid-" + rideId);
         mPaymentParams.setUdf3("udf3");
         mPaymentParams.setUdf4("udf4");
         mPaymentParams.setUdf5("udf5");
@@ -328,12 +352,17 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
     @NonNull
     private String getAmount() {
         String amount = "100";
-        if (radioButton500.isChecked()) {
-            amount = "500";
-        } else if (radioButton200.isChecked()) {
-            amount = "200";
-        } else if (radioButton100.isChecked()) {
+        if (fareAmount > 0.0) {
+            amount = String.valueOf(fareAmount);
+        } else {
             amount = "100";
+            if (radioButton500.isChecked()) {
+                amount = "500";
+            } else if (radioButton200.isChecked()) {
+                amount = "200";
+            } else if (radioButton100.isChecked()) {
+                amount = "100";
+            }
         }
         return amount;
     }
@@ -789,6 +818,13 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
     }
 
     //TODO This method is used only if integrating One Tap Payments
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnPayNow.setEnabled(true);
+        paytmButton.setEnabled(true);
+    }
 
     /**
      * This AsyncTask generates hash from server.

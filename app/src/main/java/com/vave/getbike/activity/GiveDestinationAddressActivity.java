@@ -1,6 +1,8 @@
 package com.vave.getbike.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -19,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -65,6 +68,9 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     Document document;
     Polyline polyline;
     List<String> locations = new ArrayList<String>();
+    AlertDialog alertDialog1;
+    CharSequence[] values = {" Cash ", " Paytm ", " PayU "};
+    String modeOfPayment = "Cash";
     private LocationManager locationManager;
 
     @Override
@@ -293,28 +299,55 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takeRide:
-                new GetBikeAsyncTask(GiveDestinationAddressActivity.this) {
-                    Long rideID = null;
-
-                    @Override
-                    public void process() {
-                        RideSyncher sut = new RideSyncher();
-                        Ride ride = sut.requestRide(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString());
-                        rideID = ride.getId();
-                    }
-
-                    @Override
-                    public void afterPostExecute() {
-                        if (rideID != null) {
-                            Intent intent = new Intent(GiveDestinationAddressActivity.this, WaitForRiderAllocationActivity.class);
-                            intent.putExtra("rideId", rideID);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to book a ride, please retry.");
+                AlertDialog.Builder builder = new AlertDialog.Builder(GiveDestinationAddressActivity.this);
+                builder.setCancelable(false);
+                builder.setTitle("Select Your Mode Of Payment");
+                builder.setSingleChoiceItems(values, 0, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0:
+                                modeOfPayment = "Cash";
+                                break;
+                            case 1:
+                                modeOfPayment = "Paytm";
+                                break;
+                            case 2:
+                                modeOfPayment = "PayU";
+                                break;
                         }
                     }
-                }.execute();
+                });
+                builder.setPositiveButton("CONTINUE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(GiveDestinationAddressActivity.this, "Selected mode of payment is:" + modeOfPayment, Toast.LENGTH_LONG).show();
+                        new GetBikeAsyncTask(GiveDestinationAddressActivity.this) {
+                            Long rideID = null;
+
+                            @Override
+                            public void process() {
+                                RideSyncher sut = new RideSyncher();
+                                Ride ride = sut.requestRide(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation.getText().toString(), destination.getText().toString(), modeOfPayment);
+                                rideID = ride.getId();
+                            }
+
+                            @Override
+                            public void afterPostExecute() {
+                                if (rideID != null) {
+                                    Intent intent = new Intent(GiveDestinationAddressActivity.this, WaitForRiderAllocationActivity.class);
+                                    intent.putExtra("rideId", rideID);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    ToastHelper.redToast(GiveDestinationAddressActivity.this, "Failed to book a ride, please retry.");
+                                }
+                            }
+                        }.execute();
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1 = builder.create();
+                alertDialog1.show();
                 break;
         }
     }

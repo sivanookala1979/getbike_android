@@ -19,11 +19,11 @@ import java.util.List;
 
 public class RideSyncher extends BaseSyncher {
 
-    public Ride requestRide(final double latitude, final double longitude) {
-        return requestRide(latitude, longitude, "Source Not Provided", "Destination Not Provided");
+    public Ride requestRide(final double latitude, final double longitude, final String modeOfPayment) {
+        return requestRide(latitude, longitude, "Source Not Provided", "Destination Not Provided", modeOfPayment);
     }
 
-    public Ride requestRide(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress) {
+    public Ride requestRide(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String modeOfPayment) {
         final GetBikePointer<Ride> result = new GetBikePointer<>();
         new JsonPostHandler("/getBike") {
 
@@ -33,6 +33,7 @@ public class RideSyncher extends BaseSyncher {
                 put("longitude", longitude);
                 put("sourceAddress", sourceAddress);
                 put("destinationAddress", destinationAddress);
+                put("modeOfPayment", modeOfPayment);
             }
 
             @Override
@@ -45,7 +46,7 @@ public class RideSyncher extends BaseSyncher {
         return result.getValue();
     }
 
-    public CallStatus hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email, final char gender) {
+    public CallStatus hailCustomer(final double latitude, final double longitude, final String sourceAddress, final String destinationAddress, final String phoneNumber, final String name, final String email, final char gender, final String modeOfPayment) {
         final CallStatus result = new CallStatus();
         new JsonPostHandler("/hailCustomer") {
 
@@ -59,6 +60,7 @@ public class RideSyncher extends BaseSyncher {
                 put("name", name);
                 put("email", email);
                 put("gender", gender + "");
+                put("modeOfPayment", modeOfPayment);
             }
 
             @Override
@@ -125,6 +127,21 @@ public class RideSyncher extends BaseSyncher {
         final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
         result.setValue(false);
         new JsonGetHandler("/rateRide?rideId=" + rideId + "&rating=" + rating) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public boolean updatePaymentStatus(long rideId) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/updatePaymentStatus?rideId=" + rideId) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {

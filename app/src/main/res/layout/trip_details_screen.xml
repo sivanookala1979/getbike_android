@@ -57,6 +57,24 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/payThroughWalletButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/get_bike_orange"
+                android:text="PAY THROUGH WALLET"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/amountReceivedFromCustomerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/get_bike_orange"
+                android:text="AMOUNT RECEIVED FROM CUSTOMER"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -442,11 +460,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/freeRideDiscountPanel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:orientation="horizontal"
-                    android:id="@+id/freeRideDiscountPanel"
                     android:visibility="gone"
                     android:weightSum="10">
 

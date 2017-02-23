@@ -346,7 +346,7 @@ public class HailCustomerActivity extends AppCompatActivity implements OnMapRead
                         @Override
                         public void process() {
                             RideSyncher sut = new RideSyncher();
-                            callStatus = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation, destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email, gender);
+                            callStatus = sut.hailCustomer(yourLocationLatLng.latitude, yourLocationLatLng.longitude, yourLocation, destination.getText().toString(), customerMobileNumber.getText().toString(), customerName.getText().toString(), email, gender, "Cash");
                         }
 
                         @Override

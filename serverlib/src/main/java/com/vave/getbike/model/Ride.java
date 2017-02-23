@@ -18,6 +18,7 @@ public class Ride {
     String riderName;
     Long riderId;
     String riderPhoneNumber;
+    String modeOfPayment;
     Double orderAmount;
     Double orderDistance;
     Date requestedAt;
@@ -34,6 +35,9 @@ public class Ride {
     String actualDestinationAddress;
     boolean freeRide = false;
     Double freeRideDiscount;
+    boolean paid;
+    boolean userCustomer = false;
+    boolean userRider = false;
 
     public String getActualSourceAddress() {
         return actualSourceAddress;
@@ -249,4 +253,37 @@ public class Ride {
     public void setFreeRideDiscount(Double freeRideDiscount) {
         this.freeRideDiscount = freeRideDiscount;
     }
+
+    public String getModeOfPayment() {
+        return modeOfPayment;
+    }
+
+    public void setModeOfPayment(String modeOfPayment) {
+        this.modeOfPayment = modeOfPayment;
+    }
+
+    public boolean isUserCustomer() {
+        return userCustomer;
+    }
+
+    public void setUserCustomer(boolean userCustomer) {
+        this.userCustomer = userCustomer;
+    }
+
+    public boolean isUserRider() {
+        return userRider;
+    }
+
+    public void setUserRider(boolean userRider) {
+        this.userRider = userRider;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
 }

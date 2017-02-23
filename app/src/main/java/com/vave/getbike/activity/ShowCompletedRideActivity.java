@@ -1,8 +1,10 @@
 package com.vave.getbike.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     TextView tripDateTime, tripId, userName, bikeType, fromTime, toTime, fromAddress, toAddress, totalFare, taxAndFee, subTotal, roundingOff, totalBill, cash, currentRatingStatus, freeRideDiscount;
     LinearLayout freeRideDiscountPanel;
     RatingBar ratingBar;
+    Button payThroughWalletButton, amountReceivedFromCustomerButton;
     private GoogleMap mMap;
     private Ride ride = null;
     private long rideId;
@@ -63,12 +66,51 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
         roundingOff = (TextView) findViewById(R.id.roundingOff);
         totalBill = (TextView) findViewById(R.id.totalBill);
         cash = (TextView) findViewById(R.id.cashAmount);
+        payThroughWalletButton = (Button) findViewById(R.id.payThroughWalletButton);
+        amountReceivedFromCustomerButton = (Button) findViewById(R.id.amountReceivedFromCustomerButton);
         currentRatingStatus = (TextView) findViewById(R.id.currentRatingStatus);
         freeRideDiscount = (TextView) findViewById(R.id.freeRideDiscount);
         rideId = getIntent().getLongExtra("rideId", 0L);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        payThroughWalletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ("PayU".equals(ride.getModeOfPayment()) || "Paytm".equals(ride.getModeOfPayment())) {
+                    Intent intent = new Intent(ShowCompletedRideActivity.this, PayUPaymentActivity.class);
+                    intent.putExtra("rideId", ride.getId());
+                    intent.putExtra("isRideOnline", true);
+                    // TODO: 23/02/17 This is duplicate and complicated code. We need to make this better.
+                    if (!ride.isFreeRide()) {
+                        intent.putExtra("fareAmount", ride.getTotalBill());
+                    } else if (ride.isFreeRide() && (ride.getTotalBill() - ride.getFreeRideDiscount()) > 0.0) {
+                        intent.putExtra("fareAmount", (ride.getTotalBill() - ride.getFreeRideDiscount()));
+                    }
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+        amountReceivedFromCustomerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //make isPaid as true in this region;
+                new GetBikeAsyncTask(ShowCompletedRideActivity.this) {
+
+                    @Override
+                    public void process() {
+                        new RideSyncher().updatePaymentStatus(rideId);
+                    }
+
+                    @Override
+                    public void afterPostExecute() {
+
+                    }
+                }.execute();
+                finish();
+            }
+        });
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, final float rating, boolean fromUser) {
@@ -91,6 +133,16 @@ public class ShowCompletedRideActivity extends BaseActivity implements OnMapRead
     public void updateRideDetails() {
         String indianRupee = getApplicationContext().getResources().getString(R.string.Rs);
         if (ride != null) {
+            // TODO: 23/02/17 This is duplicate and complicated code. We need to make this better.
+            if (ride.isUserCustomer() && ride.getTotalBill() > 0.0 && (!(ride.isPaid())) && ("PayU".equals(ride.getModeOfPayment()) || "Paytm".equals(ride.getModeOfPayment()))) {
+                if (!ride.isFreeRide()) {
+                    payThroughWalletButton.setVisibility(View.VISIBLE);
+                } else if (ride.isFreeRide() && (ride.getTotalBill() - ride.getFreeRideDiscount()) > 0.0) {
+                    payThroughWalletButton.setVisibility(View.VISIBLE);
+                }
+            } else if (ride.isUserRider() && (!ride.isPaid())) {
+                amountReceivedFromCustomerButton.setVisibility(View.VISIBLE);
+            }
             SimpleDateFormat onlyTimeFormat = new SimpleDateFormat("h:mm a");
             SimpleDateFormat fullDateFormat = new SimpleDateFormat("EEE, MMM dd,h:mm a");
             userName.setText("" + ride.getRequestorName());

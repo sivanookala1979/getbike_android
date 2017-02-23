@@ -29,6 +29,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
     TextView rideRequestLatLng;
     TextView rideRequestMobileNumber;
     TextView rideDestination;
+    TextView modeOfPayment;
     Button acceptRide;
     Button rejectRide;
     Button callRequestorButton;
@@ -49,6 +50,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         rideRequestLatLng = (TextView) findViewById(R.id.rideRequestLatLng);
         rideRequestMobileNumber = (TextView) findViewById(R.id.rideRequestMobileNumber);
         rideDestination = (TextView) findViewById(R.id.rideDestinationAddress);
+        modeOfPayment = (TextView) findViewById(R.id.rideModeOfPayment);
         acceptRide = (Button) findViewById(R.id.acceptRide);
         rejectRide = (Button) findViewById(R.id.rejectRide);
         callRequestorButton = (Button) findViewById(R.id.callRideRequestor);
@@ -75,6 +77,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                             rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
                             rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
                             rideDestination.setText(ride.getDestinationAddress());
+                            modeOfPayment.setText(ride.getModeOfPayment());
                         }
                     } else {
                         showOpenRides(R.string.error_ride_is_not_valid);
