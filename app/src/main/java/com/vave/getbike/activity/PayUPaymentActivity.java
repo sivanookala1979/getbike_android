@@ -136,7 +136,11 @@ public class PayUPaymentActivity extends AppCompatActivity implements OneClickPa
 
             @Override
             public void process() {
-                orderId = new WalletSyncher().generateOrderIDForWallet(amount);
+                if (rideId > 0) {
+                    orderId = new WalletSyncher().generateOrderIDForRide(rideId);
+                } else {
+                    orderId = new WalletSyncher().generateOrderIDForWallet(amount);
+                }
             }
 
             @Override

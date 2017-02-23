@@ -123,8 +123,16 @@ public class WalletSyncher extends BaseSyncher {
     }
 
     public String generateOrderIDForWallet(String amount) {
+        return generateOrderID("/generateOrderId?type=Wallet&amount=" + amount);
+    }
+
+    public String generateOrderIDForRide(long rideId) {
+        return generateOrderID("/generateOrderId?type=Ride&rideId=" + rideId);
+    }
+
+    public String generateOrderID(final String url) {
         final GetBikePointer<String> result = new GetBikePointer<>(null);
-        new JsonGetHandler("/generateOrderId?type=Wallet&amount=" + amount) {
+        new JsonGetHandler(url) {
 
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
