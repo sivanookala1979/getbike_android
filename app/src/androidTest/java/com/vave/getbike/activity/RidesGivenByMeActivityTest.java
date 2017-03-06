@@ -40,11 +40,11 @@ public class RidesGivenByMeActivityTest extends BaseGetBikeActivityTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride1 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride1 = rideSyncher.requestRide(24.56, 24.57, "Cash");
         compulsoryWait(1000);
-        Ride ride2 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride2 = rideSyncher.requestRide(24.56, 24.57, "Cash");
         compulsoryWait(1000);
-        Ride ride3 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride3 = rideSyncher.requestRide(24.56, 24.57, "Cash");
         compulsoryWait(1000);
         rideSyncher.acceptRide(ride2.getId());
         rideSyncher.closeRide(ride2.getId());

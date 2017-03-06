@@ -29,7 +29,7 @@ public class WaitForRiderAfterAcceptanceActivityTest extends BaseGetBikeActivity
     public void testAfterAccept() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Cash");
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, WaitForRiderAfterAcceptanceActivity.class);

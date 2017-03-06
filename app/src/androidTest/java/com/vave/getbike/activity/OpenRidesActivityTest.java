@@ -40,7 +40,7 @@ public class OpenRidesActivityTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         RideSyncher rideSyncher = new RideSyncher();
-        rideSyncher.requestRide(21.34, 54.67);
+        rideSyncher.requestRide(21.34, 54.67, "Cash");
         Intent intent = new Intent(targetContext, OpenRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         onData(anything()).inAdapterView(withId(R.id.openRides)).atPosition(0).perform(click());
@@ -57,7 +57,7 @@ public class OpenRidesActivityTest {
         Intent intent = new Intent(targetContext, OpenRidesActivity.class);
         mActivityTestRule.launchActivity(intent);
         RideSyncher rideSyncher = new RideSyncher();
-        rideSyncher.requestRide(21.34, 54.67);
+        rideSyncher.requestRide(21.34, 54.67, "Cash");
         onView(withId(R.id.refreshOpenRides)).perform(click());
         onData(anything()).inAdapterView(withId(R.id.openRides)).atPosition(0).perform(click());
         onView(withId(R.id.rideRequestLatLng)).check(matches(withText("21.34,54.67")));

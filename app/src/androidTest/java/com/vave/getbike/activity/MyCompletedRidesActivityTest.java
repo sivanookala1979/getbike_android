@@ -41,9 +41,9 @@ public class MyCompletedRidesActivityTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride1 = rideSyncher.requestRide(24.56, 24.57);
-        Ride ride2 = rideSyncher.requestRide(24.56, 24.57);
-        Ride ride3 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride1 = rideSyncher.requestRide(24.56, 24.57, "Cash");
+        Ride ride2 = rideSyncher.requestRide(24.56, 24.57, "Cash");
+        Ride ride3 = rideSyncher.requestRide(24.56, 24.57, "Cash");
         rideSyncher.acceptRide(ride2.getId());
         rideSyncher.closeRide(ride2.getId());
         rideSyncher.acceptRide(ride3.getId());
@@ -60,9 +60,9 @@ public class MyCompletedRidesActivityTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride1 = rideSyncher.requestRide(24.56, 24.57);
-        Ride ride2 = rideSyncher.requestRide(24.56, 24.57);
-        Ride ride3 = rideSyncher.requestRide(24.56, 24.57);
+        Ride ride1 = rideSyncher.requestRide(24.56, 24.57, "Cash");
+        Ride ride2 = rideSyncher.requestRide(24.56, 24.57, "Cash");
+        Ride ride3 = rideSyncher.requestRide(24.56, 24.57, "Cash");
         rideSyncher.acceptRide(ride2.getId());
         rideSyncher.closeRide(ride2.getId());
         rideSyncher.acceptRide(ride3.getId());

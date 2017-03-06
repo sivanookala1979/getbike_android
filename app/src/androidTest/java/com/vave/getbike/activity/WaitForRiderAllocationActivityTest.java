@@ -37,7 +37,7 @@ public class WaitForRiderAllocationActivityTest {
     public void testInitialLaunch() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Cash");
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
@@ -54,7 +54,7 @@ public class WaitForRiderAllocationActivityTest {
     public void testAfterAccept() {
         BaseSyncher.testSetup();
         RideSyncher rideSyncher = new RideSyncher();
-        Ride ride = rideSyncher.requestRide(21.34, 54.67);
+        Ride ride = rideSyncher.requestRide(21.34, 54.67, "Cash");
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, AcceptRejectRideActivity.class);
