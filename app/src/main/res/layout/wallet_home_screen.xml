@@ -93,7 +93,7 @@
                     android:layout_weight="4.5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="right"
-                    android:text="$ 0.0"
+                    android:text="0.0"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
@@ -136,7 +136,7 @@
                     android:layout_weight="4.5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="right"
-                    android:text="$ 0.0"
+                    android:text="0.0"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
@@ -179,7 +179,7 @@
                     android:layout_weight="4.5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="right"
-                    android:text="$ 0.0"
+                    android:text="0.0"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
@@ -191,49 +191,38 @@
                 android:gravity="center"
                 android:minHeight="30dp"
                 android:orientation="horizontal"
-                android:weightSum="100">
+                android:weightSum="10">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="55"
+                    android:layout_weight="5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                    android:text="Free Rides Earned : "
+                    android:text="Free Rides"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
-
                 <TextView
-                    android:id="@+id/ridesEarned"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="10"
+                    android:layout_weight="0.5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                     android:gravity="center"
-                    android:text="0"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_small" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="25"
-                    android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                    android:text=" Spent : "
+                    android:text=":"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />
 
 
                 <TextView
-                    android:id="@+id/ridesSpent"
+                    android:id="@+id/freeRidesTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="10"
+                    android:layout_weight="4.5"
                     android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:text="0"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small" />

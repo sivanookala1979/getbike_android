@@ -304,4 +304,17 @@ public class RideSyncher extends BaseSyncher {
         }.handle();
         return result;
     }
+
+    public boolean geoFencingAreaValidation(double latitude, double longitude) {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+        new JsonGetHandler("/geoFencingAreaValidation?latitude=" + latitude + "&longitude=" + longitude) {
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
 }

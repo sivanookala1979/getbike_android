@@ -22,10 +22,10 @@
             android:id="@+id/profilAndSettings"
             android:icon="@drawable/settings"
             android:title="Profile And Settings" />
-        <item
+        <!--<item
             android:id="@+id/support"
             android:icon="@drawable/support_icon_hands"
-            android:title="Support" />
+            android:title="Support" />-->
         <item
             android:id="@+id/logout"
             android:icon="@mipmap/logout"

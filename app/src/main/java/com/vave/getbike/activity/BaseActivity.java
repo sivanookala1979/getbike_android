@@ -109,9 +109,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             case R.id.earnFreeRides:
                 startActivity(new Intent(this, ShareActivity.class));
                 break;
-            case R.id.support:
+            /*case R.id.support:
                 startActivity(new Intent(this, FAQActivity.class));
-                break;
+                break;*/
             case R.id.logout:
                 startActivity(new Intent(this, LogoScreenActivity.class));
                 try {

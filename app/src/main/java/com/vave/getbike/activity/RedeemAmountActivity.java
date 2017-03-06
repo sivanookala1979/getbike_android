@@ -241,7 +241,7 @@ public class RedeemAmountActivity extends BaseActivity implements View.OnClickLi
     private void setupSpinnersDate() {
         circles = StringUtils.getStringsList("Andhra Pradesh", "Arunachal Pradesh", "Telangana", "Tamil Nadu");
         operators = StringUtils.getStringsList("Airtel", "Aircel", "BSNL", "Jio", "Vodafone", "Idea");
-        walletNames = StringUtils.getStringsList("Wallet 1", "Wallet 2", "Wallet 3");
+        walletNames = StringUtils.getStringsList("PAYTM", "PAYU");
         setArrayAdapter(circle, circles);
         setArrayAdapter(operator, operators);
         setArrayAdapter(walletName, walletNames);

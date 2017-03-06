@@ -79,7 +79,7 @@
                         android:layout_weight="4.5"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                         android:gravity="center"
-                        android:text="$ 0.0"
+                        android:text="0.0"
                         android:textColor="@color/get_bike_black"
                         android:textSize="@dimen/text_size_small" />
 
@@ -122,7 +122,7 @@
                         android:layout_weight="4.5"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                         android:gravity="center"
-                        android:text="$ 0.0"
+                        android:text="0.0"
                         android:textColor="@color/get_bike_black"
                         android:textSize="@dimen/text_size_small" />
 
@@ -165,7 +165,7 @@
                         android:layout_weight="4.5"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                         android:gravity="center"
-                        android:text="$ 0.0"
+                        android:text="0.0"
                         android:textColor="@color/get_bike_black"
                         android:textSize="@dimen/text_size_small" />
                 </LinearLayout>
@@ -197,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                         android:padding="5dp"
-                        android:text="It will take upto 1 businessness day"
+                        android:text="It will take upto 1 business day"
                         android:textColor="@color/gray_holo_dark"
                         android:textSize="@dimen/text_size_small" />
 
@@ -311,7 +311,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                             android:padding="5dp"
-                            android:text="It will take upto 1 businessness day"
+                            android:text="It will take upto 1 business day"
                             android:textColor="@color/gray_holo_dark"
                             android:textSize="@dimen/text_size_small" />
 
@@ -423,7 +423,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="fonts/AvenirNextLTPro-Regular.otf"
                             android:padding="5dp"
-                            android:text="It will take upto 1-5 businessness days"
+                            android:text="It will take upto 1-5 business days"
                             android:textColor="@color/gray_holo_dark"
                             android:textSize="@dimen/text_size_small" />
 

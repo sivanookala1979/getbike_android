@@ -78,6 +78,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     private LocationManager locationManager;
     private ImageButton takeRide;
     private ImageButton giveRide;
+    boolean geoFencingValidationResult = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,7 +311,40 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16.0f));
             googleMap.setMyLocationEnabled(true);
             loadNearByRiders(googleMap, mCurrentLocation);
+            geoFencingValidation(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
         }
+    }
+
+    public void geoFencingValidation(final double userLatitude, final double userLongitude){
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            @Override
+            public void process() {
+                geoFencingValidationResult = new RideSyncher().geoFencingAreaValidation(userLatitude,userLongitude);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (!geoFencingValidationResult){
+                    geoFencingValidationPopUpMessage();
+                }
+            }
+        }.execute();
+    }
+
+    public void geoFencingValidationPopUpMessage() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+        builder.setCancelable(false);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setTitle("Notification");
+        builder.setMessage("Currently we are serving few areas of Hyderabad.");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void loadNearByRiders(final GoogleMap googleMap, final Location currentLocation) {
@@ -346,48 +380,57 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takeRide:
-                launchActivity(GiveDestinationAddressActivity.class);
+                if (geoFencingValidationResult){
+                    launchActivity(GiveDestinationAddressActivity.class);
+                }
+                else {
+                    geoFencingValidationPopUpMessage();
+                }
                 break;
             case R.id.giveRide:
-                new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
-                    Profile publicProfile;
+                if (geoFencingValidationResult) {
+                    new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+                        Profile publicProfile;
 
-                    @Override
-                    public void process() {
-                        publicProfile = new LoginSyncher().getPublicProfile(0l);
-                    }
-
-                    @Override
-                    public void afterPostExecute() {
-                        if (publicProfile != null) {
-                            if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null) {
-                                launchActivity(OpenRidesActivity.class);
-                            } else {
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
-                                builder.setCancelable(false);
-                                builder.setTitle("Rider profile");
-                                builder.setMessage("Please fill your rider profile to give a ride.");
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(GiveRideTakeRideActivity.this, RiderProfileActivity.class);
-                                        startActivity(intent);
-                                    }
-                                });
-                                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                });
-                                builder.show();
-                            }
-                        } else {
-                            ToastHelper.serverToast(GiveRideTakeRideActivity.this);
+                        @Override
+                        public void process() {
+                            publicProfile = new LoginSyncher().getPublicProfile(0l);
                         }
-                    }
-                }.execute();
 
+                        @Override
+                        public void afterPostExecute() {
+                            if (publicProfile != null) {
+                                if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null) {
+                                    launchActivity(OpenRidesActivity.class);
+                                } else {
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle("Rider profile");
+                                    builder.setMessage("Please fill your rider profile to give a ride.");
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(GiveRideTakeRideActivity.this, RiderProfileActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
+                            } else {
+                                ToastHelper.serverToast(GiveRideTakeRideActivity.this);
+                            }
+                        }
+                    }.execute();
+                }
+                else {
+                    geoFencingValidationPopUpMessage();
+                }
                 break;
         }
     }
@@ -450,7 +493,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
 
             @Override
             public void afterPostExecute() {
-                if (rideStatus.isPending()) {
+                if (rideStatus != null && rideStatus.isPending()) {
                     showCurrentRideButton.setVisibility(View.VISIBLE);
                     giveRideTakeRideLinearLayout.setVisibility(View.GONE);
                 } else {
@@ -497,6 +540,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.bike_pointer)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(fusedCurrentLocation.getLatitude(), fusedCurrentLocation.getLongitude()), 16.0f));
             loadNearByRiders(googleMap, fusedCurrentLocation);
+            geoFencingValidation(fusedCurrentLocation.getLatitude(),fusedCurrentLocation.getLongitude());
         }
     }
 
