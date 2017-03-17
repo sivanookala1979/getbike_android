@@ -1,6 +1,8 @@
 package com.vave.getbike.syncher;
 
 import com.vave.getbike.datasource.CallStatus;
+import com.vave.getbike.model.GeoFencingLocation;
+import com.vave.getbike.model.PromotionsBanner;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
 import com.vave.getbike.utils.GsonUtils;
@@ -305,16 +307,51 @@ public class RideSyncher extends BaseSyncher {
         return result;
     }
 
-    public boolean geoFencingAreaValidation(double latitude, double longitude) {
-        final GetBikePointer<Boolean> result = new GetBikePointer<>(false);
+    public List<GeoFencingLocation> geoFencingAreaValidation(double latitude, double longitude) {
+        final List<GeoFencingLocation> geoFencingLocations = new ArrayList<>();
         new JsonGetHandler("/geoFencingAreaValidation?latitude=" + latitude + "&longitude=" + longitude) {
             @Override
             protected void processResult(JSONObject jsonResult) throws Exception {
-                if (jsonResult.has("result") && "success".equals(jsonResult.get("result"))) {
-                    result.setValue(true);
+                if (jsonResult.has("result") && "failure".equals(jsonResult.get("result")) && jsonResult.has("locations")) {
+                    JSONArray locationArray = jsonResult.getJSONArray("locations");
+                    for (int i = 0; i < locationArray.length(); i++) {
+                        geoFencingLocations.add(GsonUtils.getGson().fromJson(locationArray.get(i).toString(), GeoFencingLocation.class));
+                    }
                 }
             }
         }.handle();
-        return result.getValue();
+        return geoFencingLocations;
+    }
+
+    public void userRequestFromNonGeoFencingLocation(final double latitude, final double longitude, final String addressArea) {
+        new JsonPostHandler("/userRequestFromNonGeoFencingLocation") {
+
+            @Override
+            protected void prepareRequest() {
+                put("latitude", latitude);
+                put("longitude", longitude);
+                put("addressArea", addressArea);
+            }
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+
+            }
+        }.handle();
+    }
+
+    public PromotionsBanner getPromotionalBannerWithUrl(final String resolution) {
+        final PromotionsBanner promotionsBanner = new PromotionsBanner();
+        new JsonGetHandler("/promotion/sendPromotion?resolution=" + resolution) {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    promotionsBanner.setImageName(jsonResult.getString(resolution));
+                    promotionsBanner.setImageUrl(jsonResult.getString("promotionsURL"));
+                }
+            }
+        }.handle();
+        return promotionsBanner;
     }
 }

@@ -19,6 +19,7 @@ public class GetBikePreferences {
     private static final String PUBLICPROFILE = "publicProfile";
     private static final String USER_PROFILE = "userProfile";
     private static final String isTutorial_Completed = "completed";
+    private static final String PROMOTIONS_BANNER_COMPLETED_ON = "01/01/2017";
 
     //UserProfile
 
@@ -82,6 +83,14 @@ public class GetBikePreferences {
     public static void setUserProfile(UserProfile profile) {
         String addressDetails = new Gson().toJson(profile);
         preferences.edit().putString(USER_PROFILE, addressDetails).commit();
+    }
+
+    public static String getPromotionsBannerCompletedOn() {
+        return preferences.getString(PROMOTIONS_BANNER_COMPLETED_ON,"01/01/2017");
+    }
+
+    public static void setPromotionsBannerCompletedOn(String promotionsBannerCompletedOn) {
+        preferences.edit().putString(PROMOTIONS_BANNER_COMPLETED_ON, promotionsBannerCompletedOn).commit();
     }
 
 }

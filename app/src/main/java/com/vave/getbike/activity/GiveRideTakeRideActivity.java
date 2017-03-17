@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,9 +19,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,20 +45,28 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.LocationDetails;
 import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.CurrentRideStatus;
+import com.vave.getbike.model.GeoFencingLocation;
 import com.vave.getbike.model.Profile;
+import com.vave.getbike.model.PromotionsBanner;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
+import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -79,6 +93,10 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     private ImageButton takeRide;
     private ImageButton giveRide;
     boolean geoFencingValidationResult = false;
+    String geoFencingAddresses = " ";
+    PromotionsBanner promotionsBanner;
+    final static String TAG_NAME = "GiveRideTakeRideScreen";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +136,32 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                 }
             });
             GetBikePreferences.setIsTutorialCompleted(true);
+        }
+
+        //Code for promotional banner;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String currentDateInStringFormat = simpleDateFormat.format(new Date());
+        if (!(GetBikePreferences.getPromotionsBannerCompletedOn().equals(currentDateInStringFormat))){
+            //show promotions banner;
+            float resolutionDensity = getResources().getDisplayMetrics().density;
+            Log.d(TAG_NAME, "device screen size is " + resolutionDensity);
+            if (resolutionDensity == 0.75) {
+                //ldpi; 240 X 175
+                showPromotionsBanner("ldpi",240,175);
+            } else if (resolutionDensity == 1.0) {
+                //mdpi; 320 X 234
+                showPromotionsBanner("mdpi",320,234);
+            } else if (resolutionDensity == 2.0) {
+                //xhdpi; 640 X 467
+                showPromotionsBanner("xhdpi",640,467);
+            } else if (resolutionDensity == 3.0) {
+                //xxhdpi; 960 X 701
+                showPromotionsBanner("xxhdpi",960,351);
+            } else {
+                //hdpi; 480 X 351
+                showPromotionsBanner("hdpi",480,351);
+            }
+            GetBikePreferences.setPromotionsBannerCompletedOn(currentDateInStringFormat);
         }
 
         try {
@@ -318,26 +362,54 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void geoFencingValidation(final double userLatitude, final double userLongitude){
         new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
 
+            List<GeoFencingLocation> geoFencingLocations = new ArrayList<GeoFencingLocation>();
+
             @Override
             public void process() {
-                geoFencingValidationResult = new RideSyncher().geoFencingAreaValidation(userLatitude,userLongitude);
+                geoFencingLocations = new RideSyncher().geoFencingAreaValidation(userLatitude, userLongitude);
             }
 
             @Override
             public void afterPostExecute() {
-                if (!geoFencingValidationResult){
-                    geoFencingValidationPopUpMessage();
+                if (geoFencingLocations.size() > 0) {
+                    geoFencingAddresses = " ";
+                    for (GeoFencingLocation locations : geoFencingLocations) {
+                        StringTokenizer stringTokenizer = new StringTokenizer(locations.getAddressArea());
+                        geoFencingAddresses = geoFencingAddresses + stringTokenizer.nextToken(",") + ",";
+                    }
+                    geoFencingAddresses = geoFencingAddresses.substring(0, geoFencingAddresses.length() - 1);
+                    //store the user location in Non GeoLocations table in db;
+                    saveUserRequestFromNonGeoFencingLocation(userLatitude,userLongitude);
+                    geoFencingValidationPopUpMessage(geoFencingAddresses);
+                } else {
+                    geoFencingValidationResult = true;
                 }
             }
         }.execute();
     }
 
-    public void geoFencingValidationPopUpMessage() {
+    public void saveUserRequestFromNonGeoFencingLocation(final double latitude, final double longitude) {
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            @Override
+            public void process() {
+                RideSyncher rideSyncher = new RideSyncher();
+                rideSyncher.userRequestFromNonGeoFencingLocation(latitude,longitude,getCompleteAddressString(latitude,longitude));
+            }
+
+            @Override
+            public void afterPostExecute() {
+
+            }
+        }.execute();
+    }
+
+    public void geoFencingValidationPopUpMessage(String locationAreas) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
         builder.setCancelable(false);
         builder.setIcon(R.mipmap.ic_launcher);
         builder.setTitle("Notification");
-        builder.setMessage("Currently we are serving few areas of Hyderabad.");
+        builder.setMessage("Currently we are available in" + locationAreas);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -384,53 +456,48 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     launchActivity(GiveDestinationAddressActivity.class);
                 }
                 else {
-                    geoFencingValidationPopUpMessage();
+                    geoFencingValidationPopUpMessage(geoFencingAddresses);
                 }
                 break;
             case R.id.giveRide:
-                if (geoFencingValidationResult) {
-                    new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
-                        Profile publicProfile;
+                new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+                    Profile publicProfile;
 
-                        @Override
-                        public void process() {
-                            publicProfile = new LoginSyncher().getPublicProfile(0l);
-                        }
+                    @Override
+                    public void process() {
+                        publicProfile = new LoginSyncher().getPublicProfile(0l);
+                    }
 
-                        @Override
-                        public void afterPostExecute() {
-                            if (publicProfile != null) {
-                                if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null) {
-                                    launchActivity(OpenRidesActivity.class);
-                                } else {
-                                    final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
-                                    builder.setCancelable(false);
-                                    builder.setTitle("Rider profile");
-                                    builder.setMessage("Please fill your rider profile to give a ride.");
-                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(GiveRideTakeRideActivity.this, RiderProfileActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
-                                    builder.show();
-                                }
+                    @Override
+                    public void afterPostExecute() {
+                        if (publicProfile != null) {
+                            if (publicProfile.getDrivingLicenseNumber() != null && publicProfile.getVehicleNumber() != null) {
+                                launchActivity(OpenRidesActivity.class);
                             } else {
-                                ToastHelper.serverToast(GiveRideTakeRideActivity.this);
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+                                builder.setCancelable(false);
+                                builder.setTitle("Rider profile");
+                                builder.setMessage("Please fill your rider profile to give a ride.");
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(GiveRideTakeRideActivity.this, RiderProfileActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                builder.show();
                             }
+                        } else {
+                            ToastHelper.serverToast(GiveRideTakeRideActivity.this);
                         }
-                    }.execute();
-                }
-                else {
-                    geoFencingValidationPopUpMessage();
-                }
+                    }
+                }.execute();
                 break;
         }
     }
@@ -567,6 +634,96 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
             Log.d(TAG, "Location update stopped .......................");
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+            alertDialog.setTitle("Exit");
+            alertDialog.setMessage("Do you want to Exit");
+            alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            alertDialog.show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void showPromotionsBanner(final String resolution, final int size1, final int size2) {
+        //Code for promotional banner;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
+        final ImageView image1 = new ImageView(GiveRideTakeRideActivity.this);
+        LinearLayout imageLayout = new LinearLayout(GiveRideTakeRideActivity.this);
+        imageLayout.setOrientation(LinearLayout.VERTICAL);
+        image1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        imageLayout.addView(image1);
+        builder.setView(imageLayout);
+        builder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                builder.create().dismiss();
+            }
+        });
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            @Override
+            public void process() {
+                promotionsBanner = new RideSyncher().getPromotionalBannerWithUrl(resolution);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (promotionsBanner != null) {
+                    if (promotionsBanner.getImageName() != null) {
+                        Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/uploads/" + promotionsBanner.getImageName()).placeholder(R.drawable.picture).resize(size1, size2).into(image1);
+                        builder.show();
+                    }
+                }
+            }
+        }.execute();
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+promotionsBanner.getImageUrl()));
+                startActivity(i);
+            }
+        });
+
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(", ");
+                }
+                strAdd = strReturnedAddress.toString();
+                if (strAdd.endsWith(", ")) {
+                    strAdd = strAdd.substring(0, strAdd.length() - 2);
+                }
+                Log.w("My Current loction", "" + strReturnedAddress.toString());
+            } else {
+                Log.w("My Current loction", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("My Current loction", "Canont get Address!");
+        }
+        return strAdd;
     }
 
 }
