@@ -21,6 +21,9 @@ import com.vave.getbike.model.Ride;
 import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AcceptRejectRideActivity extends BaseActivity implements View.OnClickListener {
 
     // UI Widgets.
@@ -30,6 +33,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
     TextView rideRequestMobileNumber;
     TextView rideDestination;
     TextView modeOfPayment;
+    TextView rideRequestAt;
     Button acceptRide;
     Button rejectRide;
     Button callRequestorButton;
@@ -51,6 +55,7 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         rideRequestMobileNumber = (TextView) findViewById(R.id.rideRequestMobileNumber);
         rideDestination = (TextView) findViewById(R.id.rideDestinationAddress);
         modeOfPayment = (TextView) findViewById(R.id.rideModeOfPayment);
+        rideRequestAt = (TextView) findViewById(R.id.rideRequestAt);
         acceptRide = (Button) findViewById(R.id.acceptRide);
         rejectRide = (Button) findViewById(R.id.rejectRide);
         callRequestorButton = (Button) findViewById(R.id.callRideRequestor);
@@ -71,13 +76,17 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
                             showOpenRides(R.string.error_ride_is_already_allocated);
                         } else if ("RideCancelled".equals(ride.getRideStatus())) {
                             showOpenRides(R.string.error_ride_is_cancelled_by_customer);
+                        } else if (getDifferenceInMinutes(new Date(),ride.getRequestedAt()) >= 15) {
+                            showOpenRides(R.string.error_ride_is_expired);
                         } else {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd h:mm a");
                             rideRequestedBy.setText(ride.getRequestorName());
                             rideRequestAddress.setText(ride.getSourceAddress());
                             rideRequestLatLng.setText(ride.getStartLatitude() + "," + ride.getStartLongitude());
                             rideRequestMobileNumber.setText(ride.getRequestorPhoneNumber());
                             rideDestination.setText(ride.getDestinationAddress());
                             modeOfPayment.setText(ride.getModeOfPayment());
+                            rideRequestAt.setText(""+dateFormat.format(ride.getRequestedAt()));
                         }
                     } else {
                         showOpenRides(R.string.error_ride_is_not_valid);
@@ -184,5 +193,12 @@ public class AcceptRejectRideActivity extends BaseActivity implements View.OnCli
         finish();
         Intent intent = new Intent(AcceptRejectRideActivity.this, OpenRidesActivity.class);
         startActivity(intent);
+    }
+
+    public long getDifferenceInMinutes(Date currentDate,Date requestedDate){
+        long diff = currentDate.getTime() - requestedDate.getTime();
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        return minutes; //returning time in minutes;
     }
 }

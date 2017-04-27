@@ -70,11 +70,18 @@
                 android:src="@drawable/share_promocode"
                 android:visibility="gone"/>
 
+            <Switch
+                android:text="Rider Availability"
+                android:textSize="25sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/driverAvailability"
+                android:layout_weight="0.10" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="63.6">
-
+                android:layout_weight="62.0">
             </LinearLayout>
 
             <Button
@@ -98,7 +105,7 @@
                 <ImageButton
                     android:id="@+id/giveRide"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="65dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/give_ride_large_2"
                     android:textColor="@color/white"/>
@@ -106,7 +113,7 @@
                 <ImageButton
                     android:id="@+id/takeRide"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="65dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/take_ride_large_2"
                     android:textColor="@color/white"/>

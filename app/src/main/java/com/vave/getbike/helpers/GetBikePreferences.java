@@ -18,7 +18,6 @@ public class GetBikePreferences {
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String PUBLICPROFILE = "publicProfile";
     private static final String USER_PROFILE = "userProfile";
-    private static final String isTutorial_Completed = "completed";
     private static final String PROMOTIONS_BANNER_COMPLETED_ON = "01/01/2017";
 
     //UserProfile
@@ -46,14 +45,6 @@ public class GetBikePreferences {
 
     public static void setAccessToken(String accessToken) {
         preferences.edit().putString(ACCESS_TOKEN, accessToken).commit();
-    }
-
-    public static void setIsTutorialCompleted(boolean isTutorialCompleted){
-        preferences.edit().putBoolean(isTutorial_Completed,isTutorialCompleted).commit();
-    }
-
-    public static boolean isTutorialCompleted(){
-        return preferences.getBoolean(isTutorial_Completed, false);
     }
 
     public static boolean isLoggedIn() {

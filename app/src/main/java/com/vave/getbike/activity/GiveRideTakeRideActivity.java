@@ -7,11 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,11 +18,11 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,8 +42,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 import com.vave.getbike.R;
+import com.vave.getbike.helpers.DriverAvailabilityHelper;
 import com.vave.getbike.helpers.GetBikeAsyncTask;
 import com.vave.getbike.helpers.GetBikePreferences;
 import com.vave.getbike.helpers.LocationDetails;
@@ -54,10 +51,8 @@ import com.vave.getbike.helpers.ToastHelper;
 import com.vave.getbike.model.CurrentRideStatus;
 import com.vave.getbike.model.GeoFencingLocation;
 import com.vave.getbike.model.Profile;
-import com.vave.getbike.model.PromotionsBanner;
 import com.vave.getbike.model.Ride;
 import com.vave.getbike.model.RideLocation;
-import com.vave.getbike.syncher.BaseSyncher;
 import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 
@@ -67,6 +62,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -74,6 +73,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    // Active Instance
+    public static GiveRideTakeRideActivity activeInstance;
     public static final int GPS_PERMISSION_REQUEST_CODE = 8;
     private static final String TAG = "LocationActivity";
     private static final long INTERVAL = 1000 * 100;
@@ -94,9 +95,15 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     private ImageButton giveRide;
     boolean geoFencingValidationResult = false;
     String geoFencingAddresses = " ";
-    PromotionsBanner promotionsBanner;
-    final static String TAG_NAME = "GiveRideTakeRideScreen";
+    boolean tutorialStatus;
+    Switch driverAvailability;
+    boolean driverAvailabilityStatus;
+    ScheduledFuture<?> future = null;
+    private ScheduledExecutorService scheduler = null;
 
+    public static GiveRideTakeRideActivity instance() {
+        return activeInstance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,59 +115,84 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         mapFragment.getMapAsync(this);
         GetBikePreferences.setPreferences(getApplicationContext());
         TextView appVersionTextView = (TextView) findViewById(R.id.appVersionTextView);
-        if (!(GetBikePreferences.isTutorialCompleted())) {
-            //Show tutorial;
-            final GifImageView getBikePromotionsGifView = (GifImageView) findViewById(R.id.get_bike_promotions_gif_view);
-            final GifImageView sharePromoCodeGifView = (GifImageView) findViewById(R.id.share_promo_code_gif_view);
-            final GifImageView giveRideTakeRideGifView = (GifImageView) findViewById(R.id.take_ride_give_ride_gif_view);
+        scheduler =
+                Executors.newScheduledThreadPool(1);
+        driverAvailability = (Switch) findViewById(R.id.driverAvailability);
 
-            giveRideTakeRideGifView.setVisibility(View.VISIBLE);
-            giveRideTakeRideGifView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    giveRideTakeRideGifView.setVisibility(View.GONE);
-                    getBikePromotionsGifView.setVisibility(View.VISIBLE);
+        driverAvailability.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    DriverAvailabilityHelper.setDriverAvailabilityForTrue(GiveRideTakeRideActivity.this);
+                } else {
+                    DriverAvailabilityHelper.setDriverAvailabilityForFalse(GiveRideTakeRideActivity.this);
                 }
-            });
-            getBikePromotionsGifView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getBikePromotionsGifView.setVisibility(View.GONE);
-                    sharePromoCodeGifView.setVisibility(View.VISIBLE);
-                }
-            });
-            sharePromoCodeGifView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sharePromoCodeGifView.setVisibility(View.GONE);
-                }
-            });
-            GetBikePreferences.setIsTutorialCompleted(true);
-        }
+            }
+        });
 
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            @Override
+            public void process() {
+                driverAvailabilityStatus = new LoginSyncher().getDriverAvailability();
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (driverAvailabilityStatus){
+                    driverAvailability.setChecked(true);
+                } else {
+                    driverAvailability.setChecked(false);
+                }
+            }
+        }.execute();
+
+        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+
+            @Override
+            public void process() {
+                tutorialStatus = new LoginSyncher().checkTutorialCompletedStatus();
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (!tutorialStatus){
+                    //Show tutorial;
+                    final GifImageView getBikePromotionsGifView = (GifImageView) findViewById(R.id.get_bike_promotions_gif_view);
+                    final GifImageView sharePromoCodeGifView = (GifImageView) findViewById(R.id.share_promo_code_gif_view);
+                    final GifImageView giveRideTakeRideGifView = (GifImageView) findViewById(R.id.take_ride_give_ride_gif_view);
+
+                    giveRideTakeRideGifView.setVisibility(View.VISIBLE);
+                    giveRideTakeRideGifView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            giveRideTakeRideGifView.setVisibility(View.GONE);
+                            getBikePromotionsGifView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    getBikePromotionsGifView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getBikePromotionsGifView.setVisibility(View.GONE);
+                            sharePromoCodeGifView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    sharePromoCodeGifView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sharePromoCodeGifView.setVisibility(View.GONE);
+                        }
+                    });
+                    DriverAvailabilityHelper.storeTutorialCompletedStatus(GiveRideTakeRideActivity.this);
+                }
+            }
+        }.execute();
         //Code for promotional banner;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String currentDateInStringFormat = simpleDateFormat.format(new Date());
         if (!(GetBikePreferences.getPromotionsBannerCompletedOn().equals(currentDateInStringFormat))){
-            //show promotions banner;
             float resolutionDensity = getResources().getDisplayMetrics().density;
-            Log.d(TAG_NAME, "device screen size is " + resolutionDensity);
-            if (resolutionDensity == 0.75) {
-                //ldpi; 240 X 175
-                showPromotionsBanner("ldpi",240,175);
-            } else if (resolutionDensity == 1.0) {
-                //mdpi; 320 X 234
-                showPromotionsBanner("mdpi",320,234);
-            } else if (resolutionDensity == 2.0) {
-                //xhdpi; 640 X 467
-                showPromotionsBanner("xhdpi",640,467);
-            } else if (resolutionDensity == 3.0) {
-                //xxhdpi; 960 X 701
-                showPromotionsBanner("xxhdpi",960,351);
-            } else {
-                //hdpi; 480 X 351
-                showPromotionsBanner("hdpi",480,351);
-            }
+            DriverAvailabilityHelper.showPromotionsBannerForSize(GiveRideTakeRideActivity.this,resolutionDensity);
             GetBikePreferences.setPromotionsBannerCompletedOn(currentDateInStringFormat);
         }
 
@@ -314,6 +346,9 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         super.onStart();
         Log.d(TAG, "onStart fired ..............");
         mGoogleApiClient.connect();
+        activeInstance = this;
+        cleanFuture();
+        future = scheduler.scheduleAtFixedRate(new StoreUserLocation(), 30, 60, TimeUnit.SECONDS);
     }
 
     @Override
@@ -322,6 +357,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         Log.d(TAG, "onStop fired ..............");
         mGoogleApiClient.disconnect();
         Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
+        activeInstance = null;
+        cleanFuture();
     }
 
     private boolean isGooglePlayServicesAvailable() {
@@ -379,44 +416,13 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     }
                     geoFencingAddresses = geoFencingAddresses.substring(0, geoFencingAddresses.length() - 1);
                     //store the user location in Non GeoLocations table in db;
-                    saveUserRequestFromNonGeoFencingLocation(userLatitude,userLongitude);
-                    geoFencingValidationPopUpMessage(geoFencingAddresses);
+                    LocationDetails.saveUserRequestFromNonGeoFencingLocation(GiveRideTakeRideActivity.this,userLatitude,userLongitude);
+                    LocationDetails.geoFencingValidationPopUpMessage(GiveRideTakeRideActivity.this,geoFencingAddresses);
                 } else {
                     geoFencingValidationResult = true;
                 }
             }
         }.execute();
-    }
-
-    public void saveUserRequestFromNonGeoFencingLocation(final double latitude, final double longitude) {
-        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
-
-            @Override
-            public void process() {
-                RideSyncher rideSyncher = new RideSyncher();
-                rideSyncher.userRequestFromNonGeoFencingLocation(latitude,longitude,getCompleteAddressString(latitude,longitude));
-            }
-
-            @Override
-            public void afterPostExecute() {
-
-            }
-        }.execute();
-    }
-
-    public void geoFencingValidationPopUpMessage(String locationAreas) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
-        builder.setCancelable(false);
-        builder.setIcon(R.mipmap.ic_launcher);
-        builder.setTitle("Notification");
-        builder.setMessage("Currently we are available in" + locationAreas);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
     }
 
     private void loadNearByRiders(final GoogleMap googleMap, final Location currentLocation) {
@@ -456,7 +462,7 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
                     launchActivity(GiveDestinationAddressActivity.class);
                 }
                 else {
-                    geoFencingValidationPopUpMessage(geoFencingAddresses);
+                    LocationDetails.geoFencingValidationPopUpMessage(GiveRideTakeRideActivity.this,geoFencingAddresses);
                 }
                 break;
             case R.id.giveRide:
@@ -599,6 +605,8 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
     public void onLocationChanged(Location location) {
         Log.d(TAG, "Firing onLocationChanged..............................................");
         fusedCurrentLocation = location;
+        fusedCurrentLocation.setLatitude(location.getLatitude());
+        fusedCurrentLocation.setLongitude(location.getLongitude());
         Log.d(TAG, "fusedCurrentLocation is:" + fusedCurrentLocation);
         if (googleMap != null && fusedCurrentLocation != null) {
             googleMap.clear();
@@ -657,73 +665,27 @@ public class GiveRideTakeRideActivity extends BaseActivity implements OnMapReady
         return super.onKeyDown(keyCode, event);
     }
 
-    public void showPromotionsBanner(final String resolution, final int size1, final int size2) {
-        //Code for promotional banner;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(GiveRideTakeRideActivity.this);
-        final ImageView image1 = new ImageView(GiveRideTakeRideActivity.this);
-        LinearLayout imageLayout = new LinearLayout(GiveRideTakeRideActivity.this);
-        imageLayout.setOrientation(LinearLayout.VERTICAL);
-        image1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        imageLayout.addView(image1);
-        builder.setView(imageLayout);
-        builder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                builder.create().dismiss();
-            }
-        });
-        new GetBikeAsyncTask(GiveRideTakeRideActivity.this) {
+    private class StoreUserLocation implements Runnable {
+        @Override
+        public void run() {
 
-            @Override
-            public void process() {
-                promotionsBanner = new RideSyncher().getPromotionalBannerWithUrl(resolution);
-            }
-
-            @Override
-            public void afterPostExecute() {
-                if (promotionsBanner != null) {
-                    if (promotionsBanner.getImageName() != null) {
-                        Picasso.with(getApplicationContext()).load(BaseSyncher.BASE_URL + "/uploads/" + promotionsBanner.getImageName()).placeholder(R.drawable.picture).resize(size1, size2).into(image1);
-                        builder.show();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (LocationDetails.isValid(fusedCurrentLocation)){
+                        LocationDetails.storeUserLastKnownLocation(GiveRideTakeRideActivity.this,fusedCurrentLocation.getLatitude(),fusedCurrentLocation.getLongitude());
+                    } else if (LocationDetails.isValid(mCurrentLocation)){
+                        LocationDetails.storeUserLastKnownLocation(GiveRideTakeRideActivity.this,mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
                     }
                 }
-            }
-        }.execute();
-        image1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+promotionsBanner.getImageUrl()));
-                startActivity(i);
-            }
-        });
-
-    }
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(", ");
-                }
-                strAdd = strReturnedAddress.toString();
-                if (strAdd.endsWith(", ")) {
-                    strAdd = strAdd.substring(0, strAdd.length() - 2);
-                }
-                Log.w("My Current loction", "" + strReturnedAddress.toString());
-            } else {
-                Log.w("My Current loction", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("My Current loction", "Canont get Address!");
+            });
         }
-        return strAdd;
     }
 
+    private void cleanFuture() {
+        if (future != null) {
+            future.cancel(true);
+            future = null;
+        }
+    }
 }

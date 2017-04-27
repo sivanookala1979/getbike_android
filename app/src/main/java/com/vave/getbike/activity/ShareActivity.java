@@ -1,6 +1,7 @@
 package com.vave.getbike.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -65,13 +66,17 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
         String subject = "getbike Referral Code";
         switch (view.getId()) {
             case R.id.whatsApp_button:
-                Intent whatsAppIntent = new Intent();
-                whatsAppIntent.setAction(Intent.ACTION_SEND);
-                whatsAppIntent.setType("text/plain");
-                whatsAppIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                whatsAppIntent.putExtra(Intent.EXTRA_TEXT, url);
-                whatsAppIntent.setPackage("com.whatsapp");
-                startActivity(whatsAppIntent);
+                if (appInstalledOrNot("com.whatsapp")){
+                    Intent whatsAppIntent = new Intent();
+                    whatsAppIntent.setAction(Intent.ACTION_SEND);
+                    whatsAppIntent.setType("text/plain");
+                    whatsAppIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    whatsAppIntent.putExtra(Intent.EXTRA_TEXT, url);
+                    whatsAppIntent.setPackage("com.whatsapp");
+                    startActivity(whatsAppIntent);
+                } else {
+                    ToastHelper.blueToast(this,"Whats app is not available on your device.");
+                }
                 break;
             case R.id.mail_button:
                 Intent email = new Intent(Intent.ACTION_SEND);
@@ -97,5 +102,15 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(Intent.createChooser(sharingIntent, "Share"));
                 break;
         }
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return false;
     }
 }

@@ -129,6 +129,21 @@
             android:textColor="@color/black"
             android:textSize="17sp"/>
 
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Ride Requested Time"/>
+
+        <TextView
+            android:id="@+id/rideRequestAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride Requested Time"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

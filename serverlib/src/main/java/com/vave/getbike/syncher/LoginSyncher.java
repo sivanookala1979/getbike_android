@@ -243,4 +243,64 @@ public class LoginSyncher extends BaseSyncher {
         }.handle();
         return result;
     }
+
+    public boolean checkTutorialCompletedStatus() {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/users/checkTutorialCompletedStatus") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public void storeTutorialCompletedStatus() {
+        new JsonGetHandler("/users/storeTutorialCompletedStatus") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+
+            }
+        }.handle();
+    }
+
+    public boolean getDriverAvailability() {
+        final GetBikePointer<Boolean> result = new GetBikePointer<>(null);
+        result.setValue(false);
+        new JsonGetHandler("/users/getDriverAvailabilityStatus") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+                if (jsonResult.has("result") && jsonResult.get("result").equals("success")) {
+                    result.setValue(true);
+                }
+            }
+        }.handle();
+        return result.getValue();
+    }
+
+    public void setDriverAvailabilityTrue() {
+        new JsonGetHandler("/users/makeDriverAvailabilityTrue") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+
+            }
+        }.handle();
+    }
+
+    public void setDriverAvailabilityFalse() {
+        new JsonGetHandler("/users/makeDriverAvailabilityFalse") {
+
+            @Override
+            protected void processResult(JSONObject jsonResult) throws Exception {
+
+            }
+        }.handle();
+    }
 }

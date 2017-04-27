@@ -5,9 +5,13 @@
 package com.vave.getbike.helpers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
@@ -21,11 +25,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.vave.getbike.R;
 import com.vave.getbike.activity.ShowCompletedRideActivity;
 import com.vave.getbike.datasource.RideLocationDataSource;
 import com.vave.getbike.model.Ride;
+import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideLocationSyncher;
 import com.vave.getbike.syncher.RideSyncher;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Adarsh.T
@@ -167,5 +177,79 @@ public class LocationDetails {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public static String getCompleteAddressString(Context context,double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(", ");
+                }
+                strAdd = strReturnedAddress.toString();
+                if (strAdd.endsWith(", ")) {
+                    strAdd = strAdd.substring(0, strAdd.length() - 2);
+                }
+                Log.w("My Current loction", "" + strReturnedAddress.toString());
+            } else {
+                Log.w("My Current loction", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("My Current loction", "Canont get Address!");
+        }
+        return strAdd;
+    }
+
+    public static void storeUserLastKnownLocation(Context context,final double latitude, final double longitude) {
+        new GetBikeAsyncTask(context) {
+
+            @Override
+            public void process() {
+                LoginSyncher loginSyncher = new LoginSyncher();
+                loginSyncher.storeLastKnownLocation(new Date(), latitude, longitude);
+            }
+
+            @Override
+            public void afterPostExecute() {
+
+            }
+        }.execute();
+    }
+
+    public static void saveUserRequestFromNonGeoFencingLocation(Context context,final double latitude, final double longitude) {
+        new GetBikeAsyncTask(context) {
+
+            @Override
+            public void process() {
+                RideSyncher rideSyncher = new RideSyncher();
+                rideSyncher.userRequestFromNonGeoFencingLocation(latitude,longitude,getCompleteAddressString(context,latitude,longitude));
+            }
+
+            @Override
+            public void afterPostExecute() {
+
+            }
+        }.execute();
+    }
+
+    public static void geoFencingValidationPopUpMessage(Context context,String locationAreas) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setTitle("Notification");
+        builder.setMessage("Currently we are available in" + locationAreas);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 }

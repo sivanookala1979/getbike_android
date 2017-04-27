@@ -15,6 +15,7 @@ import com.vave.getbike.syncher.LoginSyncher;
 import com.vave.getbike.syncher.RideSyncher;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -26,6 +27,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     public static WaitForRiderAllocationActivity activeInstance;
 
     // UI Widgets.
+    private static final String TAG = "WaitForRiderAllocation";
     AVLoadingIndicatorView avLoadingIndicatorView;
     Ride ride = null;
     ScheduledFuture<?> future = null;
@@ -40,6 +42,7 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        getRideDetails(rideId);
         activeInstance = this;
         cleanFuture();
         future = scheduler.scheduleAtFixedRate(new WaitMoreAlertForUser(), 45, 45, TimeUnit.SECONDS);
@@ -74,24 +77,30 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.waitingForRider);
         avLoadingIndicatorView.show();
         if (rideId > 0) {
-            new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
-
-                @Override
-                public void process() {
-                    RideSyncher rideSyncher = new RideSyncher();
-                    ride = rideSyncher.getRideById(rideId);
-                }
-
-                @Override
-                public void afterPostExecute() {
-                    if (ride != null) {
-                    } else {
-                        ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
-                    }
-                }
-            }.execute();
+            getRideDetails(rideId);
         }
+    }
+    public void getRideDetails(final long rideId){
+        new GetBikeAsyncTask(WaitForRiderAllocationActivity.this) {
 
+            @Override
+            public void process() {
+                RideSyncher rideSyncher = new RideSyncher();
+                ride = rideSyncher.getRideById(rideId);
+            }
+
+            @Override
+            public void afterPostExecute() {
+                if (ride != null) {
+                    if (getDifferenceInMinutes(new Date(),ride.getRequestedAt()) >= 15) {
+                        ToastHelper.blueToast(WaitForRiderAllocationActivity.this,"Ride expired!");
+                        finish();
+                    }
+                } else {
+                    ToastHelper.redToast(WaitForRiderAllocationActivity.this, R.string.error_ride_is_not_valid);
+                }
+            }
+        }.execute();
     }
 
     public void rideAccepted(long acceptedRideId) {
@@ -202,5 +211,11 @@ public class WaitForRiderAllocationActivity extends BaseActivity {
 
             });
         }
+    }
+    public long getDifferenceInMinutes(Date currentDate,Date requestedDate){
+        long diff = currentDate.getTime() - requestedDate.getTime();
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        return minutes; //returning time in minutes;
     }
 }

@@ -91,45 +91,18 @@ public class GiveDestinationAddressActivity extends AppCompatActivity implements
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         yourLocationLatLng = new LatLng(latitude, longitude);
         if (latitude > 0 && longitude > 0) {
-            yourLocation.setText(getCompleteAddressString(latitude, longitude));
+            yourLocation.setText(LocationDetails.getCompleteAddressString(GiveDestinationAddressActivity.this,latitude, longitude));
         } else {
             Location mCurrentLocation = LocationDetails.getLocationOrShowToast(GiveDestinationAddressActivity.this, locationManager);
             locationManager = (LocationManager)
                     getSystemService(Context.LOCATION_SERVICE);
             if (mCurrentLocation != null && mCurrentLocation.getLatitude() > 0 && mCurrentLocation.getLongitude() > 0) {
-                yourLocation.setText(getCompleteAddressString(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+                yourLocation.setText(LocationDetails.getCompleteAddressString(GiveDestinationAddressActivity.this,mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
             }
         }
         googleMapV2Direction = new GMapV2Direction();
         addTextChangedListener();
 
-    }
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(", ");
-                }
-                strAdd = strReturnedAddress.toString();
-                if (strAdd.endsWith(", ")) {
-                    strAdd = strAdd.substring(0, strAdd.length() - 2);
-                }
-                Log.w("My Current loction", "" + strReturnedAddress.toString());
-            } else {
-                Log.w("My Current loction", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("My Current loction", "Canont get Address!");
-        }
-        return strAdd;
     }
 
     @Override
